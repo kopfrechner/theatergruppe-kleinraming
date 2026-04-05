@@ -6,8 +6,8 @@
   --bg-color-light: #171717;
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
-  --accent-green: #22c55e; /* Default bright green, adjust later */
-  --accent-green-hover: #16a34a;
+  --accent-green: #8FC238; /* Official Theatergruppe Green */
+  --accent-green-hover: #77a52c;
 
   /* Typography */
   --font-body: 'Inter', sans-serif;

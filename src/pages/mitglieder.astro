@@ -3,13 +3,12 @@ import Layout from '../layouts/Layout.astro';
 
 // Dummy data mock - later replace with Strapi fetch
 const members = [
-  { name: "Max Mustermann", role: "Obmann", category: "board" },
-  { name: "Anna Schmidt", role: "Schriftführerin", category: "board" },
-  { name: "Thomas Mayer", role: "Schauspieler", category: "actor", profile: "Spielt seit 10 Jahren leidenschaftlich gerne Hauptrollen." },
-  { name: "Sarah Gruber", role: "Schauspielerin", category: "actor", profile: "Ihre Paraderolle ist die kratzbürstige Nachbarin." },
-  { name: "Peter Hofer", role: "Bühnenbild", category: "other" },
-  { name: "Lisa Huber", role: "Maske & Kostüm", category: "other" },
-  { name: "Klaus Wagner", role: "Gastro / Kassa", category: "other" }
+  { name: "Daniela Baumann", role: "Obfrau & Regie", category: "board" },
+  { name: "Werner Seirlehner", role: "Schriftführer & Technik", category: "board" },
+  { name: "Adolf Seirlehner", role: "Kassier", category: "board" },
+  { name: "Gottfried Kopf", role: "Obfrau Stv. & Bühnenbau", category: "board", profile: "Baut detailreiche Bühnenbilder." },
+  { name: "Zäzilia Rosenegger", role: "Schriftführerin Stv. & Spielerin", category: "actor" },
+  { name: "Reinhard Streitner", role: "Kassier Stv. & Spieler", category: "actor" }
 ];
 
 const boardMembers = members.filter(m => m.category === "board");
