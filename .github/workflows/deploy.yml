@@ -1,0 +1,25 @@
+name: Deploy
+
+permissions:
+  contents: read
+
+on:
+  push:
+    branches:
+      - main
+      - preview
+
+jobs:
+  deploy:
+    name: Trigger deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST ${{ secrets.DEPLOY_URL_MAIN }}
+
+      - name: Deploy to Preview
+        if: github.ref == 'refs/heads/preview'
+        run: |
+          curl -X POST ${{ secrets.DEPLOY_URL_PREVIEW }}
