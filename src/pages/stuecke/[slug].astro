@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+export function getStaticPaths() {
+  const plays = [
+    { slug: "der-zerbrochne-krug", title: "Der zerbrochne Krug", year: "2025" },
+    { slug: "arsen-und-spitzenhaeubchen", title: "Arsen und Spitzenhäubchen", year: "2025" },
+    { slug: "ein-sommernachtstraum", title: "Ein Sommernachtstraum", year: "2024" }
+  ];
+
+  return plays.map(play => {
+    return {
+      params: { slug: play.slug },
+      props: { play }
+    };
+  });
+}
+
+const { play } = Astro.props;
+---
+
+<Layout title={play.title}>
+  <div class="container page-header">
+    <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
+    <h1>{play.title}</h1>
+    <p class="play-year">Aufgeführt: {play.year}</p>
+  </div>
+
+  <section class="container play-detail">
+    <div class="glass-panel content-box">
+      <h2>Zusammenfassung</h2>
+      <p class="abstract">
+        Hier folgt eine ausführliche Beschreibung des Stücks. Zusammenfassung der Handlung, 
+        Anmerkung zum Cast, und weitere spannende Details zur Inszenierung.
+        <br/><br/>
+        (Diese Daten werden später ebenfalls über Strapi oder Markdown eingespielt.)
+      </p>
+      
+      <div class="gallery-placeholder">
+        <p>Bildergalerie (wird ggf. später mit externer Bibliothek oder GDrive Bildern implementiert)</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .back-link {
+    display: inline-block;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+
+  .back-link:hover {
+    color: var(--accent-green);
+  }
+
+  .play-year {
+    color: var(--accent-green);
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+
+  .play-detail {
+    max-width: 800px;
+    margin-bottom: 5rem;
+  }
+
+  .content-box {
+    padding: 3rem;
+  }
+
+  .abstract {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .gallery-placeholder {
+    margin-top: 3rem;
+    padding: 3rem;
+    background-color: var(--bg-color);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: var(--radius-md);
+    text-align: center;
+    color: var(--text-muted);
+  }
+</style>

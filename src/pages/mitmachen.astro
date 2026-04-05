@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Mitmachen">
+  <div class="container page-header">
+    <h1>Werde Teil der Theatergruppe</h1>
+    <p class="subtitle">Wir suchen immer motivierte Leute für die Bühne und dahinter!</p>
+  </div>
+
+  <section class="container join-section">
+    <div class="glass-panel content-box">
+      <div class="grid grid-2">
+        <div>
+          <h2>Warum Mitmachen?</h2>
+          <ul>
+            <li>Tolle Gemeinschaft und Zusammenhalt</li>
+            <li>Gemeinsam kreative Projekte umsetzen</li>
+            <li>Viel Spaß bei Proben und Aufführungen</li>
+          </ul>
+        </div>
+        <div>
+          <h2>Welche Rollen gibt es?</h2>
+          <ul>
+            <li>Schauspiel: Steh im Rampenlicht!</li>
+            <li>Bühnenbau & Technik: Für die Bastler und Tüftler.</li>
+            <li>Maske & Kostüm: Kreativität gefragt.</li>
+            <li>Gastro & Kassa: Das Team am Veranstaltungsabend.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="contact-box">
+        <h3>Interessiert?</h3>
+        <p>Melde dich bei uns! Wir freuen uns auf dich.</p>
+        <a href="mailto:info@theatergruppe-kleinraming.at" class="btn">Kontakt aufnehmen</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  .join-section {
+    max-width: 900px;
+    margin-bottom: 5rem;
+  }
+
+  .content-box {
+    padding: 3rem;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .grid-2 h2 {
+    color: var(--accent-green);
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style-position: inside;
+    color: var(--text-main);
+  }
+
+  li {
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-box {
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 3rem;
+  }
+
+  .contact-box h3 {
+    font-size: 1.8rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .contact-box p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+</style>

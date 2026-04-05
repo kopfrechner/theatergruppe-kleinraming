@@ -1,0 +1,134 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Startseite">
+  <section class="hero">
+    <div class="container hero-content">
+      <h1>Willkommen bei der<br/><span class="text-green">Theatergruppe Kleinraming</span></h1>
+      <p class="hero-subtitle">Leidenschaft für die Bühne, Begeisterung für das Publikum.</p>
+      <div class="hero-actions">
+        <a href="/tickets" class="btn">Tickets kaufen</a>
+        <a href="/stuecke" class="btn btn-outline">Letzte Stücke ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container recent-plays">
+    <h2 class="section-title">Unsere letzten Stücke</h2>
+    <div class="grid grid-3">
+      <!-- Dummy Cards -> Später dynamisch aus Content Collections gepullt -->
+      <article class="glass-panel play-card">
+        <div class="play-image-placeholder"></div>
+        <div class="play-content">
+          <h3>Der zerbrochne Krug</h3>
+          <p class="play-date">Herbst 2025</p>
+          <a href="/stuecke/der-zerbrochne-krug" class="read-more">Mehr erfahren &rarr;</a>
+        </div>
+      </article>
+
+      <article class="glass-panel play-card">
+        <div class="play-image-placeholder"></div>
+        <div class="play-content">
+          <h3>Arsen und Spitzenhäubchen</h3>
+          <p class="play-date">Frühjahr 2025</p>
+          <a href="/stuecke/arsen-und-spitzenhaeubchen" class="read-more">Mehr erfahren &rarr;</a>
+        </div>
+      </article>
+
+      <article class="glass-panel play-card">
+        <div class="play-image-placeholder"></div>
+        <div class="play-content">
+          <h3>Ein Sommernachtstraum</h3>
+          <p class="play-date">Sommer 2024</p>
+          <a href="/stuecke/ein-sommernachtstraum" class="read-more">Mehr erfahren &rarr;</a>
+        </div>
+      </article>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .hero {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(180deg, rgba(10,10,10,0) 0%, var(--bg-color) 100%), 
+                url('/dummy-hero.webp') no-repeat center center/cover;
+    /* Placeholder fallback color since we don't have the image yet */
+    background-color: #1a1a1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    margin-bottom: 1rem;
+    line-height: 1.1;
+  }
+
+  .text-green {
+    color: var(--accent-green);
+  }
+
+  .hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+  }
+
+  .recent-plays {
+    margin-top: 5rem;
+    margin-bottom: 5rem;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .play-card {
+    overflow: hidden;
+    transition: transform 0.3s ease;
+  }
+
+  .play-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .play-image-placeholder {
+    height: 200px;
+    background-color: var(--bg-color-light);
+  }
+
+  .play-content {
+    padding: 1.5rem;
+  }
+
+  .play-date {
+    color: var(--accent-green);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+
+  .read-more {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+</style>

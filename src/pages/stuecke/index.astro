@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+// Dummy data
+const plays = [
+  { slug: "der-zerbrochne-krug", title: "Der zerbrochne Krug", year: "2025" },
+  { slug: "arsen-und-spitzenhaeubchen", title: "Arsen und Spitzenhäubchen", year: "2025" },
+  { slug: "ein-sommernachtstraum", title: "Ein Sommernachtstraum", year: "2024" }
+];
+---
+
+<Layout title="Bisherige Stücke">
+  <div class="container page-header">
+    <h1>Bisherige Stücke</h1>
+    <p class="subtitle">Ein Rückblick auf vergangene Aufführungen.</p>
+  </div>
+
+  <section class="container plays-section">
+    <div class="grid play-grid">
+      {plays.map(play => (
+        <article class="glass-panel play-card">
+          <div class="play-poster-placeholder"></div>
+          <div class="play-content">
+            <h2>{play.title}</h2>
+            <p class="play-year">{play.year}</p>
+            <a href={`/stuecke/${play.slug}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  .plays-section {
+    margin-bottom: 5rem;
+  }
+
+  .play-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+
+  .play-card {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .play-poster-placeholder {
+    height: 400px;
+    background-color: var(--bg-color-light);
+  }
+
+  .play-content {
+    padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .play-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .play-year {
+    color: var(--accent-green);
+    margin-bottom: 2rem;
+    flex: 1;
+  }
+</style>

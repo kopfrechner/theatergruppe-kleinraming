@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// Dummy data
+const sponsors = [
+  { name: "Raiffeisenbank", link: "https://www.raiffeisen.at/" },
+  { name: "Lokale Bäckerei", link: "#" },
+  { name: "Baumeister GmbH", link: "#" },
+  { name: "Getränke Huber", link: "#" },
+  { name: "Tech Solutions", link: "#" },
+  { name: "Tischlerei Holz", link: "#" },
+];
+---
+
+<Layout title="Sponsoren">
+  <div class="container page-header">
+    <h1>Unsere Sponsoren</h1>
+    <p class="subtitle">Wir bedanken uns herzlich für die Unterstützung bei unseren Partnern.</p>
+  </div>
+
+  <section class="container sponsors-section">
+    <div class="grid sponsor-grid">
+      {sponsors.map(sponsor => (
+        <a href={sponsor.link} target="_blank" rel="noopener noreferrer" class="glass-panel sponsor-card">
+          <div class="sponsor-logo-placeholder">
+            <span>{sponsor.name}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 1.2rem;
+  }
+
+  .sponsors-section {
+    margin-bottom: 6rem;
+  }
+
+  .sponsor-grid {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .sponsor-card {
+    display: block;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .sponsor-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15); /* Greenish glow */
+    border-color: rgba(34, 197, 94, 0.5);
+  }
+
+  .sponsor-logo-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-color-light);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+</style>

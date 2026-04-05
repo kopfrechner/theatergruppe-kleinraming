@@ -1,0 +1,127 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Die Theatergruppe Kleinraming präsentiert." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title} | Theatergruppe Kleinraming</title>
+  </head>
+  <body>
+    <header class="main-header">
+      <div class="container header-content">
+        <a href="/" class="logo">Theatergruppe Kleinraming</a>
+        <nav class="main-nav">
+          <a href="/">Start</a>
+          <a href="/tickets">Tickets</a>
+          <a href="/stuecke">Stücke</a>
+          <a href="/mitglieder">Mitglieder</a>
+          <a href="/sponsoren">Sponsoren</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="main-footer">
+      <div class="container footer-content">
+        <div class="footer-links">
+          <a href="/mitmachen">Mitmachen</a>
+          <a href="/impressum">Impressum</a>
+          <a href="/datenschutz">Datenschutz</a>
+        </div>
+        <div class="social-links">
+          <!-- Placeholder Icons -->
+          <a href="#" target="_blank" rel="noopener noreferrer">Facebook</a>
+          <a href="#" target="_blank" rel="noopener noreferrer">Instagram</a>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .main-header {
+    background-color: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 80px;
+  }
+
+  .logo {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: var(--text-main);
+  }
+
+  .main-nav {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .main-nav a {
+    color: var(--text-main);
+    font-weight: 500;
+  }
+
+  .main-nav a:hover {
+    color: var(--accent-green);
+  }
+
+  main {
+    min-height: calc(100vh - 80px - 100px); /* Adjust for header/footer */
+  }
+
+  .main-footer {
+    background-color: var(--bg-color-light);
+    padding: 2rem 0;
+    margin-top: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-links, .social-links {
+    display: flex;
+    gap: 1.5rem;
+  }
+
+  .footer-links a, .social-links a {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+
+  .footer-links a:hover, .social-links a:hover {
+    color: var(--accent-green);
+  }
+</style>
