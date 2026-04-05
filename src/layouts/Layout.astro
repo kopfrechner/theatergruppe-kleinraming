@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Logo from '../components/Logo.astro';
 
 interface Props {
   title: string;
@@ -22,7 +23,9 @@ const { title, description = "Die Theatergruppe Kleinraming präsentiert." } = A
   <body>
     <header class="main-header">
       <div class="container header-content">
-        <a href="/" class="logo">Theatergruppe Kleinraming</a>
+        <a href="/" class="logo-link" aria-label="Startseite">
+          <Logo />
+        </a>
         <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Menü wechseln">
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
@@ -84,11 +87,9 @@ const { title, description = "Die Theatergruppe Kleinraming präsentiert." } = A
     height: 80px;
   }
 
-  .logo {
-    font-family: var(--font-heading);
-    font-weight: 800;
-    font-size: 1.5rem;
-    color: var(--text-main);
+  .logo-link {
+    text-decoration: none;
+    display: inline-block;
   }
 
   .mobile-menu-toggle {
