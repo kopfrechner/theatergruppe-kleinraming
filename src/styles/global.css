@@ -99,8 +99,14 @@ a:hover {
 }
 
 .page-header {
-  margin: 4rem 0 2rem;
+  margin: 2rem 0 1.5rem;
   text-align: center;
+}
+
+@media (min-width: 768px) {
+  .page-header {
+    margin: 4rem 0 2rem;
+  }
 }
 
 .grid {
