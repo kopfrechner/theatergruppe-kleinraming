@@ -1,14 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import fetchApi from '../../lib/strapi';
+import type Stueck from '../../interfaces/stueck';
 
-// Dummy data
-const plays = [
-  { slug: "ms-rosta", title: "MS Rosta - Kreuzfahrt kuriosa!", year: "2026" },
-  { slug: "eine-sprachbox-namens-alessa", title: "Eine Sprachbox namens Alessa!", year: "2025" },
-  { slug: "die-luegenglocke", title: "Die Lügenglocke", year: "2024" },
-  { slug: "urlaub-von-der-familie", title: "Urlaub von der Familie", year: "2023" },
-  { slug: "so-viel-krach-in-einer-nacht", title: "So viel Krach in einer Nacht", year: "2019" }
-];
+const stuecke = await fetchApi<Stueck[]>({
+  endpoint: 'stuecke?populate=vorschaubild',
+  wrappedByKey: 'data',
+});
 ---
 
 <Layout title="Bisherige Stücke">
@@ -19,16 +17,29 @@ const plays = [
 
   <section class="container plays-section">
     <div class="grid play-grid">
-      {plays.map(play => (
-        <article class="glass-panel play-card">
-          <div class="play-poster-placeholder"></div>
-          <div class="play-content">
-            <h2>{play.title}</h2>
-            <p class="play-year">{play.year}</p>
-            <a href={`/stuecke/${play.slug}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
-          </div>
-        </article>
-      ))}
+      {stuecke && stuecke.length > 0 ? (
+        stuecke.map(stueck => (
+          <article class="glass-panel play-card">
+            <div class="play-poster-placeholder">
+              {stueck.vorschaubild && (
+                <img src={`${import.meta.env.STRAPI_URL}${stueck.vorschaubild.url}`} alt={stueck.titel} />
+              )}
+            </div>
+            <div class="play-content">
+              <h2>{stueck.titel}</h2>
+              <p class="play-year">{stueck.jahr}</p>
+              <a href={`/stuecke/${stueck.slug}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
+            </div>
+          </article>
+        ))
+      ) : (
+        <div class="glass-panel" style="grid-column: 1 / -1; padding: 4rem; text-align: center;">
+          <p class="subtitle">Noch keine Stücke vorhanden.</p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            Sobald du in Strapi ein Stück veröffentlichst, erscheint es hier.
+          </p>
+        </div>
+      )}
     </div>
   </section>
 </Layout>

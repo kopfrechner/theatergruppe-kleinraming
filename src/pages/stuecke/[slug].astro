@@ -1,47 +1,51 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-// Triggering HMR reload
+import fetchApi from '../../lib/strapi';
+import type Stueck from '../../interfaces/stueck';
 
-export function getStaticPaths() {
-  const plays = [
-    { slug: "ms-rosta", title: "MS Rosta - Kreuzfahrt kuriosa!", year: "2026" },
-    { slug: "eine-sprachbox-namens-alessa", title: "Eine Sprachbox namens Alessa!", year: "2025" },
-    { slug: "die-luegenglocke", title: "Die Lügenglocke", year: "2024" },
-    { slug: "urlaub-von-der-familie", title: "Urlaub von der Familie", year: "2023" },
-    { slug: "so-viel-krach-in-einer-nacht", title: "So viel Krach in einer Nacht", year: "2019" }
-  ];
-
-  return plays.map(play => {
-    return {
-      params: { slug: play.slug },
-      props: { play }
-    };
+export async function getStaticPaths() {
+  const stuecke = await fetchApi<Stueck[]>({
+    endpoint: 'stuecke?populate=*',
+    wrappedByKey: 'data',
   });
+
+  return stuecke.map((stueck) => ({
+    params: { slug: stueck.slug },
+    props: { stueck },
+  }));
 }
 
-const { play } = Astro.props;
+const { stueck } = Astro.props;
 ---
 
-<Layout title={play.title}>
+<Layout title={stueck.titel}>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
-    <h1>{play.title}</h1>
-    <p class="play-year">Aufgeführt: {play.year}</p>
+    <h1>{stueck.titel}</h1>
+    <p class="play-year">Aufgeführt: {stueck.jahr}</p>
   </div>
 
   <section class="container play-detail">
     <div class="glass-panel content-box">
       <h2>Zusammenfassung</h2>
-      <p class="abstract">
-        Hier folgt eine ausführliche Beschreibung des Stücks. Zusammenfassung der Handlung, 
-        Anmerkung zum Cast, und weitere spannende Details zur Inszenierung.
-        <br/><br/>
-        (Diese Daten werden später ebenfalls über Strapi oder Markdown eingespielt.)
-      </p>
-      
-      <div class="gallery-placeholder">
-        <p>Bildergalerie (wird ggf. später mit externer Bibliothek oder GDrive Bildern implementiert)</p>
+      <div class="abstract">
+        {stueck.beschreibung ? (
+          <div set:html={stueck.beschreibung} />
+        ) : (
+          <p>Keine Beschreibung verfügbar.</p>
+        )}
       </div>
+      
+      {stueck.galerie && stueck.galerie.length > 0 && (
+        <div class="gallery">
+          <h3>Galerie</h3>
+          <div class="grid grid-3">
+            {stueck.galerie.map(img => (
+              <img src={`${import.meta.env.STRAPI_URL}${img.url}`} alt={img.alternativeText || stueck.titel} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </section>
 </Layout>
