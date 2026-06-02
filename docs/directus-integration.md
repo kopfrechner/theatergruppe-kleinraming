@@ -52,7 +52,8 @@ Hilfstabelle für die Bildergalerie der Stücke.
 Damit die Daten im Frontend erscheinen, müssen in Directus unter **Settings -> Access Control -> Public** Leserechte für folgende Collections vergeben sein:
 1. `stuecke`
 2. `theatermenschen`
-3. `stuecke_theatermenschen` (für die Rollen-Verknüpfung)
+3. `sponsoren`
+4. `stuecke_theatermenschen` (für die Rollen-Verknüpfung)
 4. `stuecke_files` (für die Bildergalerie)
 5. **Directus Files** (System-Collection für Bilder/PDFs)
 

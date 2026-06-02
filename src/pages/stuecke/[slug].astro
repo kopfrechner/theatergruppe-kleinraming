@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import directus from '../../lib/directus';
 import { readItems } from '@directus/sdk';
-import { Image, getImage } from 'astro:assets';
+import { Image, getImage, inferRemoteSize } from 'astro:assets';
 import 'photoswipe/style.css';
 
 export async function getStaticPaths() {
@@ -37,21 +37,34 @@ const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0
         
         const remoteUrl = `${DIRECTUS_URL}/assets/${item.directus_files_id}`;
         
-        // Generiere optimiertes lokales Asset für die Großansicht
-        const optimized = await getImage({
-          src: remoteUrl,
-          width: 1600,
-          inferSize: true,
-          format: 'webp'
-        });
-        
-        return {
-          src: optimized.src,
-          width: optimized.attributes.width,
-          height: optimized.attributes.height,
-          thumbnail: remoteUrl,
-          id: item.directus_files_id
-        };
+        try {
+          // Holen der originalen Dimensionen direkt vom Remote-Server
+          const { width: origWidth, height: origHeight } = await inferRemoteSize(remoteUrl);
+          
+          // Berechnung der Ziel-Dimensionen für die Lightbox (max 1600px Breite)
+          const targetWidth = Math.min(origWidth, 1600);
+          const scaleFactor = targetWidth / origWidth;
+          const targetHeight = Math.round(origHeight * scaleFactor);
+          
+          // Generiere optimiertes lokales Asset mit expliziten Maßen
+          const optimized = await getImage({
+            src: remoteUrl,
+            width: targetWidth,
+            height: targetHeight,
+            format: 'webp'
+          });
+          
+          return {
+            src: optimized.src,
+            width: targetWidth,
+            height: targetHeight,
+            thumbnail: remoteUrl,
+            id: item.directus_files_id
+          };
+        } catch (e) {
+          console.error(`Fehler beim Verarbeiten von Bild ${item.directus_files_id}:`, e);
+          return null;
+        }
       })
     )
   : [];

@@ -20,11 +20,20 @@ interface Theatermensch {
   foto?: string;
   foto_funny?: string;
   aktiver_theatermensch: boolean;
+  vorstandsmitglied: boolean;
+}
+
+interface Sponsor {
+  id: string;
+  unternehmen: string;
+  link?: string;
+  bild?: string;
 }
 
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
+  sponsoren: Sponsor[];
 }
 
 const client = createDirectus<Schema>('https://cms.kopfarbeit.dev').with(rest());
