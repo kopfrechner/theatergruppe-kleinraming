@@ -40,6 +40,7 @@ Personenverzeichnis der Theatergruppe.
 - **steckbrief**: Kurze Beschreibung / Bio
 - **foto**: Profilbild
 - **aktiver_theatermensch**: Boolean (steuert die Anzeige auf der Mitgliederseite)
+- **vorstandsmitglied**: Boolean (kennzeichnet Mitglieder für die Vorstands-Sektion)
 
 ### `stuecke_files` (Junction-Tabelle)
 Hilfstabelle für die Bildergalerie der Stücke.
