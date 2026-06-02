@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import fetchApi from '../../lib/strapi';
 import type Stueck from '../../interfaces/stueck';
+import { renderBlocksToHtml } from '../../lib/strapi-blocks';
 
 export async function getStaticPaths() {
   const stuecke = await fetchApi<Stueck[]>({
@@ -30,7 +31,7 @@ const { stueck } = Astro.props;
       <h2>Zusammenfassung</h2>
       <div class="abstract">
         {stueck.beschreibung ? (
-          <div set:html={stueck.beschreibung} />
+          <div set:html={renderBlocksToHtml(stueck.beschreibung)} />
         ) : (
           <p>Keine Beschreibung verfügbar.</p>
         )}

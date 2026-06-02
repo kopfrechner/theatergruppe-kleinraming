@@ -11,7 +11,7 @@ export default interface Stueck {
   slug: string;
   jahr: number;
   saison?: string;
-  beschreibung?: string;
+  beschreibung?: any;
   aktiv?: boolean;
   vorschaubild?: {
     url: string;
