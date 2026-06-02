@@ -10,6 +10,7 @@ const members = await directus.request(
       status: { _eq: 'published' },
       aktiver_theatermensch: { _eq: true }
     },
+    fields: ['*', 'foto.*', 'foto_funny.*'],
     sort: ['name']
   })
 );
@@ -27,148 +28,186 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 
   <section class="container members-section">
     <h2 class="category-title">Unser Vorstand</h2>
-    <div class="grid board-grid">
-      {boardMembers.map(member => (
-        <article class="glass-panel member-card board-card">
-          <div class="member-photo-placeholder">
-            {member.foto ? (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto}`} 
-                alt={member.name}
-                width={240}
-                height={320}
-                format="webp"
-              />
-            ) : (
-              <div class="no-photo">Kein Foto verfügbar</div>
-            )}
-          </div>
-          <div class="member-info">
-            <h3>{member.name}</h3>
-            <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="container members-section">
-    <h2 class="category-title">Weitere aktive Theatermenschen</h2>
     <div class="grid members-grid">
-      {activeMembers.map(member => (
-        <article class="glass-panel member-card">
-          <div class="member-photo-placeholder">
+      {boardMembers.map(member => (
+        <article class={`glass-panel member-card board-card ${member.foto_funny ? 'has-funny-photo' : ''}`}>
+          <div class="member-photo-container">
             {member.foto ? (
               <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto}`} 
+                src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
                 alt={member.name}
                 width={240}
                 height={320}
                 format="webp"
+                class="member-photo photo-main"
               />
             ) : (
-              <div class="no-photo">Kein Foto verfügbar</div>
+              <div class="no-photo photo-main">Kein Foto verfügbar</div>
+            )}
+            
+            {member.foto_funny && (
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`} 
+                alt={`${member.name} - Funny`}
+                width={240}
+                height={320}
+                format="webp"
+                class="member-photo photo-funny"
+              />
             )}
           </div>
           <div class="member-info">
             <h3>{member.name}</h3>
             <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
           </div>
-        </article>
-      ))}
-    </div>
-  </section>
-</Layout>
+          </article>
+          ))}
+          </div>
+          </section>
 
-<style>
-  .page-header {
-    margin-bottom: 3rem;
-  }
+          <section class="container members-section">
+          <h2 class="category-title">Weitere aktive Theatermenschen</h2>
+          <div class="grid members-grid">
+          {activeMembers.map(member => (
+          <article class={`glass-panel member-card ${member.foto_funny ? 'has-funny-photo' : ''}`}>
+          <div class="member-photo-container">
+            {member.foto ? (
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
+                alt={member.name}
+                width={240}
+                height={320}
+                format="webp"
+                class="member-photo photo-main"
+              />
+            ) : (
+              <div class="no-photo photo-main">Kein Foto verfügbar</div>
+            )}
 
-  .members-section {
-    margin-bottom: 5rem;
-  }
+            {member.foto_funny && (
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`} 
+                alt={`${member.name} - Funny`}
+                width={240}
+                height={320}
+                format="webp"
+                class="member-photo photo-funny"
+              />
+            )}
+          </div>
+          <div class="member-info">
+            <h3>{member.name}</h3>
+            <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
+          </div>
+          </article>
+          ))}
+          </div>
+          </section>
+          </Layout>
 
-  .category-title {
-    color: var(--accent-green);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-bottom: 0.5rem;
-    margin-bottom: 3rem;
-    text-align: left;
-    font-size: 2rem;
-    width: 100%;
-  }
+          <style>
+          .page-header {
+          margin-bottom: 3rem;
+          }
 
-  .board-grid {
-    grid-template-columns: repeat(auto-fit, 240px);
-    justify-content: center;
-    gap: 2rem;
-    margin-bottom: 4rem;
-  }
+          .members-section {
+          margin-bottom: 5rem;
+          }
 
-  .members-grid {
-    grid-template-columns: repeat(auto-fit, 240px);
-    justify-content: center;
-    gap: 2rem;
-  }
+          .category-title {
+          color: var(--accent-green);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          padding-bottom: 0.5rem;
+          margin-bottom: 3rem;
+          text-align: left;
+          font-size: 2rem;
+          width: 100%;
+          }
 
-  .member-card {
-    text-align: center;
-    overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-  }
+          .members-grid {
+          grid-template-columns: repeat(auto-fit, 240px);
+          justify-content: center;
+          gap: 2rem;
+          }
 
-  .board-card {
-    border: 1px solid rgba(143, 194, 56, 0.3);
-  }
+          .member-card {
+          text-align: center;
+          overflow: hidden;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+          display: flex;
+          flex-direction: column;
+          position: relative;
+          background: rgba(255, 255, 255, 0.03);
+          }
 
-  .member-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
-  }
+          .board-card {
+          border: 1px solid rgba(143, 194, 56, 0.3);
+          }
 
-  .member-photo-placeholder {
-    height: 320px;
-    background-color: var(--bg-color-light);
-    border-bottom: 2px solid var(--accent-green);
-  }
+          .member-card:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+          border-color: var(--accent-green);
+          }
 
-  .member-photo-placeholder img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+          .member-photo-container {
+          height: 320px;
+          background-color: var(--bg-color-light);
+          border-bottom: 2px solid var(--accent-green);
+          position: relative;
+          overflow: hidden;
+          }
 
-  .no-photo {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-muted);
-    font-size: 0.8rem;
-  }
+          .member-photo {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          position: absolute;
+          top: 0;
+          left: 0;
+          transition: opacity 0.4s ease-in-out;
+          }
 
-  .member-info {
-    padding: 1.5rem;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
+          .photo-main {
+          z-index: 2;
+          opacity: 1;
+          }
 
-  .member-role {
-    color: var(--accent-green);
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    font-size: 0.95rem;
-  }
+          .photo-funny {
+          z-index: 1;
+          opacity: 0;
+          }
 
-  .member-profile {
-    font-size: 0.85rem;
-    margin-top: 1rem;
-    color: #ccc;
-    font-style: italic;
-  }
-</style>
+          .member-card.has-funny-photo:hover .photo-main {
+          opacity: 0;
+          }
+
+          .member-card.has-funny-photo:hover .photo-funny {
+          opacity: 1;
+          z-index: 3;
+          }
+
+          .no-photo {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-muted);
+          font-size: 0.8rem;
+          }
+
+          .member-info {
+          padding: 1.5rem;
+          flex-grow: 1;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          }
+
+          .member-role {
+          color: var(--accent-green);
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          font-size: 0.95rem;
+          }
+          </style>
