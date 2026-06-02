@@ -1,50 +1,53 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import fetchApi from '../../lib/strapi';
-import type Stueck from '../../interfaces/stueck';
-import { renderBlocksToHtml } from '../../lib/strapi-blocks';
+import directus from '../../lib/directus';
+import { readItems } from '@directus/sdk';
 
 export async function getStaticPaths() {
-  const stuecke = await fetchApi<Stueck[]>({
-    endpoint: 'stuecke?populate=*',
-    wrappedByKey: 'data',
-  });
+  const stuecke = await directus.request(
+    readItems('stuecke', {
+      filter: {
+        status: { _eq: 'published' }
+      }
+    })
+  );
 
   return stuecke.map((stueck) => ({
-    params: { slug: stueck.slug },
+    params: { slug: stueck.id },
     props: { stueck },
   }));
 }
 
 const { stueck } = Astro.props;
+const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 ---
 
 <Layout title={stueck.titel}>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
     <h1>{stueck.titel}</h1>
-    <p class="play-year">Aufgeführt: {stueck.jahr}</p>
+    <p class="play-year">Aufgeführt: {stueck.auffuehrung_im_jahr}</p>
   </div>
 
   <section class="container play-detail">
     <div class="glass-panel content-box">
       <h2>Zusammenfassung</h2>
       <div class="abstract">
-        {stueck.beschreibung ? (
-          <div set:html={renderBlocksToHtml(stueck.beschreibung)} />
+        {stueck.synopsis ? (
+          <div set:html={stueck.synopsis} />
         ) : (
           <p>Keine Beschreibung verfügbar.</p>
         )}
       </div>
       
-      {stueck.galerie && stueck.galerie.length > 0 && (
+      {stueck.foto_gallerie && stueck.foto_gallerie.length > 0 && (
         <div class="gallery">
           <h3>Galerie</h3>
           <div class="grid-3">
-            {stueck.galerie.map(img => (
+            {stueck.foto_gallerie.map(item => (
               <img 
-                src={`${import.meta.env.STRAPI_URL}${img.formats?.medium?.url || img.formats?.large?.url || img.url}`} 
-                alt={img.alternativeText || stueck.titel} 
+                src={`${DIRECTUS_URL}/assets/${item.directus_files_id}?width=800&height=600&fit=cover`} 
+                alt={stueck.titel} 
               />
             ))}
           </div>
