@@ -105,10 +105,11 @@ const filteredGallery = galleryImages.filter(img => img !== null);
               <div class="cast-card">
                 {s.theatermenschen_id.foto ? (
                   <Image 
-                    src={`${DIRECTUS_URL}/assets/${s.theatermenschen_id.foto.id || s.theatermenschen_id.foto}?width=100&height=100&fit=cover`} 
+                    src={`${DIRECTUS_URL}/assets/${s.theatermenschen_id.foto.id || s.theatermenschen_id.foto}`} 
                     alt={s.theatermenschen_id.name}
                     width={100}
                     height={100}
+                    format="webp"
                     class="cast-photo"
                   />
                 ) : (
