@@ -42,7 +42,6 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
           <div class="member-info">
             <h3>{member.name}</h3>
             <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
-            {member.steckbrief && <p class="member-profile">{member.steckbrief}</p>}
           </div>
         </article>
       ))}
@@ -67,7 +66,6 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
           <div class="member-info">
             <h3>{member.name}</h3>
             <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
-            {member.steckbrief && <p class="member-profile">{member.steckbrief}</p>}
           </div>
         </article>
       ))}
@@ -96,8 +94,9 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 0.5rem;
     margin-bottom: 3rem;
-    text-align: center;
+    text-align: left;
     font-size: 2rem;
+    width: 100%;
   }
 
   .board-grid {
