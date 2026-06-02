@@ -33,6 +33,19 @@ export default interface Stueck {
       large?: ImageFormat;
     };
   }>;
+  spieler?: Array<{
+    stuecke_id: string;
+    theatermenschen_id: {
+      id: string;
+      name: string;
+      foto?: {
+        url: string;
+      };
+    };
+    rolle_name?: string;
+    rolle_beschreibung?: string;
+    sort?: number;
+  }>;
   createdAt: string;
   updatedAt: string;
   publishedAt: string;
