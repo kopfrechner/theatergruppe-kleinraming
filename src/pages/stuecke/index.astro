@@ -1,14 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import directus from '../../lib/directus';
+import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
-// Dummy data
-const plays = [
-  { slug: "ms-rosta", title: "MS Rosta - Kreuzfahrt kuriosa!", year: "2026" },
-  { slug: "eine-sprachbox-namens-alessa", title: "Eine Sprachbox namens Alessa!", year: "2025" },
-  { slug: "die-luegenglocke", title: "Die Lügenglocke", year: "2024" },
-  { slug: "urlaub-von-der-familie", title: "Urlaub von der Familie", year: "2023" },
-  { slug: "so-viel-krach-in-einer-nacht", title: "So viel Krach in einer Nacht", year: "2019" }
-];
+const stuecke = await directus.request(
+  readItems('stuecke', {
+    filter: {
+      status: { _eq: 'published' }
+    },
+    sort: ['-auffuehrung_im_jahr']
+  })
+);
+
+const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 ---
 
 <Layout title="Bisherige Stücke">
@@ -19,21 +24,44 @@ const plays = [
 
   <section class="container plays-section">
     <div class="grid play-grid">
-      {plays.map(play => (
-        <article class="glass-panel play-card">
-          <div class="play-poster-placeholder"></div>
-          <div class="play-content">
-            <h2>{play.title}</h2>
-            <p class="play-year">{play.year}</p>
-            <a href={`/stuecke/${play.slug}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
-          </div>
-        </article>
-      ))}
+      {stuecke && stuecke.length > 0 ? (
+        stuecke.map(stueck => (
+          <article class="glass-panel play-card">
+            <div class="play-poster-placeholder">
+              {stueck.titelfoto && (
+                <Image 
+                  src={`${DIRECTUS_URL}/assets/${stueck.titelfoto}`} 
+                  alt={stueck.titel} 
+                  width={600}
+                  height={338}
+                  format="webp"
+                />
+              )}
+            </div>
+            <div class="play-content">
+              <h2>{stueck.titel}</h2>
+              <p class="play-year">{stueck.auffuehrung_im_jahr}</p>
+              <a href={`/stuecke/${stueck.id}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
+            </div>
+          </article>
+        ))
+      ) : (
+        <div class="glass-panel" style="grid-column: 1 / -1; padding: 4rem; text-align: center;">
+          <p class="subtitle">Noch keine Stücke vorhanden.</p>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+            Sobald du in Directus ein Stück veröffentlichst, erscheint es hier.
+          </p>
+        </div>
+      )}
     </div>
   </section>
 </Layout>
 
 <style>
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
   .subtitle {
     color: var(--text-muted);
     font-size: 1.2rem;
@@ -44,35 +72,60 @@ const plays = [
   }
 
   .play-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    justify-content: center;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
   .play-card {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    max-width: 360px;
+    margin: 0 auto;
+    width: 100%;
   }
 
   .play-poster-placeholder {
-    height: 400px;
+    width: 100%;
+    aspect-ratio: 16 / 9;
     background-color: var(--bg-color-light);
+    overflow: hidden;
+  }
+
+  .play-poster-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .play-content {
-    padding: 2rem;
+    padding: 1.2rem;
     flex: 1;
     display: flex;
     flex-direction: column;
+    gap: 0.5rem;
   }
 
   .play-content h2 {
-    font-size: 1.5rem;
-    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+    margin: 0;
+    line-height: 1.3;
   }
 
   .play-year {
     color: var(--accent-green);
-    margin-bottom: 2rem;
-    flex: 1;
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .btn-outline {
+    margin-top: 1rem;
+    padding: 0.6rem;
+    font-size: 0.9rem;
   }
 </style>

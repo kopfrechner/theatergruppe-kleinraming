@@ -13,39 +13,6 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
   </section>
-
-  <section class="container recent-plays">
-    <h2 class="section-title">Unsere letzten Stücke</h2>
-    <div class="grid grid-3">
-      <!-- Dummy Cards -> Später dynamisch aus Content Collections gepullt -->
-      <article class="glass-panel play-card">
-        <div class="play-image-placeholder"></div>
-        <div class="play-content">
-          <h3>MS Rosta - Kreuzfahrt kuriosa!</h3>
-          <p class="play-date">Saison 2026</p>
-          <a href="/stuecke/ms-rosta" class="read-more">Mehr erfahren &rarr;</a>
-        </div>
-      </article>
-
-      <article class="glass-panel play-card">
-        <div class="play-image-placeholder"></div>
-        <div class="play-content">
-          <h3>Eine Sprachbox namens Alessa!</h3>
-          <p class="play-date">Saison 2025</p>
-          <a href="/stuecke/eine-sprachbox-namens-alessa" class="read-more">Mehr erfahren &rarr;</a>
-        </div>
-      </article>
-
-      <article class="glass-panel play-card">
-        <div class="play-image-placeholder"></div>
-        <div class="play-content">
-          <h3>Die Lügenglocke</h3>
-          <p class="play-date">Saison 2024</p>
-          <a href="/stuecke/die-luegenglocke" class="read-more">Mehr erfahren &rarr;</a>
-        </div>
-      </article>
-    </div>
-  </section>
 </Layout>
 
 <style>
@@ -53,9 +20,7 @@ import Layout from '../layouts/Layout.astro';
     min-height: 70vh;
     display: flex;
     align-items: center;
-    background: linear-gradient(180deg, rgba(10,10,10,0) 0%, var(--bg-color) 100%), 
-                url('/dummy-hero.webp') no-repeat center center/cover;
-    /* Placeholder fallback color since we don't have the image yet */
+    background: linear-gradient(180deg, rgba(10,10,10,0) 0%, var(--bg-color) 100%);
     background-color: #1a1a1a;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
@@ -99,49 +64,5 @@ import Layout from '../layouts/Layout.astro';
     .hero-actions {
       flex-direction: row;
     }
-  }
-
-  .recent-plays {
-    margin-top: 5rem;
-    margin-bottom: 5rem;
-  }
-
-  .section-title {
-    text-align: center;
-    font-size: 2.5rem;
-    margin-bottom: 3rem;
-  }
-
-  .grid-3 {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-
-  .play-card {
-    overflow: hidden;
-    transition: transform 0.3s ease;
-  }
-
-  .play-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .play-image-placeholder {
-    height: 200px;
-    background-color: var(--bg-color-light);
-  }
-
-  .play-content {
-    padding: 1.5rem;
-  }
-
-  .play-date {
-    color: var(--accent-green);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-  }
-
-  .read-more {
-    font-size: 0.9rem;
-    font-weight: 600;
   }
 </style>

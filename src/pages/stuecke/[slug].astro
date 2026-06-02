@@ -1,50 +1,196 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-// Triggering HMR reload
+import directus from '../../lib/directus';
+import { readItems } from '@directus/sdk';
+import { Image, getImage, inferRemoteSize } from 'astro:assets';
+import 'photoswipe/style.css';
 
-export function getStaticPaths() {
-  const plays = [
-    { slug: "ms-rosta", title: "MS Rosta - Kreuzfahrt kuriosa!", year: "2026" },
-    { slug: "eine-sprachbox-namens-alessa", title: "Eine Sprachbox namens Alessa!", year: "2025" },
-    { slug: "die-luegenglocke", title: "Die Lügenglocke", year: "2024" },
-    { slug: "urlaub-von-der-familie", title: "Urlaub von der Familie", year: "2023" },
-    { slug: "so-viel-krach-in-einer-nacht", title: "So viel Krach in einer Nacht", year: "2019" }
-  ];
+export async function getStaticPaths() {
+  const stuecke = await directus.request(
+    readItems('stuecke', {
+      filter: {
+        status: { _eq: 'published' }
+      },
+      fields: ['*', 'foto_gallerie.*'],
+      deep: {
+        foto_gallerie: {
+          _sort: ['sort']
+        }
+      }
+    })
+  );
 
-  return plays.map(play => {
-    return {
-      params: { slug: play.slug },
-      props: { play }
-    };
-  });
+  return stuecke.map((stueck) => ({
+    params: { slug: stueck.id },
+    props: { stueck },
+  }));
 }
 
-const { play } = Astro.props;
+const { stueck } = Astro.props;
+const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+
+// Vorbereitung der optimierten Galerie-Bilder (Großansicht) für PhotoSwipe
+const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0 
+  ? await Promise.all(
+      stueck.foto_gallerie.map(async (item) => {
+        if (!item.directus_files_id) return null;
+        
+        const remoteUrl = `${DIRECTUS_URL}/assets/${item.directus_files_id}`;
+        
+        try {
+          // 1. Holen der originalen Dimensionen vom CMS
+          const { width: origWidth, height: origHeight } = await inferRemoteSize(remoteUrl);
+          
+          // 2. Zielbreite festlegen (max 1600px)
+          const targetWidth = Math.min(origWidth, 1600);
+          
+          // 3. Zielhöhe basierend auf dem originalen Seitenverhältnis berechnen
+          // Das ist entscheidend, um MissingImageDimension Fehler zu vermeiden
+          const aspectRatio = origWidth / origHeight;
+          const targetHeight = Math.round(targetWidth / aspectRatio);
+          
+          // 4. Generiere optimiertes lokales Asset
+          // Wir geben Breite UND Höhe explizit an, um Astro glücklich zu machen
+          const optimized = await getImage({
+            src: remoteUrl,
+            width: targetWidth,
+            height: targetHeight,
+            format: 'webp'
+          });
+          
+          return {
+            src: optimized.src,
+            width: targetWidth,
+            height: targetHeight,
+            thumbnail: remoteUrl,
+            id: item.directus_files_id
+          };
+        } catch (e) {
+          console.error(`Fehler beim Verarbeiten von Bild ${item.directus_files_id}:`, e);
+          return null;
+        }
+      })
+    )
+  : [];
+
+const filteredGallery = galleryImages.filter(img => img !== null);
 ---
 
-<Layout title={play.title}>
+<Layout title={stueck.titel}>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
-    <h1>{play.title}</h1>
-    <p class="play-year">Aufgeführt: {play.year}</p>
+    <h1>{stueck.titel}</h1>
+    <p class="play-year">Aufgeführt: {stueck.auffuehrung_im_jahr}</p>
   </div>
 
   <section class="container play-detail">
     <div class="glass-panel content-box">
       <h2>Zusammenfassung</h2>
-      <p class="abstract">
-        Hier folgt eine ausführliche Beschreibung des Stücks. Zusammenfassung der Handlung, 
-        Anmerkung zum Cast, und weitere spannende Details zur Inszenierung.
-        <br/><br/>
-        (Diese Daten werden später ebenfalls über Strapi oder Markdown eingespielt.)
-      </p>
-      
-      <div class="gallery-placeholder">
-        <p>Bildergalerie (wird ggf. später mit externer Bibliothek oder GDrive Bildern implementiert)</p>
+      <div class="abstract">
+        {stueck.synopsis ? (
+          <div set:html={stueck.synopsis} />
+        ) : (
+          <p>Keine Beschreibung verfügbar.</p>
+        )}
       </div>
+      
+      {filteredGallery.length > 0 && (
+        <div class="gallery">
+          <h3>Galerie</h3>
+          <div class="grid-3 pswp-gallery" id="play-gallery">
+            {filteredGallery.map((img, index) => (
+              <a 
+                href={img.src}
+                data-pswp-width={img.width}
+                data-pswp-height={img.height}
+                target="_blank"
+                class="gallery-item"
+              >
+                <Image 
+                  src={img.thumbnail} 
+                  alt={`${stueck.titel} - Galeriebild ${index + 1}`} 
+                  width={400}
+                  height={300}
+                  format="webp"
+                />
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   </section>
 </Layout>
+
+<script>
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
+  
+  let slideshowInterval;
+  
+  const lightbox = new PhotoSwipeLightbox({
+    gallery: '#play-gallery',
+    children: 'a',
+    pswpModule: () => import('photoswipe'),
+    showHideAnimationType: 'zoom',
+    bgOpacity: 0.95,
+  });
+
+  lightbox.on('uiRegister', function() {
+    // 1. Download Button
+    lightbox.pswp.ui.registerElement({
+      name: 'download-button',
+      order: 10,
+      isButton: true,
+      tagName: 'a',
+      html: {
+        isCustomSVG: true,
+        inner: '<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 15.8l5 5.2 5-5.2ZM10 13.3a2 2 0 0 1-2-2V4.7c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v6.6a2 2 0 0 1-2 2H10Z" fill="currentColor"/>',
+        outlineID: 'pswp__icn-download'
+      },
+      onInit: (el, pswp) => {
+        el.setAttribute('download', '');
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener');
+        el.setAttribute('title', 'Bild herunterladen');
+        pswp.on('change', () => {
+          el.href = pswp.currSlide.data.src;
+        });
+      }
+    });
+
+    // 2. Play/Pause Button
+    lightbox.pswp.ui.registerElement({
+      name: 'play-pause-button',
+      order: 9,
+      isButton: true,
+      html: '<svg aria-hidden="true" class="pswp__icn pswp__icn-play" viewBox="0 0 32 32" width="32" height="32"><path d="M10 6l16 10-16 10z" fill="currentColor"/></svg><svg aria-hidden="true" class="pswp__icn pswp__icn-pause" viewBox="0 0 32 32" width="32" height="32" style="display:none"><path d="M8 6h6v20H8zM18 6h6v20h-6z" fill="currentColor"/></svg>',
+      onClick: (event, el, pswp) => {
+        if (slideshowInterval) {
+          clearInterval(slideshowInterval);
+          slideshowInterval = null;
+          el.querySelector('.pswp__icn-play').style.display = 'block';
+          el.querySelector('.pswp__icn-pause').style.display = 'none';
+        } else {
+          slideshowInterval = setInterval(() => {
+            pswp.next();
+          }, 3000);
+          el.querySelector('.pswp__icn-play').style.display = 'none';
+          el.querySelector('.pswp__icn-pause').style.display = 'block';
+        }
+      }
+    });
+  });
+
+  // Cleanup on close
+  lightbox.on('close', () => {
+    if (slideshowInterval) {
+      clearInterval(slideshowInterval);
+      slideshowInterval = null;
+    }
+  });
+
+  lightbox.init();
+</script>
 
 <style>
   .back-link {
@@ -78,13 +224,57 @@ const { play } = Astro.props;
     line-height: 1.8;
   }
 
-  .gallery-placeholder {
+  .gallery {
     margin-top: 3rem;
-    padding: 3rem;
-    background-color: var(--bg-color);
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+  }
+
+  .gallery h3 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+
+  .grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .gallery-item {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
     border-radius: var(--radius-md);
-    text-align: center;
-    color: var(--text-muted);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+  }
+
+  .gallery-item:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-green);
+    box-shadow: 0 4px 20px rgba(143, 194, 56, 0.2);
+  }
+
+  .gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  :global(.pswp) {
+    --pswp-bg: rgba(10, 10, 10, 0.98);
+    --pswp-placeholder-bg: #1a1a1a;
+  }
+
+  :global(.pswp__button--download-button), 
+  :global(.pswp__button--play-pause-button) {
+    opacity: 0.75;
+  }
+
+  :global(.pswp__button--download-button:hover),
+  :global(.pswp__button--play-pause-button:hover) {
+    opacity: 1;
+    color: var(--accent-green);
   }
 </style>

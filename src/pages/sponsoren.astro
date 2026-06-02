@@ -1,33 +1,44 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import directus from '../lib/directus';
+import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
-// Dummy data
-const sponsors = [
-  { name: "Landgasthof Froschauer", link: "#" },
-  { name: "Berggasthof Nell", link: "#" },
-  { name: "Eigruberhof (Fam. Brandacher)", link: "#" },
-  { name: "Schafkäse Spirs (Fam. Bramberger)", link: "#" },
-  { name: "Steyr Arms", link: "#" },
-  { name: "FAATZ", link: "#" },
-  { name: "RM Installationen (Richard Mayr)", link: "#" },
-  { name: "Kremstaler Veranstaltungstechnik", link: "#" },
-  { name: "Sparkasse OÖ", link: "#" },
-  { name: "Raiffeisenbank Region Steyr", link: "#" },
-];
+const sponsors = await directus.request(
+  readItems('sponsoren', {
+    fields: ['id', 'unternehmen', 'link', 'bild.*'],
+    sort: ['unternehmen']
+  })
+);
+
+const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 ---
 
 <Layout title="Sponsoren">
   <div class="container page-header">
     <h1>Unsere Sponsoren</h1>
-    <p class="subtitle">Wir bedanken uns herzlich für die Unterstützung bei unseren Partnern.</p>
+    <p class="subtitle">Vielen Dank für die Unterstützung unserer Theatergruppe.</p>
   </div>
 
-  <section class="container sponsors-section">
-    <div class="grid sponsor-grid">
+  <section class="container sponsoren-section">
+    <div class="grid sponsoren-grid">
       {sponsors.map(sponsor => (
-        <a href={sponsor.link} target="_blank" rel="noopener noreferrer" class="glass-panel sponsor-card">
+        <a href={sponsor.link || '#'} target="_blank" rel="noopener noreferrer" class={`glass-panel sponsor-card ${!sponsor.link ? 'no-link' : ''}`}>
           <div class="sponsor-logo-placeholder">
-            <span>{sponsor.name}</span>
+            {sponsor.bild ? (
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${sponsor.bild.id}`} 
+                alt={sponsor.unternehmen}
+                width={400}
+                height={Math.round(400 * (sponsor.bild.height / sponsor.bild.width))}
+                format="webp"
+              />
+            ) : (
+              <div class="no-logo">Kein Logo verfügbar</div>
+            )}
+          </div>
+          <div class="sponsor-info">
+            <h3>{sponsor.unternehmen}</h3>
           </div>
         </a>
       ))}
@@ -36,46 +47,93 @@ const sponsors = [
 </Layout>
 
 <style>
+  .page-header {
+    margin-bottom: 3rem;
+  }
+
   .subtitle {
     color: var(--text-muted);
     font-size: 1.2rem;
+    max-width: 600px;
+    margin: 1rem auto;
   }
 
-  .sponsors-section {
-    margin-bottom: 6rem;
+  .sponsoren-section {
+    margin-bottom: 5rem;
   }
 
-  .sponsor-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  .sponsoren-grid {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-content: center;
     gap: 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
   }
 
   .sponsor-card {
-    display: block;
-    aspect-ratio: 4/3;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.5rem;
     text-align: center;
+    overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    height: 100%;
   }
 
-  .sponsor-card:hover {
+  .sponsor-card:hover:not(.no-link) {
     transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(34, 197, 94, 0.15); /* Greenish glow */
-    border-color: rgba(34, 197, 94, 0.5);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+    border-color: var(--accent-green);
+  }
+
+  .no-link {
+    cursor: default;
   }
 
   .sponsor-logo-placeholder {
-    width: 100%;
-    height: 100%;
-    background-color: var(--bg-color-light);
-    border-radius: var(--radius-md);
+    height: 180px;
+    background-color: #fff; /* Logos often have white backgrounds */
+    padding: 1.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--text-muted);
-    font-weight: 500;
+    overflow: hidden;
+  }
+
+  .sponsor-logo-placeholder img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  .no-logo {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    font-size: 0.8rem;
+  }
+
+  .sponsor-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color-light);
+  }
+
+  .sponsor-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--text-color);
+  }
+
+  .sponsor-card:hover .sponsor-info h3 {
+    color: var(--accent-green);
   }
 </style>

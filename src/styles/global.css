@@ -99,13 +99,16 @@ a:hover {
 }
 
 .page-header {
-  margin: 2rem 0 1.5rem;
+  margin: 2rem auto 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
 }
 
 @media (min-width: 768px) {
   .page-header {
-    margin: 4rem 0 2rem;
+    margin: 4rem auto 2rem;
   }
 }
 
