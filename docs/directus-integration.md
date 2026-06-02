@@ -42,6 +42,13 @@ Personenverzeichnis der Theatergruppe.
 - **aktiver_theatermensch**: Boolean (steuert die Anzeige auf der Mitgliederseite)
 - **vorstandsmitglied**: Boolean (kennzeichnet Mitglieder für die Vorstands-Sektion)
 
+### `sponsoren` (Sponsoren)
+Verzeichnis aller Unterstützer und Partner.
+- **id**: UUID
+- **unternehmen**: Name des Unternehmens (Pflichtfeld)
+- **link**: URL zur Webseite des Sponsors
+- **bild**: Logo des Unternehmens (Relation zu `directus_files`)
+
 ### `stuecke_files` (Junction-Tabelle)
 Hilfstabelle für die Bildergalerie der Stücke.
 - Ermöglicht manuelle Sortierung der Fotos innerhalb eines Stücks.
