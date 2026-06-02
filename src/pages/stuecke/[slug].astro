@@ -41,13 +41,15 @@ const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0
         const optimized = await getImage({
           src: remoteUrl,
           width: 1600,
-          height: 1200,
+          inferSize: true,
           format: 'webp'
         });
         
         return {
-          large: optimized.src,
-          thumbnail: remoteUrl, // Wird von der Image Komponente unten optimiert
+          src: optimized.src,
+          width: optimized.attributes.width,
+          height: optimized.attributes.height,
+          thumbnail: remoteUrl,
           id: item.directus_files_id
         };
       })
@@ -81,9 +83,9 @@ const filteredGallery = galleryImages.filter(img => img !== null);
           <div class="grid-3 pswp-gallery" id="play-gallery">
             {filteredGallery.map((img, index) => (
               <a 
-                href={img.large}
-                data-pswp-width="1600"
-                data-pswp-height="1200"
+                href={img.src}
+                data-pswp-width={img.width}
+                data-pswp-height={img.height}
                 target="_blank"
                 class="gallery-item"
               >
