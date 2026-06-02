@@ -82,6 +82,13 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
     max-width: 360px;
     margin: 0 auto;
     width: 100%;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  }
+
+  .play-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+    border-color: var(--accent-green);
   }
 
   .play-poster-placeholder {
@@ -113,7 +120,7 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
   }
 
   .play-year {
-    color: var(--accent-green);
+    color: var(--accent-gold);
     font-size: 0.9rem;
     margin: 0;
   }
