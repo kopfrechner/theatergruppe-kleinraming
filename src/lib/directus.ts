@@ -9,6 +9,7 @@ interface Stueck {
   flyer?: string;
   titelfoto?: string;
   foto_gallerie?: any[];
+  spieler?: any[];
 }
 
 interface Theatermensch {
