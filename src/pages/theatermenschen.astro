@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import directus from '../lib/directus';
 import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
 const members = await directus.request(
   readItems('theatermenschen', {
@@ -31,9 +32,12 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
         <article class="glass-panel member-card board-card">
           <div class="member-photo-placeholder">
             {member.foto ? (
-              <img 
-                src={`${DIRECTUS_URL}/assets/${member.foto}?width=300&height=400&fit=cover`} 
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${member.foto}`} 
                 alt={member.name}
+                width={240}
+                height={320}
+                format="webp"
               />
             ) : (
               <div class="no-photo">Kein Foto verfügbar</div>
@@ -55,9 +59,12 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
         <article class="glass-panel member-card">
           <div class="member-photo-placeholder">
             {member.foto ? (
-              <img 
-                src={`${DIRECTUS_URL}/assets/${member.foto}?width=300&height=400&fit=cover`} 
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${member.foto}`} 
                 alt={member.name}
+                width={240}
+                height={320}
+                format="webp"
               />
             ) : (
               <div class="no-photo">Kein Foto verfügbar</div>

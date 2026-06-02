@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import directus from '../../lib/directus';
 import { readItems } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
   const stuecke = await directus.request(
@@ -44,10 +45,13 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
         <div class="gallery">
           <h3>Galerie</h3>
           <div class="grid-3">
-            {stueck.foto_gallerie.map(item => (
-              <img 
-                src={`${DIRECTUS_URL}/assets/${item.directus_files_id}?width=800&height=600&fit=cover`} 
-                alt={stueck.titel} 
+            {stueck.foto_gallerie.map((item, index) => item.directus_files_id && (
+              <Image 
+                src={`${DIRECTUS_URL}/assets/${item.directus_files_id}`} 
+                alt={`${stueck.titel} - Galeriebild ${index + 1}`} 
+                width={800}
+                height={600}
+                format="webp"
               />
             ))}
           </div>
