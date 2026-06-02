@@ -105,8 +105,31 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
           </section>
           </Layout>
 
+          <script>
+          // Handle touch gestures for funny photos on mobile
+          const cards = document.querySelectorAll('.member-card.has-funny-photo');
+
+          cards.forEach(card => {
+            // Show funny photo on touch start (including while scrolling/dragging)
+            card.addEventListener('touchstart', () => {
+              card.classList.add('is-touching');
+            }, { passive: true });
+
+            // Revert to normal photo on release
+            card.addEventListener('touchend', () => {
+              card.classList.remove('is-touching');
+            }, { passive: true });
+
+            // Ensure it reverts if the touch is cancelled (e.g. system dialog)
+            card.addEventListener('touchcancel', () => {
+              card.classList.remove('is-touching');
+            }, { passive: true });
+          });
+          </script>
+
           <style>
           .page-header {
+
           margin-bottom: 3rem;
           }
 
@@ -144,7 +167,11 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
           border: 1px solid rgba(143, 194, 56, 0.3);
           }
 
-          .member-card:hover {
+          .member-card.has-funny-photo {
+    /* Cursor stays default */
+  }
+
+  .member-card:hover {
           transform: translateY(-5px);
           box-shadow: 0 10px 20px rgba(0,0,0,0.4);
           border-color: var(--accent-green);
@@ -178,13 +205,15 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
           opacity: 0;
           }
 
-          .member-card.has-funny-photo:hover .photo-main {
-          opacity: 0;
+          .member-card.has-funny-photo:hover .photo-main,
+          .member-card.has-funny-photo.is-touching .photo-main {
+            opacity: 0;
           }
 
-          .member-card.has-funny-photo:hover .photo-funny {
-          opacity: 1;
-          z-index: 3;
+          .member-card.has-funny-photo:hover .photo-funny,
+          .member-card.has-funny-photo.is-touching .photo-funny {
+            opacity: 1;
+            z-index: 3;
           }
 
           .no-photo {
