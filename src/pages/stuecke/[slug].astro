@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import directus from '../../lib/directus';
 import { readItems } from '@directus/sdk';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import 'photoswipe/style.css';
 
 export async function getStaticPaths() {
@@ -22,6 +22,33 @@ export async function getStaticPaths() {
 
 const { stueck } = Astro.props;
 const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+
+// Vorbereitung der optimierten Galerie-Bilder (Großansicht) für PhotoSwipe
+const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0 
+  ? await Promise.all(
+      stueck.foto_gallerie.map(async (item) => {
+        if (!item.directus_files_id) return null;
+        
+        const remoteUrl = `${DIRECTUS_URL}/assets/${item.directus_files_id}`;
+        
+        // Generiere optimiertes lokales Asset für die Großansicht
+        const optimized = await getImage({
+          src: remoteUrl,
+          width: 1600,
+          height: 1200,
+          format: 'webp'
+        });
+        
+        return {
+          large: optimized.src,
+          thumbnail: remoteUrl, // Wird von der Image Komponente unten optimiert
+          id: item.directus_files_id
+        };
+      })
+    )
+  : [];
+
+const filteredGallery = galleryImages.filter(img => img !== null);
 ---
 
 <Layout title={stueck.titel}>
@@ -42,20 +69,20 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
         )}
       </div>
       
-      {stueck.foto_gallerie && stueck.foto_gallerie.length > 0 && (
+      {filteredGallery.length > 0 && (
         <div class="gallery">
           <h3>Galerie</h3>
           <div class="grid-3 pswp-gallery" id="play-gallery">
-            {stueck.foto_gallerie.map((item, index) => item.directus_files_id && (
+            {filteredGallery.map((img, index) => (
               <a 
-                href={`${DIRECTUS_URL}/assets/${item.directus_files_id}?width=1600&quality=80`}
+                href={img.large}
                 data-pswp-width="1600"
                 data-pswp-height="1200"
                 target="_blank"
                 class="gallery-item"
               >
                 <Image 
-                  src={`${DIRECTUS_URL}/assets/${item.directus_files_id}`} 
+                  src={img.thumbnail} 
                   alt={`${stueck.titel} - Galeriebild ${index + 1}`} 
                   width={400}
                   height={300}
@@ -77,12 +104,10 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
     gallery: '#play-gallery',
     children: 'a',
     pswpModule: () => import('photoswipe'),
-    // Animation settings for that "Google Photos" feel
     showHideAnimationType: 'zoom',
     bgOpacity: 0.9,
   });
 
-  // Add Download Button
   lightbox.on('uiRegister', function() {
     lightbox.pswp.ui.registerElement({
       name: 'download-button',
@@ -180,7 +205,6 @@ const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
     display: block;
   }
 
-  /* PhotoSwipe Customization */
   :global(.pswp) {
     --pswp-bg: rgba(10, 10, 10, 0.95);
     --pswp-placeholder-bg: #1a1a1a;
