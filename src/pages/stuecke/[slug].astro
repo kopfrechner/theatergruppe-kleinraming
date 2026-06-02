@@ -10,6 +10,12 @@ export async function getStaticPaths() {
     readItems('stuecke', {
       filter: {
         status: { _eq: 'published' }
+      },
+      fields: ['*', 'foto_gallerie.*'],
+      deep: {
+        foto_gallerie: {
+          _sort: ['sort']
+        }
       }
     })
   );
