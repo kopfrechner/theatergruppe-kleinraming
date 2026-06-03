@@ -9,7 +9,10 @@ interface Props {
 
 const { title, description = "Die Theatergruppe Kleinraming präsentiert." } = Astro.props;
 const pathname = new URL(Astro.request.url).pathname;
-const currentPath = pathname.slice(1); // remove leading slash
+// Remove trailing slash for comparison (except for home page)
+const normalizedPath = pathname.endsWith('/') && pathname.length > 1 
+  ? pathname.slice(0, -1) 
+  : pathname;
 ---
 
 <!doctype html>
@@ -32,11 +35,11 @@ const currentPath = pathname.slice(1); // remove leading slash
           <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
         </button>
         <nav class="main-nav" id="main-nav">
-          <a href="/" class={pathname === "/" ? "active" : ""}>Start</a>
-          <a href="/tickets" class={pathname === "/tickets" ? "active" : ""}>Tickets</a>
-          <a href="/theatermenschen" class={pathname === "/theatermenschen" ? "active" : ""}>Theatermenschen</a>
-          <a href="/stuecke" class={pathname.startsWith("/stuecke") ? "active" : ""}>Stücke</a>
-          <a href="/sponsoren" class={pathname === "/sponsoren" ? "active" : ""}>Sponsoren</a>
+          <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
+          <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
+          <a href="/theatermenschen" class={normalizedPath === "/theatermenschen" ? "active" : ""}>Theatermenschen</a>
+          <a href="/stuecke" class={normalizedPath.startsWith("/stuecke") ? "active" : ""}>Stücke</a>
+          <a href="/sponsoren" class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a>
         </nav>
       </div>
     </header>
