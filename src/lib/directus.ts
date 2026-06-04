@@ -31,10 +31,28 @@ interface Sponsor {
   bild?: string;
 }
 
+interface HomepageConfig {
+  id: string;
+  emotionen_bild: string | any;
+  impressionen_galerie: any[];
+}
+
+interface AktuellesStueck {
+  id: string;
+  aktiv: boolean;
+  titel: string;
+  kurzbeschreibung: string;
+  termine: string[];
+  ticketlotse_link: string;
+  verknuepftes_stueck?: string | any;
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
+  homepage_config: HomepageConfig;
+  aktuelles_stueck: AktuellesStueck;
 }
 
 const client = createDirectus<Schema>('https://cms.kopfarbeit.dev').with(rest());

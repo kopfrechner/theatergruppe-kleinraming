@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
+import directus from '../lib/directus';
+import { readItem } from '@directus/sdk';
 
 interface Props {
   title: string;
@@ -13,6 +15,10 @@ const pathname = new URL(Astro.request.url).pathname;
 const normalizedPath = pathname.endsWith('/') && pathname.length > 1 
   ? pathname.slice(0, -1) 
   : pathname;
+
+// Fetch current play status for the menu
+const currentPlay = await directus.request(readItem('aktuelles_stueck', { fields: ['aktiv'] })).catch(() => ({ aktiv: false }));
+const isTicketsActive = currentPlay?.aktiv;
 ---
 
 <!doctype html>
@@ -36,7 +42,9 @@ const normalizedPath = pathname.endsWith('/') && pathname.length > 1
         </button>
         <nav class="main-nav" id="main-nav">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
-          <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
+          {isTicketsActive && (
+            <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
+          )}
           <a href="/theatermenschen" class={normalizedPath === "/theatermenschen" ? "active" : ""}>Theatermenschen</a>
           <a href="/stuecke" class={normalizedPath.startsWith("/stuecke") ? "active" : ""}>Stücke</a>
           <a href="/sponsoren" class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a>

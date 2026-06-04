@@ -1,5 +1,74 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import directus from '../lib/directus';
+import { readItems, readItem } from '@directus/sdk';
+
+const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+
+// 1. Fetch Homepage Config
+const homepageConfig = await directus.request(
+  readItem('homepage_config', {
+    fields: ['emotionen_bild', 'impressionen_galerie.*']
+  })
+).catch(() => null);
+
+// 2. Fetch Aktuelles Stück
+const currentPlay = await directus.request(
+  readItem('aktuelles_stueck', {
+    fields: ['aktiv', 'titel', 'kurzbeschreibung', 'termine', 'ticketlotse_link']
+  })
+).catch(() => ({ aktiv: false }));
+
+// 3. Fallback logic if not active
+let highlightPlay: any = null;
+if (!currentPlay?.aktiv) {
+  const latestPlays = await directus.request(
+    readItems('stuecke', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['-auffuehrung_im_jahr'],
+      limit: 1
+    })
+  );
+  if (latestPlays.length > 0) {
+    const play = latestPlays[0];
+    // Strip HTML tags for the preview text
+    const cleanSynopsis = (play.synopsis || '').replace(/<[^>]*>?/gm, '');
+    highlightPlay = {
+      isHistorical: true,
+      titel: play.titel,
+      text: cleanSynopsis.length > 180 ? cleanSynopsis.substring(0, 180).trim() + '...' : cleanSynopsis,
+      link: `/stuecke/${play.id}`,
+      buttonText: 'Details ansehen',
+      status: 'Rückblick'
+    };
+  }
+} else {
+  highlightPlay = {
+    isHistorical: false,
+    titel: currentPlay.titel,
+    text: currentPlay.kurzbeschreibung,
+    link: currentPlay.ticketlotse_link || '/tickets',
+    buttonText: 'Tickets sichern',
+    status: 'Nächste Premiere',
+    termine: currentPlay.termine
+  };
+}
+
+// Prepare impression images with fallbacks
+const defaultImpressions = [
+  'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600',
+  'https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=600',
+  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=600',
+  'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600'
+];
+
+const impressionImages = (homepageConfig?.impressionen_galerie && homepageConfig.impressionen_galerie.length >= 4)
+  ? homepageConfig.impressionen_galerie.slice(0, 4).map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
+  : defaultImpressions;
+
+const emotionImage = homepageConfig?.emotionen_bild 
+  ? `${DIRECTUS_URL}/assets/${homepageConfig.emotionen_bild}`
+  : 'https://images.unsplash.com/photo-1503095396549-807759c4c74a?auto=format&fit=crop&q=80&w=800';
 ---
 
 <Layout title="Startseite">
@@ -8,26 +77,36 @@ import Layout from '../layouts/Layout.astro';
       <h1>Willkommen bei der<br/><span class="text-green">Theatergruppe Kleinraming</span></h1>
       <p class="hero-subtitle">Leidenschaft für die Bühne, Begeisterung für das Publikum.</p>
       <div class="hero-actions">
-        <a href="/tickets" class="btn">Tickets kaufen</a>
-        <a href="/stuecke" class="btn btn-outline">Letzte Stücke ansehen</a>
+        {currentPlay?.aktiv && <a href="/tickets" class="btn">Tickets kaufen</a>}
+        <a href="/stuecke" class="btn btn-outline">Alle Stücke ansehen</a>
       </div>
     </div>
   </section>
 
   <section class="container bento-section">
     <div class="bento-grid">
-      <!-- Tile A: Next Play -->
-      <div class="glass-panel bento-tile tile-next-play">
-        <span class="play-status">Nächste Premiere</span>
-        <h2>Eine Sprachbox namens Alessa!</h2>
-        <p>
-          Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...
-        </p>
-        <a href="/tickets" class="btn">Tickets sichern</a>
-      </div>
+      <!-- Tile A: Highlight Play (Dynamic) -->
+      {highlightPlay && (
+        <div class="glass-panel bento-tile tile-next-play">
+          <span class="play-status">{highlightPlay.status}</span>
+          <h2>{highlightPlay.titel}</h2>
+          <p>{highlightPlay.text}</p>
+          
+          {highlightPlay.termine && highlightPlay.termine.length > 0 && (
+            <div class="play-dates">
+              <strong>Termine:</strong>
+              <ul>
+                {highlightPlay.termine.map((date: string) => <li>{date}</li>)}
+              </ul>
+            </div>
+          )}
+
+          <a href={highlightPlay.link} class="btn">{highlightPlay.buttonText}</a>
+        </div>
+      )}
 
       <!-- Tile B: Backstage Impression -->
-      <div class="glass-panel bento-tile tile-image" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=800');">
+      <div class="glass-panel bento-tile tile-image" style={`background-image: url('${emotionImage}');`}>
         <div class="tile-overlay">
           <h3>Emotionen pur</h3>
         </div>
@@ -54,14 +133,10 @@ import Layout from '../layouts/Layout.astro';
       <h2>Impressionen</h2>
     </div>
     <div class="filmstrip-grid">
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
+      {impressionImages.map((imgUrl: string) => (
+        <div class="filmstrip-item" style={`background-image: url('${imgUrl}'); background-size: cover; background-position: center;`}>
+        </div>
+      ))}
     </div>
   </section>
 </Layout>
@@ -160,6 +235,27 @@ import Layout from '../layouts/Layout.astro';
     margin-bottom: 1.5rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+  }
+
+  .play-dates {
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .play-dates ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .play-dates li {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: var(--text-main);
   }
 
   .tile-overlay {
