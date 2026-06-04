@@ -11,7 +11,7 @@ const members = await directus.request(
       aktiver_theatermensch: { _eq: true }
     },
     fields: ['*', 'foto.*', 'foto_funny.*'],
-    sort: ['name']
+    sort: ['sort']
   })
 );
 
