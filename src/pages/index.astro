@@ -13,6 +13,57 @@ import Layout from '../layouts/Layout.astro';
       </div>
     </div>
   </section>
+
+  <section class="container bento-section">
+    <div class="bento-grid">
+      <!-- Tile A: Next Play -->
+      <div class="glass-panel bento-tile tile-next-play">
+        <span class="play-status">Nächste Premiere</span>
+        <h2>Eine Sprachbox namens Alessa!</h2>
+        <p>
+          Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...
+        </p>
+        <a href="/tickets" class="btn">Tickets sichern</a>
+      </div>
+
+      <!-- Tile B: Backstage Impression -->
+      <div class="glass-panel bento-tile tile-image" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=800');">
+        <div class="tile-overlay">
+          <h3>Emotionen pur</h3>
+        </div>
+      </div>
+
+      <!-- Tile C: Tradition -->
+      <div class="glass-panel bento-tile tile-stat">
+        <span class="stat-number">1906</span>
+        <span class="stat-label">Gründungsjahr</span>
+        <p style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;">Über 100 Jahre Tradition in Kleinraming.</p>
+      </div>
+
+      <!-- Tile D: Actors Link -->
+      <div class="glass-panel bento-tile tile-actors">
+        <h3>Unsere Theatermenschen</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Das Herzstück unseres Vereins – vor und hinter der Bühne.</p>
+        <a href="/theatermenschen" class="btn btn-outline">Zum Ensemble</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container filmstrip-section">
+    <div class="filmstrip-header">
+      <h2>Impressionen</h2>
+    </div>
+    <div class="filmstrip-grid">
+      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+      </div>
+      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+      </div>
+      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+      </div>
+      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <style>
@@ -21,7 +72,176 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     align-items: center;
     background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 230, 200, 0.05);
+    margin-bottom: 4rem;
+  }
+
+  /* Bento Grid */
+  .bento-section {
+    margin-bottom: 6rem;
+  }
+
+  .bento-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .bento-tile {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+    min-height: 250px; /* Default height for mobile */
+  }
+
+  .tile-image {
+    min-height: 300px; /* Larger height for image on mobile */
+    padding: 0;
+    background-size: cover;
+    background-position: center;
+  }
+
+  @media (min-width: 768px) {
+    .bento-grid {
+      grid-template-columns: 1.5fr 1fr;
+      grid-template-rows: repeat(3, 200px);
+    }
+
+    .tile-next-play {
+      grid-column: 1;
+      grid-row: span 3;
+    }
+
+    .bento-tile {
+      padding: 2.5rem;
+      min-height: 0;
+    }
+
+    .tile-image {
+      min-height: 0;
+    }
+  }
+
+  .bento-tile:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-green);
+  }
+
+  .bento-tile .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 1.5rem;
+  }
+
+  .tile-next-play h2 {
+    color: var(--accent-gold);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .tile-next-play p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+  }
+
+  .play-status {
+    display: inline-block;
+    background: rgba(143, 194, 56, 0.15);
+    color: var(--accent-green);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tile-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    display: flex;
+    align-items: flex-end;
+    padding: 1.5rem;
+  }
+
+  .tile-overlay h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #fff;
+  }
+
+  .tile-stat {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .stat-number {
+    font-family: var(--font-heading);
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--accent-gold);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .stat-label {
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.9rem;
+  }
+
+  .tile-actors h3 {
+    color: var(--accent-green);
+  }
+
+  /* Filmstrip */
+  .filmstrip-section {
+    margin-bottom: 8rem;
+  }
+
+  .filmstrip-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .filmstrip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 992px) {
+    .filmstrip-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .filmstrip-item {
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-color-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .filmstrip-item div {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--bg-color-light), #222);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.1);
   }
 
   .hero-content {
