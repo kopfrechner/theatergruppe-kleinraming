@@ -22,8 +22,6 @@ const highlightPlay = {
   termine: ['24. Mai 2027', '26. Mai 2027']
 };
 
-const currentPlay = { aktiv: true }; // Temporary static state
-
 // Prepare impression images from CMS
 const impressionImages = startseite?.impressionen_gallerie 
   ? startseite.impressionen_gallerie.map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
@@ -42,7 +40,7 @@ const emotionTitel = startseite?.emotionen_titel || '';
       <h1>Willkommen bei der<br/><span class="text-green">Theatergruppe Kleinraming</span></h1>
       <p class="hero-subtitle">Leidenschaft für die Bühne, Begeisterung für das Publikum.</p>
       <div class="hero-actions">
-        {currentPlay?.aktiv && <a href="/tickets" class="btn">Tickets kaufen</a>}
+        <a href="/tickets" class="btn">Tickets kaufen</a>
         <a href="/stuecke" class="btn btn-outline">Alle Stücke ansehen</a>
       </div>
     </div>

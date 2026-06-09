@@ -1,8 +1,6 @@
 ---
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
-import directus from '../lib/directus';
-import { readItem } from '@directus/sdk';
 
 interface Props {
   title: string;
@@ -15,8 +13,6 @@ const pathname = new URL(Astro.request.url).pathname;
 const normalizedPath = pathname.endsWith('/') && pathname.length > 1 
   ? pathname.slice(0, -1) 
   : pathname;
-
-const isTicketsActive = true; // Temporary static value
 ---
 
 <!doctype html>
@@ -40,9 +36,7 @@ const isTicketsActive = true; // Temporary static value
         </button>
         <nav class="main-nav" id="main-nav">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
-          {isTicketsActive && (
-            <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
-          )}
+          <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
           <a href="/theatermenschen" class={normalizedPath === "/theatermenschen" ? "active" : ""}>Theatermenschen</a>
           <a href="/stuecke" class={normalizedPath.startsWith("/stuecke") ? "active" : ""}>Stücke</a>
           <a href="/sponsoren" class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a>
