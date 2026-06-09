@@ -58,6 +58,11 @@ interface TicketPromotion {
   preis_jugendliche?: string;
   google_maps_link?: string;
   crew?: any[];
+  hauptfoto?: any;
+  foto_szene_1?: any;
+  foto_szene_2?: any;
+  foto_szene_3?: any;
+  foto_szene_4?: any;
 }
 
 interface Schema {
