@@ -67,7 +67,9 @@ a:hover {
 }
 
 .btn {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background-color: var(--accent-green);
   color: #000;
   font-family: var(--font-heading);
@@ -75,15 +77,17 @@ a:hover {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   text-decoration: none;
-  border: none;
+  border: 2px solid transparent;
   cursor: pointer;
   transition: var(--transition);
+  line-height: 1;
 }
 
 .btn:hover {
   background-color: var(--accent-green-hover);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+  border-color: transparent;
 }
 
 .btn-outline {

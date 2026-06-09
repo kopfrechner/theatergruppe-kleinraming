@@ -38,11 +38,39 @@ interface Startseite {
   impressionen_gallerie: any[];
 }
 
+interface TicketPromotion {
+  id: string;
+  aktiv: boolean;
+  titel: string;
+  kurzbeschreibung: string;
+  ticketlotse_link: string;
+  spielort?: string;
+  telefon_reservierung?: string;
+  termin_1?: string;
+  termin_2?: string;
+  termin_3?: string;
+  termin_4?: string;
+  termin_5?: string;
+  termin_6?: string;
+  autor?: string;
+  genre?: string;
+  preis_erwachsene?: string;
+  preis_jugendliche?: string;
+  google_maps_link?: string;
+  crew?: any[];
+  hauptfoto?: any;
+  foto_szene_1?: any;
+  foto_szene_2?: any;
+  foto_szene_3?: any;
+  foto_szene_4?: any;
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
   startseite: Startseite;
+  ticket_promotion: TicketPromotion;
 }
 
 export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
