@@ -43,8 +43,21 @@ interface TicketPromotion {
   aktiv: boolean;
   titel: string;
   kurzbeschreibung: string;
-  termine: string;
   ticketlotse_link: string;
+  spielort?: string;
+  telefon_reservierung?: string;
+  termin_1?: string;
+  termin_2?: string;
+  termin_3?: string;
+  termin_4?: string;
+  termin_5?: string;
+  termin_6?: string;
+  autor?: string;
+  genre?: string;
+  preis_erwachsene?: string;
+  preis_jugendliche?: string;
+  google_maps_link?: string;
+  crew?: any[];
 }
 
 interface Schema {

@@ -8,8 +8,8 @@ const ticketPromo = await directus.request(
   readSingleton('ticket_promotion', {
     fields: [
       '*',
-      'spieler.theatermenschen_id.*',
-      'spieler.rolle'
+      'crew.theatermenschen_id.*',
+      'crew.rolle'
     ]
   })
 ).catch(() => null);
@@ -19,17 +19,36 @@ if (!ticketPromo || !ticketPromo.aktiv) {
   return Astro.redirect('/');
 }
 
-// Parse multi-line fields into arrays for easier rendering
-const termineArray = ticketPromo.termine 
-  ? ticketPromo.termine.split('\n').map(t => t.trim()).filter(t => t.length > 0) 
-  : [];
+// Format dates from termin_1..6
+const locale = 'de-AT';
+const dateFormat: Intl.DateTimeFormatOptions = { 
+  day: '2-digit', 
+  month: '2-digit', 
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit'
+};
 
-const preiseArray = ticketPromo.eintrittspreise
-  ? ticketPromo.eintrittspreise.split('\n').map(t => t.trim()).filter(t => t.length > 0)
-  : [];
+const termineArray = [
+  ticketPromo.termin_1,
+  ticketPromo.termin_2,
+  ticketPromo.termin_3,
+  ticketPromo.termin_4,
+  ticketPromo.termin_5,
+  ticketPromo.termin_6
+]
+  .filter(t => t)
+  .map(t => new Date(t).toLocaleString(locale, dateFormat) + ' Uhr');
 
-// Filter valid cast members
-const castMembers = ticketPromo.spieler
+const preiseArray = [
+  ticketPromo.preis_erwachsene ? `Erwachsene: ${ticketPromo.preis_erwachsene}` : null,
+  ticketPromo.preis_jugendliche ? `Kinder/Jugendliche: ${ticketPromo.preis_jugendliche}` : null
+].filter(p => p);
+
+const autorGenre = [ticketPromo.autor, ticketPromo.genre].filter(x => x).join(' / ');
+
+// Filter valid cast members from 'crew'
+const castMembers = ticketPromo.crew
   ?.filter((s: any) => s.theatermenschen_id)
   .map((s: any) => ({
     name: s.theatermenschen_id.name,
@@ -42,7 +61,7 @@ const castMembers = ticketPromo.spieler
   <div class="container page-header">
     <span class="play-status">Nächste Premiere</span>
     <h1 class="flyer-title">{ticketPromo.titel}</h1>
-    {ticketPromo.autor_genre && <p class="flyer-subtitle">{ticketPromo.autor_genre}</p>}
+    {autorGenre && <p class="flyer-subtitle">{autorGenre}</p>}
   </div>
 
   <section class="container flyer-layout">
