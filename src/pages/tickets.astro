@@ -28,6 +28,7 @@ const ticketPromo = await directus.request(
       'crew.theatermenschen_id.*',
       'crew.theatermenschen_id.foto.*',
       'crew.rolle',
+      'crew.rolle_beschreibung',
       'hauptfoto.*',
       'foto_szene_1.*',
       'foto_szene_2.*',
@@ -91,6 +92,7 @@ const castMembers = ticketPromo.crew
   .map((s: any) => ({
     name: s.theatermenschen_id.name,
     rolle: s.rolle,
+    rolle_beschreibung: s.rolle_beschreibung,
     foto: s.theatermenschen_id.foto
   })) || [];
 ---
@@ -145,6 +147,7 @@ const castMembers = ticketPromo.crew
                 <div class="cast-info">
                   <span class="actor-name">{member.name}</span>
                   <span class="role-name">{member.rolle}</span>
+                  {member.rolle_beschreibung && <span class="role-desc">{member.rolle_beschreibung}</span>}
                 </div>
               </div>
             ))}
@@ -396,6 +399,13 @@ const castMembers = ticketPromo.crew
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-top: 0.2rem;
+  }
+
+  .role-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.1rem;
   }
 
   /* Sticky Sidebar */
