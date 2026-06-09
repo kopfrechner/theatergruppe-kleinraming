@@ -40,7 +40,7 @@ const stuecke = await directus.request(
             <div class="play-content">
               <h2>{stueck.titel}</h2>
               <p class="play-year">{stueck.auffuehrung_im_jahr}</p>
-              <a href={`/stuecke/${stueck.id}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
+              <a href={`/stuecke/${stueck.slug || stueck.id}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
             </div>
           </article>
         ))

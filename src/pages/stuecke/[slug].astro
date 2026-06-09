@@ -24,7 +24,7 @@ export async function getStaticPaths() {
   );
 
   return stuecke.map((stueck) => ({
-    params: { slug: stueck.id },
+    params: { slug: stueck.slug || stueck.id },
     props: { stueck },
   }));
 }
@@ -47,12 +47,10 @@ const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0
           const targetWidth = Math.min(origWidth, 1600);
           
           // 3. Zielhöhe basierend auf dem originalen Seitenverhältnis berechnen
-          // Das ist entscheidend, um MissingImageDimension Fehler zu vermeiden
           const aspectRatio = origWidth / origHeight;
           const targetHeight = Math.round(targetWidth / aspectRatio);
           
           // 4. Generiere optimiertes lokales Asset
-          // Wir geben Breite UND Höhe explizit an, um Astro glücklich zu machen
           const optimized = await getImage({
             src: remoteUrl,
             width: targetWidth,
@@ -169,7 +167,6 @@ const filteredGallery = galleryImages.filter(img => img !== null);
   });
 
   lightbox.on('uiRegister', function() {
-    // 1. Download Button
     lightbox.pswp.ui.registerElement({
       name: 'download-button',
       order: 10,
@@ -191,7 +188,6 @@ const filteredGallery = galleryImages.filter(img => img !== null);
       }
     });
 
-    // 2. Play/Pause Button
     lightbox.pswp.ui.registerElement({
       name: 'play-pause-button',
       order: 9,
@@ -214,7 +210,6 @@ const filteredGallery = galleryImages.filter(img => img !== null);
     });
   });
 
-  // Cleanup on close
   lightbox.on('close', () => {
     if (slideshowInterval) {
       clearInterval(slideshowInterval);
