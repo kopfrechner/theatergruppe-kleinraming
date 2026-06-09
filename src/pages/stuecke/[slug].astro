@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import directus from '../../lib/directus';
+import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image, getImage, inferRemoteSize } from 'astro:assets';
 import 'photoswipe/style.css';
@@ -30,7 +30,6 @@ export async function getStaticPaths() {
 }
 
 const { stueck } = Astro.props;
-const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 
 // Vorbereitung der optimierten Galerie-Bilder (Großansicht) für PhotoSwipe
 const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0 

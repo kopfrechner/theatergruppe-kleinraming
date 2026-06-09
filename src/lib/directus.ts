@@ -1,4 +1,4 @@
-import { createDirectus, rest, readItems, readItem } from '@directus/sdk';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 interface Stueck {
   id: string;
@@ -31,13 +31,23 @@ interface Sponsor {
   bild?: string;
 }
 
+interface Startseite {
+  id: string;
+  emotionen_titel: string;
+  emotionen_bild: string | any;
+  impressionen_gallerie: any[];
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
+  startseite: Startseite;
 }
 
-const client = createDirectus<Schema>('https://cms.kopfarbeit.dev').with(rest());
+export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+
+const client = createDirectus<Schema>(DIRECTUS_URL).with(rest());
 
 export default client;
 export { readItems, readItem };

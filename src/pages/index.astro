@@ -1,5 +1,37 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import directus, { DIRECTUS_URL } from '../lib/directus';
+import { readItems, readSingleton } from '@directus/sdk';
+import { Image } from 'astro:assets';
+
+// 1. Fetch Startseite Config
+const startseite = await directus.request(
+  readSingleton('startseite', {
+    fields: ['emotionen_titel', 'emotionen_bild', 'impressionen_gallerie.*']
+  })
+).catch(() => null);
+
+// 2. Static highlight play for now
+const highlightPlay = {
+  isHistorical: false,
+  titel: 'Eine Sprachbox namens Alessa!',
+  text: 'Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...',
+  link: '/tickets',
+  buttonText: 'Tickets sichern',
+  status: 'Nächste Premiere',
+  termine: ['24. Mai 2027', '26. Mai 2027']
+};
+
+// Prepare impression images from CMS
+const impressionImages = startseite?.impressionen_gallerie 
+  ? startseite.impressionen_gallerie.map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
+  : [];
+
+const emotionImage = startseite?.emotionen_bild 
+  ? `${DIRECTUS_URL}/assets/${startseite.emotionen_bild}`
+  : null;
+
+const emotionTitel = startseite?.emotionen_titel || '';
 ---
 
 <Layout title="Startseite">
@@ -9,27 +41,49 @@ import Layout from '../layouts/Layout.astro';
       <p class="hero-subtitle">Leidenschaft für die Bühne, Begeisterung für das Publikum.</p>
       <div class="hero-actions">
         <a href="/tickets" class="btn">Tickets kaufen</a>
-        <a href="/stuecke" class="btn btn-outline">Letzte Stücke ansehen</a>
+        <a href="/stuecke" class="btn btn-outline">Alle Stücke ansehen</a>
       </div>
     </div>
   </section>
 
   <section class="container bento-section">
     <div class="bento-grid">
-      <!-- Tile A: Next Play -->
-      <div class="glass-panel bento-tile tile-next-play">
-        <span class="play-status">Nächste Premiere</span>
-        <h2>Eine Sprachbox namens Alessa!</h2>
-        <p>
-          Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...
-        </p>
-        <a href="/tickets" class="btn">Tickets sichern</a>
-      </div>
+      <!-- Tile A: Highlight Play (Dynamic) -->
+      {highlightPlay && (
+        <div class="glass-panel bento-tile tile-next-play">
+          <span class="play-status">{highlightPlay.status}</span>
+          <h2>{highlightPlay.titel}</h2>
+          <p>{highlightPlay.text}</p>
+          
+          {highlightPlay.termine && highlightPlay.termine.length > 0 && (
+            <div class="play-dates">
+              <strong>Termine:</strong>
+              <ul>
+                {highlightPlay.termine.map((date: string) => <li>{date}</li>)}
+              </ul>
+            </div>
+          )}
+
+          <a href={highlightPlay.link} class="btn">{highlightPlay.buttonText}</a>
+        </div>
+      )}
 
       <!-- Tile B: Backstage Impression -->
-      <div class="glass-panel bento-tile tile-image" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=800');">
+      <div class="glass-panel bento-tile tile-image">
+        {emotionImage ? (
+          <Image 
+            src={emotionImage} 
+            alt={emotionTitel}
+            width={800}
+            height={600}
+            format="webp"
+            class="tile-bg-image"
+          />
+        ) : (
+          <div class="tile-bg-image" style="background: rgba(255,255,255,0.02);"></div>
+        )}
         <div class="tile-overlay">
-          <h3>Emotionen pur</h3>
+          {emotionTitel && <h3>{emotionTitel}</h3>}
         </div>
       </div>
 
@@ -54,14 +108,17 @@ import Layout from '../layouts/Layout.astro';
       <h2>Impressionen</h2>
     </div>
     <div class="filmstrip-grid">
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
-      <div class="filmstrip-item" style="background-image: url('https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600'); background-size: cover; background-position: center;">
-      </div>
+      {impressionImages.map((imgUrl: string) => (
+        <div class="filmstrip-item">
+          <Image 
+            src={imgUrl} 
+            alt="Impression" 
+            width={600} 
+            height={450} 
+            format="webp"
+          />
+        </div>
+      ))}
     </div>
   </section>
 </Layout>
@@ -101,8 +158,8 @@ import Layout from '../layouts/Layout.astro';
   .tile-image {
     min-height: 300px; /* Larger height for image on mobile */
     padding: 0;
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
   }
 
   @media (min-width: 768px) {
@@ -162,6 +219,41 @@ import Layout from '../layouts/Layout.astro';
     letter-spacing: 0.05em;
   }
 
+  .play-dates {
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .play-dates ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .play-dates li {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: var(--text-main);
+  }
+
+  .tile-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.5s ease;
+  }
+
+  .bento-tile:hover .tile-bg-image {
+    transform: scale(1.05);
+  }
+
   .tile-overlay {
     position: absolute;
     inset: 0;
@@ -169,6 +261,7 @@ import Layout from '../layouts/Layout.astro';
     display: flex;
     align-items: flex-end;
     padding: 1.5rem;
+    z-index: 1;
   }
 
   .tile-overlay h3 {
@@ -234,14 +327,15 @@ import Layout from '../layouts/Layout.astro';
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .filmstrip-item div {
+  .filmstrip-item img {
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, var(--bg-color-light), #222);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .filmstrip-item:hover img {
+    transform: scale(1.05);
   }
 
   .hero-content {

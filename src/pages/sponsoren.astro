@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import directus from '../lib/directus';
+import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
@@ -10,8 +10,6 @@ const sponsors = await directus.request(
     sort: ['unternehmen']
   })
 );
-
-const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
 ---
 
 <Layout title="Sponsoren">
