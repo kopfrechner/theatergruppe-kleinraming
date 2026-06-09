@@ -24,23 +24,16 @@ const highlightPlay = {
 
 const currentPlay = { aktiv: true }; // Temporary static state
 
-// Prepare impression images with fallbacks
-const defaultImpressions = [
-  'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf',
-  'https://images.unsplash.com/photo-1514306191717-452ec28c7814',
-  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3',
-  'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad'
-];
-
-const impressionImages = (startseite?.impressionen_gallerie && startseite.impressionen_gallerie.length >= 4)
-  ? startseite.impressionen_gallerie.slice(0, 4).map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
-  : defaultImpressions;
+// Prepare impression images from CMS
+const impressionImages = startseite?.impressionen_gallerie 
+  ? startseite.impressionen_gallerie.map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
+  : [];
 
 const emotionImage = startseite?.emotionen_bild 
   ? `${DIRECTUS_URL}/assets/${startseite.emotionen_bild}`
-  : 'https://images.unsplash.com/photo-1503095396549-807759c4c74a';
+  : null;
 
-const emotionTitel = startseite?.emotionen_titel || 'Emotionen pur';
+const emotionTitel = startseite?.emotionen_titel || '';
 ---
 
 <Layout title="Startseite">
@@ -79,16 +72,20 @@ const emotionTitel = startseite?.emotionen_titel || 'Emotionen pur';
 
       <!-- Tile B: Backstage Impression -->
       <div class="glass-panel bento-tile tile-image">
-        <Image 
-          src={emotionImage} 
-          alt={emotionTitel}
-          width={800}
-          height={600}
-          format="webp"
-          class="tile-bg-image"
-        />
+        {emotionImage ? (
+          <Image 
+            src={emotionImage} 
+            alt={emotionTitel}
+            width={800}
+            height={600}
+            format="webp"
+            class="tile-bg-image"
+          />
+        ) : (
+          <div class="tile-bg-image" style="background: rgba(255,255,255,0.02);"></div>
+        )}
         <div class="tile-overlay">
-          <h3>{emotionTitel}</h3>
+          {emotionTitel && <h3>{emotionTitel}</h3>}
         </div>
       </div>
 
