@@ -38,11 +38,21 @@ interface Startseite {
   impressionen_gallerie: any[];
 }
 
+interface TicketPromotion {
+  id: string;
+  aktiv: boolean;
+  titel: string;
+  kurzbeschreibung: string;
+  termine: string;
+  ticketlotse_link: string;
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
   startseite: Startseite;
+  ticket_promotion: TicketPromotion;
 }
 
 export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';

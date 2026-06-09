@@ -11,16 +11,52 @@ const startseite = await directus.request(
   })
 ).catch(() => null);
 
-// 2. Static highlight play for now
-const highlightPlay = {
-  isHistorical: false,
-  titel: 'Eine Sprachbox namens Alessa!',
-  text: 'Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...',
-  link: '/tickets',
-  buttonText: 'Tickets sichern',
-  status: 'Nächste Premiere',
-  termine: ['24. Mai 2027', '26. Mai 2027']
-};
+// 2. Fetch Ticket Promotion
+const ticketPromo = await directus.request(
+  readSingleton('ticket_promotion', {
+    fields: ['aktiv', 'titel', 'kurzbeschreibung', 'termine', 'ticketlotse_link']
+  })
+).catch(() => ({ aktiv: false }));
+
+// 3. Fallback logic if not active
+let highlightPlay: any = null;
+if (!ticketPromo?.aktiv) {
+  const latestPlays = await directus.request(
+    readItems('stuecke', {
+      filter: { status: { _eq: 'published' } },
+      sort: ['-auffuehrung_im_jahr'],
+      limit: 1
+    })
+  );
+  if (latestPlays.length > 0) {
+    const play = latestPlays[0];
+    const cleanSynopsis = (play.synopsis || '').replace(/<[^>]*>?/gm, '');
+    highlightPlay = {
+      isHistorical: true,
+      titel: play.titel,
+      text: cleanSynopsis.length > 180 ? cleanSynopsis.substring(0, 180).trim() + '...' : cleanSynopsis,
+      link: `/stuecke/${play.id}`,
+      buttonText: 'Details ansehen',
+      status: 'Rückblick',
+      termine: []
+    };
+  }
+} else {
+  // Parse multiline text into array, ignore empty lines
+  const termineArray = ticketPromo.termine 
+    ? ticketPromo.termine.split('\n').map(t => t.trim()).filter(t => t.length > 0) 
+    : [];
+
+  highlightPlay = {
+    isHistorical: false,
+    titel: ticketPromo.titel,
+    text: ticketPromo.kurzbeschreibung,
+    link: ticketPromo.ticketlotse_link || '/tickets',
+    buttonText: 'Tickets sichern',
+    status: 'Nächste Premiere',
+    termine: termineArray
+  };
+}
 
 // Prepare impression images from CMS
 const impressionImages = startseite?.impressionen_gallerie 
@@ -40,7 +76,7 @@ const emotionTitel = startseite?.emotionen_titel || '';
       <h1>Willkommen bei der<br/><span class="text-green">Theatergruppe Kleinraming</span></h1>
       <p class="hero-subtitle">Leidenschaft für die Bühne, Begeisterung für das Publikum.</p>
       <div class="hero-actions">
-        <a href="/tickets" class="btn">Tickets kaufen</a>
+        {ticketPromo?.aktiv && <a href="/tickets" class="btn">Tickets kaufen</a>}
         <a href="/stuecke" class="btn btn-outline">Alle Stücke ansehen</a>
       </div>
     </div>
