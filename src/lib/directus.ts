@@ -38,22 +38,11 @@ interface Startseite {
   impressionen_gallerie: any[];
 }
 
-interface AktuellesStueck {
-  id: string;
-  aktiv: boolean;
-  titel: string;
-  kurzbeschreibung: string;
-  termine: string[];
-  ticketlotse_link: string;
-  verknuepftes_stueck?: string | any;
-}
-
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
   startseite: Startseite;
-  aktuelles_stueck: AktuellesStueck;
 }
 
 export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
