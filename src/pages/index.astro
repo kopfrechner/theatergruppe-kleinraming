@@ -1,74 +1,46 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import directus from '../lib/directus';
+import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readItems, readItem } from '@directus/sdk';
+import { Image } from 'astro:assets';
 
-const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
-
-// 1. Fetch Homepage Config
-const homepageConfig = await directus.request(
-  readItem('homepage_config', {
-    fields: ['emotionen_bild', 'impressionen_galerie.*']
+// 1. Fetch Startseite Config
+const startseite = await directus.request(
+  readItem('startseite', {
+    fields: ['emotionen_titel', 'emotionen_bild', 'impressionen_gallerie.*']
   })
 ).catch(() => null);
 
-// 2. Fetch Aktuelles Stück
-const currentPlay = await directus.request(
-  readItem('aktuelles_stueck', {
-    fields: ['aktiv', 'titel', 'kurzbeschreibung', 'termine', 'ticketlotse_link']
-  })
-).catch(() => ({ aktiv: false }));
+// 2. Static highlight play for now
+const highlightPlay = {
+  isHistorical: false,
+  titel: 'Eine Sprachbox namens Alessa!',
+  text: 'Die beiden Einbrecher Alexander Schlau und Bubi Dümmlich haben es auf das Haus des Ehepaars Hoppenstedt abgesehen. Doch sie haben die Rechnung ohne Alessa gemacht...',
+  link: '/tickets',
+  buttonText: 'Tickets sichern',
+  status: 'Nächste Premiere',
+  termine: ['24. Mai 2027', '26. Mai 2027']
+};
 
-// 3. Fallback logic if not active
-let highlightPlay: any = null;
-if (!currentPlay?.aktiv) {
-  const latestPlays = await directus.request(
-    readItems('stuecke', {
-      filter: { status: { _eq: 'published' } },
-      sort: ['-auffuehrung_im_jahr'],
-      limit: 1
-    })
-  );
-  if (latestPlays.length > 0) {
-    const play = latestPlays[0];
-    // Strip HTML tags for the preview text
-    const cleanSynopsis = (play.synopsis || '').replace(/<[^>]*>?/gm, '');
-    highlightPlay = {
-      isHistorical: true,
-      titel: play.titel,
-      text: cleanSynopsis.length > 180 ? cleanSynopsis.substring(0, 180).trim() + '...' : cleanSynopsis,
-      link: `/stuecke/${play.id}`,
-      buttonText: 'Details ansehen',
-      status: 'Rückblick'
-    };
-  }
-} else {
-  highlightPlay = {
-    isHistorical: false,
-    titel: currentPlay.titel,
-    text: currentPlay.kurzbeschreibung,
-    link: currentPlay.ticketlotse_link || '/tickets',
-    buttonText: 'Tickets sichern',
-    status: 'Nächste Premiere',
-    termine: currentPlay.termine
-  };
-}
+const currentPlay = { aktiv: true }; // Temporary static state
 
 // Prepare impression images with fallbacks
 const defaultImpressions = [
-  'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1514306191717-452ec28c7814?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=600',
-  'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=600'
+  'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf',
+  'https://images.unsplash.com/photo-1514306191717-452ec28c7814',
+  'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3',
+  'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad'
 ];
 
-const impressionImages = (homepageConfig?.impressionen_galerie && homepageConfig.impressionen_galerie.length >= 4)
-  ? homepageConfig.impressionen_galerie.slice(0, 4).map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
+const impressionImages = (startseite?.impressionen_gallerie && startseite.impressionen_gallerie.length >= 4)
+  ? startseite.impressionen_gallerie.slice(0, 4).map((img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`)
   : defaultImpressions;
 
-const emotionImage = homepageConfig?.emotionen_bild 
-  ? `${DIRECTUS_URL}/assets/${homepageConfig.emotionen_bild}`
-  : 'https://images.unsplash.com/photo-1503095396549-807759c4c74a?auto=format&fit=crop&q=80&w=800';
+const emotionImage = startseite?.emotionen_bild 
+  ? `${DIRECTUS_URL}/assets/${startseite.emotionen_bild}`
+  : 'https://images.unsplash.com/photo-1503095396549-807759c4c74a';
+
+const emotionTitel = startseite?.emotionen_titel || 'Emotionen pur';
 ---
 
 <Layout title="Startseite">
@@ -106,9 +78,17 @@ const emotionImage = homepageConfig?.emotionen_bild
       )}
 
       <!-- Tile B: Backstage Impression -->
-      <div class="glass-panel bento-tile tile-image" style={`background-image: url('${emotionImage}');`}>
+      <div class="glass-panel bento-tile tile-image">
+        <Image 
+          src={emotionImage} 
+          alt={emotionTitel}
+          width={800}
+          height={600}
+          format="webp"
+          class="tile-bg-image"
+        />
         <div class="tile-overlay">
-          <h3>Emotionen pur</h3>
+          <h3>{emotionTitel}</h3>
         </div>
       </div>
 
@@ -134,7 +114,14 @@ const emotionImage = homepageConfig?.emotionen_bild
     </div>
     <div class="filmstrip-grid">
       {impressionImages.map((imgUrl: string) => (
-        <div class="filmstrip-item" style={`background-image: url('${imgUrl}'); background-size: cover; background-position: center;`}>
+        <div class="filmstrip-item">
+          <Image 
+            src={imgUrl} 
+            alt="Impression" 
+            width={600} 
+            height={450} 
+            format="webp"
+          />
         </div>
       ))}
     </div>
@@ -176,8 +163,8 @@ const emotionImage = homepageConfig?.emotionen_bild
   .tile-image {
     min-height: 300px; /* Larger height for image on mobile */
     padding: 0;
-    background-size: cover;
-    background-position: center;
+    position: relative;
+    overflow: hidden;
   }
 
   @media (min-width: 768px) {
@@ -258,6 +245,20 @@ const emotionImage = homepageConfig?.emotionen_bild
     color: var(--text-main);
   }
 
+  .tile-bg-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    transition: transform 0.5s ease;
+  }
+
+  .bento-tile:hover .tile-bg-image {
+    transform: scale(1.05);
+  }
+
   .tile-overlay {
     position: absolute;
     inset: 0;
@@ -265,6 +266,7 @@ const emotionImage = homepageConfig?.emotionen_bild
     display: flex;
     align-items: flex-end;
     padding: 1.5rem;
+    z-index: 1;
   }
 
   .tile-overlay h3 {
@@ -330,14 +332,15 @@ const emotionImage = homepageConfig?.emotionen_bild
     border: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .filmstrip-item div {
+  .filmstrip-item img {
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, var(--bg-color-light), #222);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.1);
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .filmstrip-item:hover img {
+    transform: scale(1.05);
   }
 
   .hero-content {

@@ -31,10 +31,11 @@ interface Sponsor {
   bild?: string;
 }
 
-interface HomepageConfig {
+interface Startseite {
   id: string;
+  emotionen_titel: string;
   emotionen_bild: string | any;
-  impressionen_galerie: any[];
+  impressionen_gallerie: any[];
 }
 
 interface AktuellesStueck {
@@ -51,11 +52,13 @@ interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
-  homepage_config: HomepageConfig;
+  startseite: Startseite;
   aktuelles_stueck: AktuellesStueck;
 }
 
-const client = createDirectus<Schema>('https://cms.kopfarbeit.dev').with(rest());
+export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+
+const client = createDirectus<Schema>(DIRECTUS_URL).with(rest());
 
 export default client;
 export { readItems, readItem };
