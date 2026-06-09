@@ -40,7 +40,7 @@ const latestPlays = await directus
   .request(
     readItems("stuecke", {
       filter: { status: { _eq: "published" } },
-      fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto"],
+      fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"],
       sort: ["-auffuehrung_im_jahr"],
       limit: 1,
     }),
@@ -63,7 +63,7 @@ if (!ticketPromo?.aktiv) {
         cleanSynopsis.length > 180
           ? cleanSynopsis.substring(0, 180).trim() + "..."
           : cleanSynopsis,
-      link: `/stuecke/${play.id}`,
+      link: `/stuecke/${play.slug || play.id}`,
       buttonText: "Zum Stück",
       status: "Rückblick",
       termine: [],
@@ -142,7 +142,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
                 Tickets reservieren
               </a>
               {lastPlay && (
-                <a href={`/stuecke/${lastPlay.id}`} class="btn btn-outline">
+                <a href={`/stuecke/${lastPlay.slug || lastPlay.id}`} class="btn btn-outline">
                   Zum letzten Stück
                 </a>
               )}
@@ -150,7 +150,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
           ) : (
             <>
               {lastPlay && (
-                <a href={`/stuecke/${lastPlay.id}`} class="btn">
+                <a href={`/stuecke/${lastPlay.slug || lastPlay.id}`} class="btn">
                   Zum letzten Stück
                 </a>
               )}
