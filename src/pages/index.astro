@@ -1,12 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import directus, { DIRECTUS_URL } from '../lib/directus';
-import { readItems, readItem } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
 // 1. Fetch Startseite Config
 const startseite = await directus.request(
-  readItem('startseite', {
+  readSingleton('startseite', {
     fields: ['emotionen_titel', 'emotionen_bild', 'impressionen_gallerie.*']
   })
 ).catch(() => null);

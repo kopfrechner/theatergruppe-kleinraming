@@ -1,4 +1,4 @@
-import { createDirectus, rest, readItems, readItem } from '@directus/sdk';
+import { createDirectus, rest, readItems } from '@directus/sdk';
 
 interface Stueck {
   id: string;
