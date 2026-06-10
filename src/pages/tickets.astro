@@ -112,9 +112,27 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
     rolle_beschreibung: s.rolle_beschreibung,
     foto: s.theatermenschen_id.foto
   })) || []);
+
+// Prepare SEO metadata
+const displayTitle = isPreBooking 
+  ? (ticketPromo.vorab_titel || ticketPromo.titel) 
+  : ticketPromo.titel;
+const displayText = isPreBooking 
+  ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
+  : ticketPromo.kurzbeschreibung;
+const metaDescription = (displayText || "").length > 160 
+  ? displayText.substring(0, 157) + "..." 
+  : (displayText || "Sichern Sie sich Tickets für die aktuelle Produktion der Theatergruppe Kleinraming.");
+const ogImage = isPreBooking 
+  ? (ticketPromo.vorab_bild ? `${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}` : undefined)
+  : (ticketPromo.hauptfoto ? `${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}` : undefined);
 ---
 
-<Layout title="Karten & Vorstellungen">
+<Layout 
+  title="Karten & Vorstellungen" 
+  description={metaDescription}
+  image={ogImage}
+>
   <div class="container page-header">
     <span class="play-status">
       {isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere'}

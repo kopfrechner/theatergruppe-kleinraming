@@ -33,9 +33,25 @@ export async function getStaticPaths() {
 const { stueck } = Astro.props;
 
 const filteredGallery = await prepareGalleryImages(stueck.foto_gallerie, DIRECTUS_URL);
+
+// Prepare SEO metadata
+const cleanSynopsis = stueck.synopsis 
+  ? stueck.synopsis.replace(/<[^>]*>?/gm, "").replace(/\s+/g, " ").trim()
+  : "";
+const metaDescription = cleanSynopsis.length > 160 
+  ? cleanSynopsis.substring(0, 157) + "..." 
+  : cleanSynopsis || `Informationen zum Theaterstück ${stueck.titel} der Theatergruppe Kleinraming.`;
+
+const ogImage = stueck.titelfoto 
+  ? `${DIRECTUS_URL}/assets/${stueck.titelfoto}` 
+  : undefined;
 ---
 
-<Layout title={stueck.titel}>
+<Layout 
+  title={stueck.titel} 
+  description={metaDescription}
+  image={ogImage}
+>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
     <h1>{stueck.titel}</h1>
