@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Logo from "../components/Logo.astro";
+import { Menu } from "@lucide/astro";
 import directus from "../lib/directus";
 import { readSingleton } from "@directus/sdk";
 
@@ -46,21 +47,7 @@ const isTicketsActive = ticketPromo?.aktiv;
           class="mobile-menu-toggle"
           aria-label="Menü wechseln"
         >
-          <svg
-            viewBox="0 0 24 24"
-            width="24"
-            height="24"
-            stroke="currentColor"
-            stroke-width="2"
-            fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            ><line x1="3" y1="12" x2="21" y2="12"></line><line
-              x1="3"
-              y1="6"
-              x2="21"
-              y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg
-          >
+          <Menu size={24} />
         </button>
         <nav class="main-nav" id="main-nav">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>

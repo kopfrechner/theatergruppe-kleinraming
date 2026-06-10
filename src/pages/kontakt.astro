@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import MemberCard from '../components/MemberCard.astro';
+import { Mail, Phone } from '@lucide/astro';
 import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
@@ -47,14 +48,14 @@ const mapEmbed = config.map_embed || "";
         <h2>Allgemeine Anfragen</h2>
         <div class="contact-methods">
           <div class="method">
-            <span class="icon">📧</span>
+            <span class="icon"><Mail size={20} /></span>
             <div>
               <strong>E-Mail</strong>
               <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>
             </div>
           </div>
           <div class="method">
-            <span class="icon">📞</span>
+            <span class="icon"><Phone size={20} /></span>
             <div>
               <strong>Telefon</strong>
               <p><a href={`tel:${contactPhone.replace(/\s/g, '')}`}>{contactPhone}</a></p>

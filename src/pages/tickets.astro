@@ -25,7 +25,7 @@ const ticketPromo = await directus.request(
       'genre',
       'preis_erwachsene',
       'preis_jugendliche',
-      'google_maps_link',
+      'map_embed',
       'crew.theatermenschen_id.*',
       'crew.theatermenschen_id.foto.*',
       'crew.rolle',
@@ -209,13 +209,13 @@ const castMembers = ticketPromo.crew
         {ticketPromo.spielort && (
           <>
             <hr class="divider" />
-            <div class="info-group">
+            <div class="info-group location-group">
               <h3>Spielort</h3>
               <p>{ticketPromo.spielort}</p>
-              {ticketPromo.google_maps_link && (
-                <a href={ticketPromo.google_maps_link} target="_blank" rel="noopener noreferrer" class="map-link">
-                  In Google Maps öffnen
-                </a>
+              {ticketPromo.map_embed && (
+                <div class="map-container">
+                  <div class="map-embed" set:html={ticketPromo.map_embed} />
+                </div>
               )}
             </div>
           </>
@@ -414,10 +414,20 @@ const castMembers = ticketPromo.crew
     margin: 2rem 0;
   }
 
-  .map-link {
-    display: inline-block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+  .location-group p {
+    margin-bottom: 1rem;
+  }
+
+  .map-container {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .map-embed :global(iframe) {
+    width: 100% !important;
+    height: 250px !important;
+    border: 0;
+    display: block;
   }
 </style>
