@@ -1,7 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import directus from '../lib/directus';
-import { readItems } from '@directus/sdk';
+import { readItems, readSingleton } from '@directus/sdk';
+
+// Fetch contact page configuration
+const config = await directus.request(
+  readSingleton('kontakt_seite', {
+    fields: ['email', 'telefon', 'faq']
+  })
+).catch(() => ({
+  email: "info@theatergruppe-kleinraming.at",
+  telefon: "0680 / 3110037",
+  faq: []
+}));
 
 // Fetch board members
 const vorstand = await directus.request(
@@ -13,8 +24,9 @@ const vorstand = await directus.request(
   })
 ).catch(() => []);
 
-const contactEmail = "info@theatergruppe-kleinraming.at";
-const contactPhone = "0680 / 3110037"; // From Ticket Promotion
+const contactEmail = config.email || "info@theatergruppe-kleinraming.at";
+const contactPhone = config.telefon || "0680 / 3110037";
+const faqs = config.faq || [];
 ---
 
 <Layout title="Kontakt">
@@ -59,8 +71,22 @@ const contactPhone = "0680 / 3110037"; // From Ticket Promotion
       </div>
     </div>
 
+    {faqs.length > 0 && (
+      <div class="glass-panel faq-section">
+        <h2>Häufig gestellte Fragen (FAQ)</h2>
+        <div class="faq-list">
+          {faqs.map((item) => (
+            <div class="faq-item">
+              <h3>{item.frage}</h3>
+              <p>{item.antwort}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
     <div class="glass-panel quick-links">
-      <h2>Häufige Fragen</h2>
+      <h2>Quick Links</h2>
       <div class="links-grid">
         <a href="/tickets" class="link-item">
           <strong>Karten reservieren</strong>
@@ -117,7 +143,7 @@ const contactPhone = "0680 / 3110037"; // From Ticket Promotion
     gap: 2rem;
   }
 
-  .contact-card, .board-section, .location-section {
+  .contact-card, .faq-section, .quick-links, .board-section, .location-section {
     padding: 2.5rem;
   }
 
@@ -182,15 +208,35 @@ const contactPhone = "0680 / 3110037"; // From Ticket Promotion
     transform: translateY(-2px);
   }
 
-  .quick-links {
-    padding: 2.5rem;
+  .facebook {
+    background-color: #1877F2;
+  }
+
+  .instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    line-height: 1.6;
   }
 
   .links-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    margin-top: 1.5rem;
   }
 
   .link-item {
@@ -220,14 +266,6 @@ const contactPhone = "0680 / 3110037"; // From Ticket Promotion
   .link-item span {
     font-size: 0.9rem;
     color: var(--text-muted);
-  }
-
-  .facebook {
-    background-color: #1877F2;
-  }
-
-  .instagram {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
   }
 
   .section-intro {

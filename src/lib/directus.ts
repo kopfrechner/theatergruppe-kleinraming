@@ -1,4 +1,4 @@
-import { createDirectus, rest, readItems } from '@directus/sdk';
+import { createDirectus, rest, readItems, readItem } from '@directus/sdk';
 
 interface Stueck {
   id: string;
@@ -65,12 +65,25 @@ interface TicketPromotion {
   foto_szene_4?: any;
 }
 
+interface FAQItem {
+  frage: string;
+  antwort: string;
+}
+
+interface KontaktSeite {
+  id: string;
+  email: string;
+  telefon: string;
+  faq: FAQItem[];
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
   sponsoren: Sponsor[];
   startseite: Startseite;
   ticket_promotion: TicketPromotion;
+  kontakt_seite: KontaktSeite;
 }
 
 export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
