@@ -118,6 +118,25 @@ const optimizedBg = await getImage({
     z-index: 1;
   }
 
+  @media (max-height: 600px) {
+    .hero {
+      min-height: 450px; /* Ensure enough height for content even on very short screens */
+    }
+    .hero-content {
+      transform: translateY(1rem);
+    }
+    .hero h1 {
+      font-size: 1.8rem;
+    }
+    .hero-subtitle {
+      margin-bottom: 1.25rem;
+      font-size: 1.1rem;
+    }
+    .hero-actions {
+      flex-direction: row;
+    }
+  }
+
   .hero h1 {
     font-size: 2.2rem;
     margin-bottom: 1rem;
