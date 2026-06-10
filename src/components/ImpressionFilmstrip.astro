@@ -1,0 +1,73 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  images: string[];
+  title?: string;
+}
+
+const { images, title = "Impressionen" } = Astro.props;
+---
+
+<section class="container filmstrip-section">
+  <div class="filmstrip-header">
+    <h2>{title}</h2>
+  </div>
+  <div class="filmstrip-grid">
+    {
+      images.map((imgUrl: string) => (
+        <div class="filmstrip-item">
+          <Image
+            src={imgUrl}
+            alt="Impression"
+            width={600}
+            height={450}
+            format="webp"
+          />
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .filmstrip-section {
+    margin-bottom: 8rem;
+  }
+
+  .filmstrip-header {
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+
+  .filmstrip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  @media (min-width: 992px) {
+    .filmstrip-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .filmstrip-item {
+    aspect-ratio: 4 / 3;
+    background-color: var(--bg-color-light);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .filmstrip-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .filmstrip-item:hover img {
+    transform: scale(1.05);
+  }
+</style>

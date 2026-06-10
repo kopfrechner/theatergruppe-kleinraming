@@ -1,0 +1,158 @@
+---
+import { Image } from "astro:assets";
+import BentoTile from "./BentoTile.astro";
+
+interface Props {
+  play: {
+    titel: string;
+    text: string;
+    link: string;
+    buttonText: string;
+    status: string;
+    image?: string | null;
+    termine?: string[];
+  };
+}
+
+const { play } = Astro.props;
+---
+
+<BentoTile class="tile-next-play">
+  {
+    play.image && (
+      <div class="tile-card-image">
+        <Image
+          src={play.image}
+          alt={play.titel}
+          width={1000}
+          height={600}
+          format="webp"
+        />
+      </div>
+    )
+  }
+  <div class="tile-card-content">
+    <span class="play-status">{play.status}</span>
+    <h2>{play.titel}</h2>
+    <p>{play.text}</p>
+
+    {
+      play.termine && play.termine.length > 0 && (
+        <div class="play-dates">
+          <strong>Termine:</strong>
+          <ul>
+            {play.termine.map((date: string) => (
+              <li>{date}</li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+
+    <a href={play.link} class="btn">
+      {play.buttonText}
+    </a>
+  </div>
+</BentoTile>
+
+<style>
+  .btn {
+    width: 100%;
+    text-align: center;
+    margin-top: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    min-height: 3.2rem;
+    height: auto;
+    flex-shrink: 0;
+  }
+
+  .tile-next-play {
+    padding: 0 !important;
+    justify-content: flex-start;
+  }
+
+  .tile-card-image {
+    width: 100%;
+    height: 220px; /* roughly 1/4 of total height */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+  }
+
+  .tile-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.1) 60%,
+      transparent 100%
+    );
+    opacity: 0.8;
+  }
+
+  .tile-card-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    position: relative;
+    z-index: 1;
+  }
+
+  @media (min-width: 768px) {
+    .tile-card-content {
+      padding: 3rem;
+      padding-top: 5rem; /* Space for the header effect */
+    }
+  }
+
+  .tile-next-play h2 {
+    color: var(--accent-gold);
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+  }
+
+  .tile-next-play p {
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 500px;
+  }
+
+  .play-status {
+    display: inline-block;
+    background: rgba(143, 194, 56, 0.15);
+    color: var(--accent-green);
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .play-dates {
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+  }
+
+  .play-dates ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .play-dates li {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    color: var(--text-main);
+  }
+</style>

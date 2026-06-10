@@ -1,115 +1,26 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import HomeHero from "../components/HomeHero.astro";
+import HighlightPlayTile from "../components/HighlightPlayTile.astro";
+import ImpressionFilmstrip from "../components/ImpressionFilmstrip.astro";
+import BentoTile from "../components/BentoTile.astro";
 import directus, { DIRECTUS_URL } from "../lib/directus";
 import { readItems, readSingleton } from "@directus/sdk";
 import { Image } from "astro:assets";
-import he from "he";
+import { mapHighlightPlay } from "../lib/mappers";
 
-// 1. Fetch Startseite Config
-const startseite = await directus
-  .request(
-    readSingleton("startseite", {
-      fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.*"],
-    }),
-  )
-  .catch(() => null);
+// 1. Fetch Data
+const [startseite, ticketPromo, latestPlays] = await Promise.all([
+  directus.request(readSingleton("startseite", { fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.*"] })).catch(() => null),
+  directus.request(readSingleton("ticket_promotion", { fields: ["aktiv", "titel", "kurzbeschreibung", "termin_1", "termin_2", "termin_3", "termin_4", "termin_5", "termin_6", "ticketlotse_link", "hauptfoto"] })).catch(() => ({ aktiv: false })),
+  directus.request(readItems("stuecke", { filter: { status: { _eq: "published" } }, fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"], sort: ["-auffuehrung_im_jahr"], limit: 1 })).catch(() => [])
+]);
 
-// 2. Fetch Ticket Promotion
-const ticketPromo = await directus
-  .request(
-    readSingleton("ticket_promotion", {
-      fields: [
-        "aktiv",
-        "titel",
-        "kurzbeschreibung",
-        "termin_1",
-        "termin_2",
-        "termin_3",
-        "termin_4",
-        "termin_5",
-        "termin_6",
-        "ticketlotse_link",
-        "hauptfoto",
-      ],
-    }),
-  )
-  .catch(() => ({ aktiv: false }));
-
-// 3. Fetch latest piece for Hero and Fallback
-const latestPlays = await directus
-  .request(
-    readItems("stuecke", {
-      filter: { status: { _eq: "published" } },
-      fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"],
-      sort: ["-auffuehrung_im_jahr"],
-      limit: 1,
-    }),
-  )
-  .catch(() => []);
 const lastPlay = latestPlays.length > 0 ? latestPlays[0] : null;
 
-// 4. Fallback logic if not active
-let highlightPlay: any = null;
-if (!ticketPromo?.aktiv) {
-  if (lastPlay) {
-    const play = lastPlay;
-    const cleanSynopsis = he.decode(
-      (play.synopsis || "").replace(/<[^>]*>?/gm, ""),
-    );
-    highlightPlay = {
-      isHistorical: true,
-      titel: play.titel,
-      text:
-        cleanSynopsis.length > 180
-          ? cleanSynopsis.substring(0, 180).trim() + "..."
-          : cleanSynopsis,
-      link: `/stuecke/${play.slug || play.id}`,
-      buttonText: "Zum Stück",
-      status: "Rückblick",
-      termine: [],
-      image: play.titelfoto ? `${DIRECTUS_URL}/assets/${play.titelfoto}` : null,
-    };
-  }
-} else {
-  // Format dates from termin_1..6
-  const locale = "de-AT";
-  const dateFormat: Intl.DateTimeFormatOptions = {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
+// 2. Map Data
+const highlightPlay = mapHighlightPlay(ticketPromo, lastPlay, DIRECTUS_URL);
 
-  const termineArray = [
-    ticketPromo.termin_1,
-    ticketPromo.termin_2,
-    ticketPromo.termin_3,
-    ticketPromo.termin_4,
-    ticketPromo.termin_5,
-    ticketPromo.termin_6,
-  ]
-    .filter((t) => t)
-    .map((t) => new Date(t).toLocaleString(locale, dateFormat) + " Uhr");
-
-  highlightPlay = {
-    isHistorical: false,
-    titel: ticketPromo.titel,
-    text:
-      ticketPromo.kurzbeschreibung.length > 180
-        ? ticketPromo.kurzbeschreibung.substring(0, 180).trim() + "..."
-        : ticketPromo.kurzbeschreibung,
-    link: "/tickets",
-    buttonText: "Tickets reservieren",
-    status: "Nächste Premiere",
-    termine: termineArray,
-    image: ticketPromo.hauptfoto
-      ? `${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto}`
-      : null,
-  };
-}
-
-// Prepare impression images from CMS
 const impressionImages = startseite?.impressionen_gallerie
   ? startseite.impressionen_gallerie.map(
       (img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`,
@@ -124,87 +35,18 @@ const emotionTitel = startseite?.emotionen_titel || "";
 ---
 
 <Layout title="Startseite">
-  <section class="hero">
-    <div class="container hero-content">
-      <h1>
-        Willkommen bei der<br /><span class="text-green"
-          >Theatergruppe Kleinraming</span
-        >
-      </h1>
-      <p class="hero-subtitle">
-        Leidenschaft für die Bühne, Begeisterung für das Publikum.
-      </p>
-      <div class="hero-actions">
-        {
-          ticketPromo?.aktiv ? (
-            <>
-              <a href="/tickets" class="btn">
-                Tickets reservieren
-              </a>
-              <a href="/stuecke" class="btn btn-outline">
-                Alle Stücke ansehen
-              </a>
-            </>
-          ) : (
-            <>
-              {lastPlay && (
-                <a href={`/stuecke/${lastPlay.slug || lastPlay.id}`} class="btn">
-                  Zum letzten Stück
-                </a>
-              )}
-              <a href="/stuecke" class="btn btn-outline">
-                Alle Stücke ansehen
-              </a>
-            </>
-          )
-        }
-      </div>
-    </div>
-  </section>
+  <HomeHero 
+    isTicketsActive={ticketPromo?.aktiv} 
+    lastPlay={lastPlay} 
+  />
 
   <section class="container bento-section">
     <div class="bento-grid">
       <!-- Tile A: Highlight Play (Dynamic) -->
-      {
-        highlightPlay && (
-          <div class="glass-panel bento-tile tile-next-play">
-            {highlightPlay.image && (
-              <div class="tile-card-image">
-                <Image
-                  src={highlightPlay.image}
-                  alt={highlightPlay.titel}
-                  width={1000}
-                  height={600}
-                  format="webp"
-                />
-              </div>
-            )}
-            <div class="tile-card-content">
-              <span class="play-status">{highlightPlay.status}</span>
-              <h2>{highlightPlay.titel}</h2>
-              <p>{highlightPlay.text}</p>
-
-              {highlightPlay.termine && highlightPlay.termine.length > 0 && (
-                <div class="play-dates">
-                  <strong>Termine:</strong>
-                  <ul>
-                    {highlightPlay.termine.map((date: string) => (
-                      <li>{date}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <a href={highlightPlay.link} class="btn">
-                {highlightPlay.buttonText}
-              </a>
-            </div>
-          </div>
-        )
-      }
+      {highlightPlay && <HighlightPlayTile play={highlightPlay} />}
 
       <!-- Tile B: Backstage Impression -->
-      <div class="glass-panel bento-tile tile-image">
+      <BentoTile class="tile-image">
         {
           emotionImage ? (
             <Image
@@ -225,10 +67,10 @@ const emotionTitel = startseite?.emotionen_titel || "";
         <div class="tile-overlay">
           {emotionTitel && <h3>{emotionTitel}</h3>}
         </div>
-      </div>
+      </BentoTile>
 
       <!-- Tile C: Tradition -->
-      <div class="glass-panel bento-tile tile-stat">
+      <BentoTile class="tile-stat">
         <span class="stat-number">1906</span>
         <span class="stat-label">Gründungsjahr</span>
         <p
@@ -236,52 +78,24 @@ const emotionTitel = startseite?.emotionen_titel || "";
         >
           Über 100 Jahre Tradition in Kleinraming.
         </p>
-      </div>
+      </BentoTile>
 
       <!-- Tile D: Actors Link -->
-      <div class="glass-panel bento-tile tile-actors">
+      <BentoTile class="tile-actors">
         <h3>Unsere Theatermenschen</h3>
         <p style="color: var(--text-muted); font-size: 0.9rem;">
           Das Herzstück unseres Vereins – vor und hinter der Bühne.
         </p>
         <a href="/theatermenschen" class="btn btn-outline">Zum Ensemble</a>
-      </div>
+      </BentoTile>
     </div>
   </section>
 
-  <section class="container filmstrip-section">
-    <div class="filmstrip-header">
-      <h2>Impressionen</h2>
-    </div>
-    <div class="filmstrip-grid">
-      {
-        impressionImages.map((imgUrl: string) => (
-          <div class="filmstrip-item">
-            <Image
-              src={imgUrl}
-              alt="Impression"
-              width={600}
-              height={450}
-              format="webp"
-            />
-          </div>
-        ))
-      }
-    </div>
-  </section>
+  <ImpressionFilmstrip images={impressionImages} />
 </Layout>
 
 <style>
-  .hero {
-    min-height: 70vh;
-    display: flex;
-    align-items: center;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
-    border-bottom: 1px solid rgba(255, 230, 200, 0.05);
-    margin-bottom: 4rem;
-  }
-
-  /* Bento Grid */
+  /* Bento Grid Layout */
   .bento-section {
     margin-bottom: 6rem;
   }
@@ -292,59 +106,8 @@ const emotionTitel = startseite?.emotionen_titel || "";
     gap: 1.5rem;
   }
 
-  .bento-tile {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    transition: var(--transition);
-    min-height: 250px; /* Default height for mobile */
-  }
-
-  .tile-next-play {
-    padding: 0;
-    justify-content: flex-start;
-  }
-
-  .tile-card-image {
-    width: 100%;
-    height: 220px; /* roughly 1/4 of total height */
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 0;
-  }
-
-  .tile-card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    mask-image: linear-gradient(
-      to bottom,
-      rgba(0, 0, 0, 0.5) 0%,
-      rgba(0, 0, 0, 0.1) 60%,
-      transparent 100%
-    );
-    opacity: 0.8;
-  }
-
-  .tile-card-content {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex-grow: 1;
-    position: relative;
-    z-index: 1;
-  }
-
-  .tile-image {
-    min-height: 300px;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
+  :global(.tile-image) {
+    padding: 0 !important;
   }
 
   @media (min-width: 768px) {
@@ -353,85 +116,10 @@ const emotionTitel = startseite?.emotionen_titel || "";
       grid-template-rows: repeat(3, minmax(200px, auto));
     }
 
-    .tile-next-play {
+    :global(.tile-next-play) {
       grid-column: 1;
       grid-row: span 3;
     }
-
-    .tile-card-content {
-      padding: 3rem;
-      padding-top: 5rem; /* Space for the header effect */
-    }
-
-    .bento-tile {
-      padding: 2.5rem;
-      min-height: 0;
-    }
-
-    .tile-image {
-      min-height: 0;
-    }
-  }
-
-  .bento-tile:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-green);
-  }
-
-  .bento-tile .btn {
-    width: 100%;
-    text-align: center;
-    margin-top: 1.5rem;
-    padding: 0.8rem 1.5rem;
-    min-height: 3.2rem;
-    height: auto;
-    flex-shrink: 0;
-  }
-
-  .tile-next-play h2 {
-    color: var(--accent-gold);
-    font-size: 2.2rem;
-    margin-bottom: 1rem;
-  }
-
-  .tile-next-play p {
-    color: var(--text-muted);
-    margin-bottom: 2rem;
-    max-width: 500px;
-  }
-
-  .play-status {
-    display: inline-block;
-    background: rgba(143, 194, 56, 0.15);
-    color: var(--accent-green);
-    padding: 0.4rem 1rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .play-dates {
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-  }
-
-  .play-dates ul {
-    list-style: none;
-    padding: 0;
-    margin: 0.5rem 0 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .play-dates li {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    color: var(--text-main);
   }
 
   .tile-bg-image {
@@ -444,7 +132,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
     transition: transform 0.5s ease;
   }
 
-  .bento-tile:hover .tile-bg-image {
+  :global(.tile-image:hover) .tile-bg-image {
     transform: scale(1.05);
   }
 
@@ -464,7 +152,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
     color: #fff;
   }
 
-  .tile-stat {
+  :global(.tile-stat) {
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -487,89 +175,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
     font-size: 0.9rem;
   }
 
-  .tile-actors h3 {
+  :global(.tile-actors) h3 {
     color: var(--accent-green);
-  }
-
-  /* Filmstrip */
-  .filmstrip-section {
-    margin-bottom: 8rem;
-  }
-
-  .filmstrip-header {
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-
-  .filmstrip-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  @media (min-width: 992px) {
-    .filmstrip-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-
-  .filmstrip-item {
-    aspect-ratio: 4 / 3;
-    background-color: var(--bg-color-light);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .filmstrip-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .filmstrip-item:hover img {
-    transform: scale(1.05);
-  }
-
-  .hero-content {
-    text-align: center;
-  }
-
-  .hero h1 {
-    font-size: 2.2rem;
-    margin-bottom: 1rem;
-    line-height: 1.1;
-  }
-
-  @media (min-width: 768px) {
-    .hero h1 {
-      font-size: 3.5rem;
-    }
-  }
-
-  .text-green {
-    color: var(--accent-green);
-  }
-
-  .hero-subtitle {
-    font-size: 1.25rem;
-    color: var(--text-muted);
-    margin-bottom: 2.5rem;
-    max-width: 600px;
-    margin-inline: auto;
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    justify-content: center;
-  }
-
-  @media (min-width: 768px) {
-    .hero-actions {
-      flex-direction: row;
-    }
   }
 </style>
