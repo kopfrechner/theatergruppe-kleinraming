@@ -76,7 +76,6 @@ interface KontaktSeite {
   telefon: string;
   faq: FAQItem[];
   location_name: string;
-  google_maps_link: string;
   map_embed: string;
 }
 
