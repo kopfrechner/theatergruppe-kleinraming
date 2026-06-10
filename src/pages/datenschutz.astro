@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import client, { readSingleton } from '../lib/directus';
+
+const datenschutz = await client.request(readSingleton('datenschutz'));
 ---
 
 <Layout title="Datenschutz">
@@ -9,8 +12,7 @@ import Layout from '../layouts/Layout.astro';
 
   <section class="container legal-section">
     <div class="glass-panel content-box">
-      <p>Hier folgt die Datenschutzerklärung der Theatergruppe Kleinraming.</p>
-      <!-- Datenschutz Inhalt -->
+      <div set:html={datenschutz.content} />
     </div>
   </section>
 </Layout>

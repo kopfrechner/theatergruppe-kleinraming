@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import client, { readSingleton } from '../lib/directus';
+
+const impressum = await client.request(readSingleton('impressum'));
 ---
 
 <Layout title="Impressum">
@@ -9,8 +12,7 @@ import Layout from '../layouts/Layout.astro';
 
   <section class="container legal-section">
     <div class="glass-panel content-box">
-      <p>Hier folgt das Impressum der Theatergruppe Kleinraming gemäß § 5 ECG und § 25 MedienG.</p>
-      <!-- Impressum Inhalt -->
+      <div set:html={impressum.content} />
     </div>
   </section>
 </Layout>
