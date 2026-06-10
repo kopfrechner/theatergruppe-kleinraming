@@ -350,7 +350,7 @@ const emotionTitel = startseite?.emotionen_titel || "";
   @media (min-width: 768px) {
     .bento-grid {
       grid-template-columns: 1.5fr 1fr;
-      grid-template-rows: repeat(3, 200px);
+      grid-template-rows: repeat(3, minmax(200px, auto));
     }
 
     .tile-next-play {
@@ -382,6 +382,10 @@ const emotionTitel = startseite?.emotionen_titel || "";
     width: 100%;
     text-align: center;
     margin-top: 1.5rem;
+    padding: 0.8rem 1.5rem;
+    min-height: 3.2rem;
+    height: auto;
+    flex-shrink: 0;
   }
 
   .tile-next-play h2 {

@@ -74,14 +74,14 @@ a:hover {
   color: #000;
   font-family: var(--font-heading);
   font-weight: 700;
-  padding: 0 1.5rem;
-  height: 3rem; /* Fixed height for perfect alignment */
+  padding: 0.75rem 1.5rem;
+  min-height: 3.2rem;
   border-radius: 8px;
   text-decoration: none;
   border: 2px solid var(--accent-green); /* Always have a border */
   cursor: pointer;
   transition: var(--transition);
-  line-height: 1;
+  line-height: 1.2;
   white-space: nowrap;
 }
 
