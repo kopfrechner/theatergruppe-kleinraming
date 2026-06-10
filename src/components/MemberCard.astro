@@ -1,0 +1,98 @@
+---
+import { Image } from 'astro:assets';
+import { DIRECTUS_URL } from '../lib/directus';
+
+interface Props {
+  name: string;
+  role?: string;
+  roleDescription?: string;
+  image?: any;
+}
+
+const { name, role, roleDescription, image } = Astro.props;
+---
+
+<div class="cast-card">
+  {image ? (
+    <Image 
+      src={`${DIRECTUS_URL}/assets/${image.id || image}`} 
+      alt={name}
+      width={100}
+      height={100}
+      format="webp"
+      class="cast-photo"
+    />
+  ) : (
+    <div class="cast-photo-placeholder">
+      <span>{name.charAt(0)}</span>
+    </div>
+  )}
+  <div class="cast-info">
+    <span class="actor-name">{name}</span>
+    {role && <span class="role-name">{role}</span>}
+    {roleDescription && <span class="role-desc">{roleDescription}</span>}
+  </div>
+</div>
+
+<style>
+  .cast-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+  }
+
+  .cast-card:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .cast-photo, .cast-photo-placeholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid var(--accent-green);
+  }
+
+  .cast-photo-placeholder {
+    background: var(--bg-card, rgba(20, 20, 20, 0.5));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--accent-green);
+    font-size: 1.2rem;
+  }
+
+  .cast-info {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .actor-name {
+    font-weight: bold;
+    color: var(--text-bright, #fff);
+  }
+
+  .role-name {
+    color: var(--accent-gold, #c5a059);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.2rem;
+  }
+
+  .role-desc {
+    font-size: 0.85rem;
+    color: var(--text-muted, #9ca3af);
+    font-style: italic;
+    margin-top: 0.1rem;
+  }
+</style>

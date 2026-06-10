@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MemberCard from '../components/MemberCard.astro';
 import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
@@ -129,27 +130,12 @@ const castMembers = ticketPromo.crew
           <h2>Die Mitwirkenden</h2>
           <div class="cast-grid">
             {castMembers.map((member: any) => (
-              <div class="cast-card">
-                {member.foto ? (
-                  <Image 
-                    src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
-                    alt={member.name}
-                    width={100}
-                    height={100}
-                    format="webp"
-                    class="cast-photo"
-                  />
-                ) : (
-                  <div class="cast-photo-placeholder">
-                    <span>{member.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div class="cast-info">
-                  <span class="actor-name">{member.name}</span>
-                  <span class="role-name">{member.rolle}</span>
-                  {member.rolle_beschreibung && <span class="role-desc">{member.rolle_beschreibung}</span>}
-                </div>
-              </div>
+              <MemberCard 
+                name={member.name}
+                role={member.rolle}
+                roleDescription={member.rolle_beschreibung}
+                image={member.foto}
+              />
             ))}
           </div>
         </div>
@@ -352,60 +338,6 @@ const castMembers = ticketPromo.crew
     .cast-grid {
       grid-template-columns: repeat(2, 1fr);
     }
-  }
-
-  .cast-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .cast-photo, .cast-photo-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--accent-green);
-  }
-
-  .cast-photo-placeholder {
-    background: var(--bg-color-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: var(--accent-green);
-    font-size: 1.2rem;
-  }
-
-  .cast-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .actor-name {
-    font-weight: bold;
-    color: var(--text-main);
-  }
-
-  .role-name {
-    color: var(--accent-gold);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.2rem;
-  }
-
-  .role-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.1rem;
   }
 
   /* Sticky Sidebar */

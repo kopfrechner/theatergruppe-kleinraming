@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import MemberCard from '../../components/MemberCard.astro';
 import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image, getImage, inferRemoteSize } from 'astro:assets';
@@ -99,27 +100,12 @@ const filteredGallery = galleryImages.filter(img => img !== null);
           <h3>Besetzung</h3>
           <div class="cast-grid">
             {stueck.spieler.map((s) => (
-              <div class="cast-card">
-                {s.theatermenschen_id.foto ? (
-                  <Image 
-                    src={`${DIRECTUS_URL}/assets/${s.theatermenschen_id.foto.id || s.theatermenschen_id.foto}`} 
-                    alt={s.theatermenschen_id.name}
-                    width={100}
-                    height={100}
-                    format="webp"
-                    class="cast-photo"
-                  />
-                ) : (
-                  <div class="cast-photo-placeholder">
-                    <span>{s.theatermenschen_id.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div class="cast-info">
-                  <span class="actor-name">{s.theatermenschen_id.name}</span>
-                  <span class="role-name">{s.rolle_name}</span>
-                  {s.rolle_beschreibung && <span class="role-desc">{s.rolle_beschreibung}</span>}
-                </div>
-              </div>
+              <MemberCard 
+                name={s.theatermenschen_id.name}
+                role={s.rolle_name}
+                roleDescription={s.rolle_beschreibung}
+                image={s.theatermenschen_id.foto}
+              />
             ))}
           </div>
         </div>
@@ -267,60 +253,6 @@ const filteredGallery = galleryImages.filter(img => img !== null);
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 1.5rem;
-  }
-
-  .cast-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .cast-photo, .cast-photo-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--accent-green);
-  }
-
-  .cast-photo-placeholder {
-    background: var(--bg-card);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: var(--accent-green);
-    font-size: 1.2rem;
-  }
-
-  .cast-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .actor-name {
-    font-weight: bold;
-    color: var(--text-bright);
-  }
-
-  .role-name {
-    color: var(--accent-gold);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.2rem;
-  }
-
-  .role-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.1rem;
   }
 
   .gallery {
