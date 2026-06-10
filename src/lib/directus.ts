@@ -65,6 +65,18 @@ interface TicketPromotion {
   foto_szene_4?: any;
 }
 
+interface FAQItem {
+  frage: string;
+  antwort: string;
+}
+
+interface KontaktSeite {
+  id: string;
+  email: string;
+  telefon: string;
+  faq: FAQItem[];
+}
+
 interface Impressum {
   id: string;
   content: string;
@@ -81,6 +93,7 @@ interface Schema {
   sponsoren: Sponsor[];
   startseite: Startseite;
   ticket_promotion: TicketPromotion;
+  kontakt_seite: KontaktSeite;
   impressum: Impressum;
   datenschutz: Datenschutz;
 }
