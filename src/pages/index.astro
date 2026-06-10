@@ -141,11 +141,9 @@ const emotionTitel = startseite?.emotionen_titel || "";
               <a href="/tickets" class="btn">
                 Tickets reservieren
               </a>
-              {lastPlay && (
-                <a href={`/stuecke/${lastPlay.slug || lastPlay.id}`} class="btn btn-outline">
-                  Zum letzten Stück
-                </a>
-              )}
+              <a href="/stuecke" class="btn btn-outline">
+                Alle Stücke ansehen
+              </a>
             </>
           ) : (
             <>
