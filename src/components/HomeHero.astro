@@ -1,4 +1,6 @@
 ---
+import heroBg from '../assets/Gemini_Generated_Image_nn40dqnn40dqnn40.png';
+
 interface Props {
   isTicketsActive: boolean;
   lastPlay?: {
@@ -10,7 +12,7 @@ interface Props {
 const { isTicketsActive, lastPlay } = Astro.props;
 ---
 
-<section class="hero">
+<section class="hero" style={`background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${heroBg.src});`}>
   <div class="container hero-content">
     <h1>
       Willkommen bei der<br /><span class="text-green"
@@ -50,16 +52,35 @@ const { isTicketsActive, lastPlay } = Astro.props;
 
 <style>
   .hero {
-    min-height: 70vh;
+    min-height: 80vh;
+    width: 100%;
+    margin-top: -80px; /* Pull under the sticky header */
+    padding-top: 80px; /* Offset content so it stays centered in viewport */
     display: flex;
     align-items: center;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
+    background-size: cover;
+    background-position: center 42%;
+    background-repeat: no-repeat;
     border-bottom: 1px solid rgba(255, 230, 200, 0.05);
     margin-bottom: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40%;
+    background: linear-gradient(to top, var(--bg-color), transparent);
+    pointer-events: none;
   }
 
   .hero-content {
     text-align: center;
+    transform: translateY(2rem); /* Fine-tune vertical position to center in stage opening */
   }
 
   .hero h1 {
