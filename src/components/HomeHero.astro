@@ -1,6 +1,6 @@
 ---
-import { getImage } from 'astro:assets';
-import heroBgSrc from '../assets/hero-stage.webp';
+import { getImage } from "astro:assets";
+import heroBgSrc from "../assets/hero-stage.webp";
 
 interface Props {
   isTicketsActive: boolean;
@@ -15,12 +15,15 @@ const { isTicketsActive, lastPlay } = Astro.props;
 const optimizedBg = await getImage({
   src: heroBgSrc,
   width: 1920,
-  format: 'webp',
-  quality: 80
+  format: "webp",
+  quality: 80,
 });
 ---
 
-<section class="hero" style={`background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${optimizedBg.src});`}>
+<section
+  class="hero"
+  style={`background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${optimizedBg.src});`}
+>
   <div class="container hero-content">
     <h1>
       Willkommen bei der<br /><span class="text-green"
@@ -75,31 +78,43 @@ const optimizedBg = await getImage({
   }
 
   .hero::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 200px;
-    background: linear-gradient(to bottom, var(--bg-color) 0%, rgba(17, 16, 15, 0.8) 40%, transparent 100%);
+    background: linear-gradient(
+      to bottom,
+      var(--bg-color) 0%,
+      rgba(17, 16, 15, 0.8) 40%,
+      transparent 100%
+    );
     pointer-events: none;
     z-index: 0;
   }
 
   .hero::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: -1px;
     left: 0;
     right: 0;
     height: 50%;
-    background: linear-gradient(to top, var(--bg-color) 5%, rgba(17, 16, 15, 0.8) 20%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      var(--bg-color) 5%,
+      rgba(17, 16, 15, 0.8) 20%,
+      transparent 100%
+    );
     pointer-events: none;
   }
 
   .hero-content {
     text-align: center;
-    transform: translateY(2.5rem); /* Fine-tune vertical position to center in stage opening */
+    transform: translateY(
+      2.5rem
+    ); /* Fine-tune vertical position to center in stage opening */
     z-index: 1;
   }
 
