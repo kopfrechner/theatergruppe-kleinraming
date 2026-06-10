@@ -77,6 +77,7 @@ interface KontaktSeite {
   faq: FAQItem[];
   location_name: string;
   google_maps_link: string;
+  map_embed: string;
 }
 
 interface Impressum {
