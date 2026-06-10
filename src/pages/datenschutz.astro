@@ -11,7 +11,7 @@ const datenschutz = await client.request(readSingleton('datenschutz'));
   </div>
 
   <section class="container legal-section">
-    <div class="glass-panel content-box">
+    <div class="glass-panel content-box legal-content">
       <div set:html={datenschutz.content} />
     </div>
   </section>
@@ -20,9 +20,43 @@ const datenschutz = await client.request(readSingleton('datenschutz'));
 <style>
   .legal-section {
     max-width: 800px;
-    margin-bottom: 5rem;
+    margin: 2rem auto 5rem;
   }
   .content-box {
-    padding: 3rem;
+    padding: 2rem;
+  }
+
+  /* Rich Text Styling */
+  .legal-content :global(h3) {
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+
+  .legal-content :global(h3:first-child) {
+    margin-top: 0;
+  }
+
+  .legal-content :global(p) {
+    margin-bottom: 1.25rem;
+    color: var(--text-main);
+    opacity: 0.9;
+  }
+
+  .legal-content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .legal-content :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (min-width: 768px) {
+    .content-box {
+      padding: 4rem;
+    }
   }
 </style>
