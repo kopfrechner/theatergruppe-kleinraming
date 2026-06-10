@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CastSection from '../../components/CastSection.astro';
 import PlayGallery from '../../components/PlayGallery.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { prepareGalleryImages } from '../../lib/mappers';
@@ -56,6 +57,7 @@ const ogImage = stueck.titelfoto
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
     <h1>{stueck.titel}</h1>
     <p class="play-year">Aufgeführt: {stueck.auffuehrung_im_jahr}</p>
+    <ShareButtons title={stueck.titel} class="header-share" />
   </div>
 
   <section class="container play-detail">
@@ -96,6 +98,11 @@ const ogImage = stueck.titelfoto
     color: var(--accent-gold);
     font-size: 1.2rem;
     font-weight: bold;
+  }
+
+  :global(.header-share) {
+    justify-content: center;
+    margin-top: 0.5rem;
   }
 
   .play-detail {
