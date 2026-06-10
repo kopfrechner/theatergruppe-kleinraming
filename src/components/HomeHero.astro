@@ -74,6 +74,18 @@ const optimizedBg = await getImage({
     overflow: hidden;
   }
 
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, var(--bg-color) 0%, rgba(17, 16, 15, 0.8) 40%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
   .hero::after {
     content: '';
     position: absolute;
