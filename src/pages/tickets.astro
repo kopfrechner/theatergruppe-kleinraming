@@ -155,7 +155,7 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
       )}
 
       <div class="glass-panel content-box">
-        <h2>Aus dem Inhalt</h2>
+        <h2>{isPreBooking ? 'Vorschau auf die Saison' : 'Aus dem Inhalt'}</h2>
         <p class="synopsis-text">
           {isPreBooking 
             ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
