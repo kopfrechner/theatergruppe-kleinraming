@@ -9,9 +9,12 @@ const ticketPromo = await directus.request(
   readSingleton('ticket_promotion', {
     fields: [
       'id',
-      'aktiv',
+      'anzeige_modus',
       'titel',
+      'vorab_titel',
       'kurzbeschreibung',
+      'vorab_text',
+      'vorab_bild.*',
       'ticketlotse_link',
       'spielort',
       'telefon_reservierung',
@@ -39,13 +42,17 @@ const ticketPromo = await directus.request(
   })
 ).catch(() => null);
 
-// If inactive or no data, you could optionally redirect to home
-if (!ticketPromo || !ticketPromo.aktiv) {
+const anzeigeModus = ticketPromo?.anzeige_modus || 'inaktiv';
+
+// If inactive or no data, redirect to home
+if (!ticketPromo || anzeigeModus === 'inaktiv') {
   return Astro.redirect('/');
 }
 
-// Prepare scene photos array
-const scenePhotos = [
+const isPreBooking = anzeigeModus === 'vorab_reservierung';
+
+// Prepare scene photos array (only if not pre-booking)
+const scenePhotos = isPreBooking ? [] : [
   ticketPromo.foto_szene_1,
   ticketPromo.foto_szene_2,
   ticketPromo.foto_szene_3,
@@ -86,44 +93,66 @@ const preiseArray = [
   ticketPromo.preis_jugendliche ? `Kinder/Jugendliche: ${formatPrice(ticketPromo.preis_jugendliche)}` : null
 ].filter(p => p);
 
-const autorGenre = [ticketPromo.autor, ticketPromo.genre].filter(x => x).join(' / ');
+const autorGenre = isPreBooking ? null : [ticketPromo.autor, ticketPromo.genre].filter(x => x).join(' / ');
 
-// Filter valid cast members from 'crew'
-const castMembers = ticketPromo.crew
+// Filter valid cast members from 'crew' (only if not pre-booking)
+const castMembers = isPreBooking ? [] : (ticketPromo.crew
   ?.filter((s: any) => s.theatermenschen_id)
   .map((s: any) => ({
     name: s.theatermenschen_id.name,
     rolle: s.rolle,
     rolle_beschreibung: s.rolle_beschreibung,
     foto: s.theatermenschen_id.foto
-  })) || [];
+  })) || []);
 ---
 
 <Layout title="Karten & Vorstellungen">
   <div class="container page-header">
-    <span class="play-status">Nächste Premiere</span>
-    <h1 class="flyer-title">{ticketPromo.titel}</h1>
+    <span class="play-status">
+      {isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere'}
+    </span>
+    <h1 class="flyer-title">
+      {isPreBooking ? (ticketPromo.vorab_titel || ticketPromo.titel) : ticketPromo.titel}
+    </h1>
     {autorGenre && <p class="flyer-subtitle">{autorGenre}</p>}
   </div>
 
   <section class="container flyer-layout">
     <!-- Left Column: Content and Cast -->
     <div class="flyer-main">
-      {ticketPromo.hauptfoto && (
-        <div class="ensemble-photo">
-          <Image 
-            src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`} 
-            alt="Ensemble"
-            width={1000}
-            height={700}
-            format="webp"
-          />
-        </div>
+      {isPreBooking ? (
+        ticketPromo.vorab_bild && (
+          <div class="ensemble-photo">
+            <Image 
+              src={`${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`} 
+              alt="Saison Vorschau"
+              width={1000}
+              height={700}
+              format="webp"
+            />
+          </div>
+        )
+      ) : (
+        ticketPromo.hauptfoto && (
+          <div class="ensemble-photo">
+            <Image 
+              src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`} 
+              alt="Ensemble"
+              width={1000}
+              height={700}
+              format="webp"
+            />
+          </div>
+        )
       )}
 
       <div class="glass-panel content-box">
         <h2>Aus dem Inhalt</h2>
-        <p class="synopsis-text">{ticketPromo.kurzbeschreibung}</p>
+        <p class="synopsis-text">
+          {isPreBooking 
+            ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
+            : ticketPromo.kurzbeschreibung}
+        </p>
       </div>
 
       {castMembers.length > 0 && (

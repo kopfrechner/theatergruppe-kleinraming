@@ -21,9 +21,9 @@ const normalizedPath =
 
 // Fetch ticket promotion status for the menu
 const ticketPromo = await directus
-  .request(readSingleton("ticket_promotion", { fields: ["aktiv"] }))
-  .catch(() => ({ aktiv: false }));
-const isTicketsActive = ticketPromo?.aktiv;
+  .request(readSingleton("ticket_promotion", { fields: ["anzeige_modus"] }))
+  .catch(() => ({ anzeige_modus: "inaktiv" }));
+const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
 ---
 
 <!doctype html>

@@ -42,7 +42,9 @@ export async function prepareGalleryImages(foto_gallerie: any[], directusUrl: st
 }
 
 export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: string) {
-  if (!ticketPromo?.aktiv) {
+  const anzeigeModus = ticketPromo?.anzeige_modus || (ticketPromo?.aktiv ? 'ticket_promotion' : 'inaktiv');
+
+  if (anzeigeModus === 'inaktiv') {
     if (!lastPlay) return null;
 
     const cleanSynopsis = he.decode(
@@ -64,7 +66,8 @@ export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: s
     };
   }
 
-  // Active Ticket Promotion
+  // Active Ticket Promotion (either vorab_reservierung or ticket_promotion)
+  const isPreBooking = anzeigeModus === 'vorab_reservierung';
   const locale = "de-AT";
   const dateFormat: Intl.DateTimeFormatOptions = {
     day: "2-digit",
@@ -85,19 +88,31 @@ export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: s
     .filter((t) => t)
     .map((t) => new Date(t).toLocaleString(locale, dateFormat) + " Uhr");
 
+  const displayTitle = isPreBooking
+    ? (ticketPromo.vorab_titel || ticketPromo.titel)
+    : ticketPromo.titel;
+
+  const displayText = isPreBooking 
+    ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung)
+    : ticketPromo.kurzbeschreibung;
+
+  const displayImage = isPreBooking
+    ? (ticketPromo.vorab_bild || ticketPromo.hauptfoto)
+    : ticketPromo.hauptfoto;
+
   return {
     isHistorical: false,
-    titel: ticketPromo.titel,
+    titel: displayTitle,
     text:
-      ticketPromo.kurzbeschreibung.length > 180
-        ? ticketPromo.kurzbeschreibung.substring(0, 180).trim() + "..."
-        : ticketPromo.kurzbeschreibung,
+      (displayText || "").length > 180
+        ? displayText.substring(0, 180).trim() + "..."
+        : displayText,
     link: "/tickets",
     buttonText: "Tickets reservieren",
-    status: "Nächste Premiere",
+    status: isPreBooking ? "Saison-Vorschau" : "Nächste Premiere",
     termine: termineArray,
-    image: ticketPromo.hauptfoto
-      ? `${directusUrl}/assets/${ticketPromo.hauptfoto}`
+    image: displayImage
+      ? `${directusUrl}/assets/${displayImage.id || displayImage}`
       : null,
   };
 }

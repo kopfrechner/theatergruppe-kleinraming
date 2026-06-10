@@ -40,9 +40,12 @@ interface Startseite {
 
 interface TicketPromotion {
   id: string;
-  aktiv: boolean;
+  anzeige_modus: 'inaktiv' | 'vorab_reservierung' | 'ticket_promotion';
   titel: string;
+  vorab_titel?: string;
   kurzbeschreibung: string;
+  vorab_text?: string;
+  vorab_bild?: any;
   ticketlotse_link: string;
   spielort?: string;
   telefon_reservierung?: string;
