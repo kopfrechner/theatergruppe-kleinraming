@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MemberCard from '../components/MemberCard.astro';
 import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
@@ -22,7 +23,8 @@ const vorstand = await directus.request(
     filter: {
       vorstandsmitglied: { _eq: true }
     },
-    sort: ['name']
+    fields: ['name', 'funktionen', 'foto'],
+    sort: ['sort', 'name']
   })
 ).catch(() => []);
 
@@ -89,33 +91,17 @@ const mapsLink = config.google_maps_link || "https://www.google.com/maps/search/
       </div>
     )}
 
-    <div class="glass-panel quick-links">
-      <h2>Quick Links</h2>
-      <div class="links-grid">
-        <a href="/tickets" class="link-item">
-          <strong>Karten reservieren</strong>
-          <span>Hier geht es zu unserem Ticket-System.</span>
-        </a>
-        <a href="/mitmachen" class="link-item">
-          <strong>Mitspielen / Mithelfen</strong>
-          <span>Erfahre, wie du Teil unserer Gruppe werden kannst.</span>
-        </a>
-        <a href="/stuecke" class="link-item">
-          <strong>Vergangene Stücke</strong>
-          <span>Schau dir an, was wir in den letzten Jahren gespielt haben.</span>
-        </a>
-      </div>
-    </div>
-
     <div class="glass-panel board-section">
       <h2>Unser Vorstand</h2>
       <p class="section-intro">Für spezifische Anliegen kannst du dich auch direkt an unsere Vorstandsmitglieder wenden:</p>
       <div class="board-grid">
         {vorstand.map((mensch) => (
-          <div class="board-member">
-            <strong>{mensch.name}</strong>
-            <p>{mensch.funktionen}</p>
-          </div>
+          <MemberCard 
+            name={mensch.name}
+            role={mensch.funktionen.split('\n')[0]}
+            roleDescription={mensch.funktionen.split('\n').slice(1).join(', ')}
+            image={mensch.foto}
+          />
         ))}
       </div>
     </div>
@@ -279,20 +265,8 @@ const mapsLink = config.google_maps_link || "https://www.google.com/maps/search/
 
   .board-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2rem;
-  }
-
-  .board-member strong {
-    display: block;
-    font-size: 1.1rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .board-member p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    white-space: pre-line;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 
   .map-placeholder {
