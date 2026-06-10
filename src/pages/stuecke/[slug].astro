@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import CastSection from '../../components/CastSection.astro';
 import PlayGallery from '../../components/PlayGallery.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { prepareGalleryImages } from '../../lib/mappers';
@@ -33,13 +34,30 @@ export async function getStaticPaths() {
 const { stueck } = Astro.props;
 
 const filteredGallery = await prepareGalleryImages(stueck.foto_gallerie, DIRECTUS_URL);
+
+// Prepare SEO metadata
+const cleanSynopsis = stueck.synopsis 
+  ? stueck.synopsis.replace(/<[^>]*>?/gm, "").replace(/\s+/g, " ").trim()
+  : "";
+const metaDescription = cleanSynopsis.length > 160 
+  ? cleanSynopsis.substring(0, 157) + "..." 
+  : cleanSynopsis || `Informationen zum Theaterstück ${stueck.titel} der Theatergruppe Kleinraming.`;
+
+const ogImage = stueck.titelfoto 
+  ? `${DIRECTUS_URL}/assets/${stueck.titelfoto}` 
+  : undefined;
 ---
 
-<Layout title={stueck.titel}>
+<Layout 
+  title={stueck.titel} 
+  description={metaDescription}
+  image={ogImage}
+>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
     <h1>{stueck.titel}</h1>
     <p class="play-year">Aufgeführt: {stueck.auffuehrung_im_jahr}</p>
+    <ShareButtons title={stueck.titel} class="header-share" />
   </div>
 
   <section class="container play-detail">
@@ -80,6 +98,11 @@ const filteredGallery = await prepareGalleryImages(stueck.foto_gallerie, DIRECTU
     color: var(--accent-gold);
     font-size: 1.2rem;
     font-weight: bold;
+  }
+
+  :global(.header-share) {
+    justify-content: center;
+    margin-top: 0.5rem;
   }
 
   .play-detail {
