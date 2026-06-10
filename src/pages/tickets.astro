@@ -4,6 +4,7 @@ import MemberCard from '../components/MemberCard.astro';
 import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
+import { Ticket, Phone, Calendar, Clock } from '@lucide/astro';
 
 const ticketPromo = await directus.request(
   readSingleton('ticket_promotion', {
@@ -79,7 +80,14 @@ const termineArray = [
   ticketPromo.termin_6
 ]
   .filter(t => t)
-  .map(t => new Date(t).toLocaleString(locale, dateFormat) + ' Uhr');
+  .map(t => {
+    const d = new Date(t);
+    return {
+      date: d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }),
+      time: d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' }),
+      weekday: d.toLocaleDateString(locale, { weekday: 'short' }).replace('.', '')
+    };
+  });
 
 const formatPrice = (price: string | undefined) => {
   if (!price) return null;
@@ -89,8 +97,8 @@ const formatPrice = (price: string | undefined) => {
 };
 
 const preiseArray = [
-  ticketPromo.preis_erwachsene ? `Erwachsene: ${formatPrice(ticketPromo.preis_erwachsene)}` : null,
-  ticketPromo.preis_jugendliche ? `Kinder/Jugendliche: ${formatPrice(ticketPromo.preis_jugendliche)}` : null
+  ticketPromo.preis_erwachsene ? { label: 'Erwachsene', value: formatPrice(ticketPromo.preis_erwachsene) } : null,
+  ticketPromo.preis_jugendliche ? { label: 'Kinder/Jugendliche', value: formatPrice(ticketPromo.preis_jugendliche) } : null
 ].filter(p => p);
 
 const autorGenre = isPreBooking ? null : [ticketPromo.autor, ticketPromo.genre].filter(x => x).join(' / ');
@@ -147,7 +155,7 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
       )}
 
       <div class="glass-panel content-box">
-        <h2>Aus dem Inhalt</h2>
+        <h2>{isPreBooking ? 'Vorschau auf die Saison' : 'Aus dem Inhalt'}</h2>
         <p class="synopsis-text">
           {isPreBooking 
             ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
@@ -193,18 +201,22 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
       <div class="glass-panel sticky-box">
         {ticketPromo.ticketlotse_link && (
           <a href={ticketPromo.ticketlotse_link} target="_blank" rel="noopener noreferrer" class="btn btn-large btn-full">
-            Tickets reservieren
+            <Ticket size={24} class="btn-icon" />
+            Online reservieren
           </a>
         )}
         
         {ticketPromo.telefon_reservierung && (
           <div class="info-group">
             <h3>Telefonische Reservierung</h3>
-            <p class="highlight-text">
-              <a href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`} class="phone-link">
-                {ticketPromo.telefon_reservierung}
-              </a>
-            </p>
+            <div class="phone-wrapper">
+              <Phone size={24} class="phone-icon" />
+              <p class="highlight-text">
+                <a href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`} class="phone-link">
+                  {ticketPromo.telefon_reservierung}
+                </a>
+              </p>
+            </div>
           </div>
         )}
 
@@ -214,8 +226,18 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
           <div class="info-group">
             <h3>Spielzeiten</h3>
             <ul class="dates-list">
-              {termineArray.map((termin: string) => (
-                <li>{termin}</li>
+              {termineArray.map((termin) => (
+                <li>
+                  <div class="date-row">
+                    <Calendar size={18} class="date-icon" />
+                    <span class="date-weekday">{termin.weekday}</span>
+                    <span class="date-val">{termin.date}</span>
+                  </div>
+                  <div class="time-row">
+                    <Clock size={16} class="time-icon" />
+                    <span>{termin.time} Uhr</span>
+                  </div>
+                </li>
               ))}
             </ul>
           </div>
@@ -227,8 +249,11 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
           <h3>Eintritt</h3>
           {preiseArray.length > 0 ? (
             <ul class="prices-list">
-              {preiseArray.map((preis: string) => (
-                <li>{preis}</li>
+              {preiseArray.map((preis) => (
+                <li>
+                  <span class="price-label">{preis.label}</span>
+                  <span class="price-val">{preis.value}</span>
+                </li>
               ))}
             </ul>
           ) : (
@@ -406,14 +431,40 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
     letter-spacing: 0.05em;
   }
 
+  .btn-icon {
+    margin-right: 0.8rem;
+  }
+
+  .phone-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 1.2rem;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: var(--transition);
+  }
+
+  .phone-wrapper:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .phone-icon {
+    color: var(--accent-green);
+    flex-shrink: 0;
+  }
+
   .highlight-text {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     font-weight: bold;
     color: var(--text-main);
   }
 
   .phone-link {
-    color: inherit;
+    color: #fff;
     text-decoration: none;
     transition: var(--transition);
   }
@@ -428,9 +479,58 @@ const castMembers = isPreBooking ? [] : (ticketPromo.crew
     margin: 0;
   }
 
-  .dates-list li, .prices-list li {
+  .dates-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .date-row, .time-row {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .date-icon, .time-icon {
+    color: var(--accent-green);
+    opacity: 0.8;
+  }
+
+  .date-weekday {
+    color: var(--accent-gold);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    min-width: 1.8rem;
+  }
+
+  .date-val {
+    font-weight: 500;
+    color: var(--text-main);
+  }
+
+  .time-row {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+  }
+
+  .prices-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 0.5rem 0;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .price-label {
+    color: var(--text-muted);
+  }
+
+  .price-val {
+    font-weight: 700;
+    color: var(--text-main);
   }
 
   .dates-list li:last-child, .prices-list li:last-child {
