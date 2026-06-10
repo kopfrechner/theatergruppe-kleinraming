@@ -56,7 +56,7 @@ interface TicketPromotion {
   genre?: string;
   preis_erwachsene?: string;
   preis_jugendliche?: string;
-  google_maps_link?: string;
+  map_embed?: string;
   crew?: any[];
   hauptfoto?: any;
   foto_szene_1?: any;
@@ -75,6 +75,8 @@ interface KontaktSeite {
   email: string;
   telefon: string;
   faq: FAQItem[];
+  location_name: string;
+  map_embed: string;
 }
 
 interface Impressum {

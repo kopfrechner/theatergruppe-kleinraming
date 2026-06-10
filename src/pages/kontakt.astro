@@ -1,17 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MemberCard from '../components/MemberCard.astro';
+import { Mail, Phone } from '@lucide/astro';
 import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
 // Fetch contact page configuration
 const config = await directus.request(
   readSingleton('kontakt_seite', {
-    fields: ['email', 'telefon', 'faq']
+    fields: ['email', 'telefon', 'faq', 'location_name', 'map_embed']
   })
 ).catch(() => ({
   email: "info@theatergruppe-kleinraming.at",
   telefon: "0680 / 3110037",
-  faq: []
+  faq: [],
+  location_name: "Gasthof Froschauer",
+  map_embed: ""
 }));
 
 // Fetch board members
@@ -20,13 +24,16 @@ const vorstand = await directus.request(
     filter: {
       vorstandsmitglied: { _eq: true }
     },
-    sort: ['name']
+    fields: ['name', 'funktionen', 'foto'],
+    sort: ['sort', 'name']
   })
 ).catch(() => []);
 
 const contactEmail = config.email || "info@theatergruppe-kleinraming.at";
 const contactPhone = config.telefon || "0680 / 3110037";
 const faqs = config.faq || [];
+const locationName = config.location_name || "Gasthof Froschauer";
+const mapEmbed = config.map_embed || "";
 ---
 
 <Layout title="Kontakt">
@@ -41,14 +48,14 @@ const faqs = config.faq || [];
         <h2>Allgemeine Anfragen</h2>
         <div class="contact-methods">
           <div class="method">
-            <span class="icon">📧</span>
+            <span class="icon"><Mail size={20} /></span>
             <div>
               <strong>E-Mail</strong>
               <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>
             </div>
           </div>
           <div class="method">
-            <span class="icon">📞</span>
+            <span class="icon"><Phone size={20} /></span>
             <div>
               <strong>Telefon</strong>
               <p><a href={`tel:${contactPhone.replace(/\s/g, '')}`}>{contactPhone}</a></p>
@@ -85,45 +92,30 @@ const faqs = config.faq || [];
       </div>
     )}
 
-    <div class="glass-panel quick-links">
-      <h2>Quick Links</h2>
-      <div class="links-grid">
-        <a href="/tickets" class="link-item">
-          <strong>Karten reservieren</strong>
-          <span>Hier geht es zu unserem Ticket-System.</span>
-        </a>
-        <a href="/mitmachen" class="link-item">
-          <strong>Mitspielen / Mithelfen</strong>
-          <span>Erfahre, wie du Teil unserer Gruppe werden kannst.</span>
-        </a>
-        <a href="/stuecke" class="link-item">
-          <strong>Vergangene Stücke</strong>
-          <span>Schau dir an, was wir in den letzten Jahren gespielt haben.</span>
-        </a>
-      </div>
-    </div>
-
     <div class="glass-panel board-section">
       <h2>Unser Vorstand</h2>
       <p class="section-intro">Für spezifische Anliegen kannst du dich auch direkt an unsere Vorstandsmitglieder wenden:</p>
       <div class="board-grid">
         {vorstand.map((mensch) => (
-          <div class="board-member">
-            <strong>{mensch.name}</strong>
-            <p>{mensch.funktionen}</p>
-          </div>
+          <MemberCard 
+            name={mensch.name}
+            role={mensch.funktionen.split('\n')[0]}
+            roleDescription={mensch.funktionen.split('\n').slice(1).join(', ')}
+            image={mensch.foto}
+          />
         ))}
       </div>
     </div>
 
     <div class="glass-panel location-section">
       <h2>Hier findest du uns</h2>
-      <p>Unsere Aufführungen finden meist im <strong>Gasthof Froschauer</strong> in Kleinraming statt.</p>
-      <div class="map-placeholder">
-        <a href="https://www.google.com/maps/search/?api=1&query=Gasthof+Froschauer+Kleinraming" target="_blank" rel="noopener noreferrer" class="btn">
-          In Google Maps öffnen
-        </a>
-      </div>
+      <p>Unsere Aufführungen finden meist im <strong>{locationName}</strong> statt.</p>
+      
+      {mapEmbed && (
+        <div class="map-container">
+          <div class="map-embed" set:html={mapEmbed} />
+        </div>
+      )}
     </div>
   </section>
 </Layout>
@@ -143,7 +135,7 @@ const faqs = config.faq || [];
     gap: 2rem;
   }
 
-  .contact-card, .faq-section, .quick-links, .board-section, .location-section {
+  .contact-card, .faq-section, .board-section, .location-section {
     padding: 2.5rem;
   }
 
@@ -233,41 +225,6 @@ const faqs = config.faq || [];
     line-height: 1.6;
   }
 
-  .links-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .link-item {
-    display: flex;
-    flex-direction: column;
-    padding: 1.5rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text-main);
-    transition: all 0.2s;
-  }
-
-  .link-item:hover {
-    background: rgba(255, 255, 255, 0.07);
-    border-color: var(--accent-green);
-    transform: translateY(-2px);
-  }
-
-  .link-item strong {
-    color: var(--accent-green);
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
-  }
-
-  .link-item span {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-  }
-
   .section-intro {
     margin-bottom: 2rem;
     color: var(--text-muted);
@@ -275,31 +232,22 @@ const faqs = config.faq || [];
 
   .board-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
 
-  .board-member strong {
-    display: block;
-    font-size: 1.1rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .board-member p {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    white-space: pre-line;
-  }
-
-  .map-placeholder {
+  .map-container {
     margin-top: 1.5rem;
-    height: 200px;
-    background: rgba(255, 255, 255, 0.05);
     border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px dashed rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .map-embed :global(iframe) {
+    width: 100% !important;
+    height: 350px !important;
+    border: 0;
+    display: block;
   }
 
   @media (max-width: 600px) {

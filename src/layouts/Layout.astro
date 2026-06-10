@@ -1,25 +1,28 @@
 ---
-import '../styles/global.css';
-import Logo from '../components/Logo.astro';
-import directus from '../lib/directus';
-import { readSingleton } from '@directus/sdk';
+import "../styles/global.css";
+import Logo from "../components/Logo.astro";
+import { Menu } from "@lucide/astro";
+import directus from "../lib/directus";
+import { readSingleton } from "@directus/sdk";
 
 interface Props {
   title: string;
   description?: string;
 }
 
-const { title, description = "Die Theatergruppe Kleinraming präsentiert." } = Astro.props;
+const { title, description = "Die Theatergruppe Kleinraming präsentiert." } =
+  Astro.props;
 const pathname = new URL(Astro.request.url).pathname;
 // Remove trailing slash for comparison (except for home page)
-const normalizedPath = pathname.endsWith('/') && pathname.length > 1 
-  ? pathname.slice(0, -1) 
-  : pathname;
+const normalizedPath =
+  pathname.endsWith("/") && pathname.length > 1
+    ? pathname.slice(0, -1)
+    : pathname;
 
 // Fetch ticket promotion status for the menu
-const ticketPromo = await directus.request(
-  readSingleton('ticket_promotion', { fields: ['aktiv'] })
-).catch(() => ({ aktiv: false }));
+const ticketPromo = await directus
+  .request(readSingleton("ticket_promotion", { fields: ["aktiv"] }))
+  .catch(() => ({ aktiv: false }));
 const isTicketsActive = ticketPromo?.aktiv;
 ---
 
@@ -39,17 +42,39 @@ const isTicketsActive = ticketPromo?.aktiv;
         <a href="/" class="logo-link" aria-label="Startseite">
           <Logo />
         </a>
-        <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Menü wechseln">
-          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        <button
+          id="mobile-menu-toggle"
+          class="mobile-menu-toggle"
+          aria-label="Menü wechseln"
+        >
+          <Menu size={24} />
         </button>
         <nav class="main-nav" id="main-nav">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
-          {isTicketsActive && (
-            <a href="/tickets" class={normalizedPath === "/tickets" ? "active" : ""}>Tickets</a>
-          )}
-          <a href="/theatermenschen" class={normalizedPath === "/theatermenschen" ? "active" : ""}>Theatermenschen</a>
-          <a href="/stuecke" class={normalizedPath.startsWith("/stuecke") ? "active" : ""}>Stücke</a>
-          <a href="/sponsoren" class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a>
+          {
+            isTicketsActive && (
+              <a
+                href="/tickets"
+                class={normalizedPath === "/tickets" ? "active" : ""}
+              >
+                Tickets
+              </a>
+            )
+          }
+          <a
+            href="/theatermenschen"
+            class={normalizedPath === "/theatermenschen" ? "active" : ""}
+            >Theatermenschen</a
+          >
+          <a
+            href="/stuecke"
+            class={normalizedPath.startsWith("/stuecke") ? "active" : ""}
+            >Stücke</a
+          >
+          <a
+            href="/sponsoren"
+            class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a
+          >
         </nav>
       </div>
     </header>
@@ -62,24 +87,52 @@ const isTicketsActive = ticketPromo?.aktiv;
       <div class="container footer-content">
         <div class="footer-links">
           <a href="/mitmachen">Mitmachen</a>
-          <a href="/kontakt">Kontakt</a>
+          <a href="/kontakt">Kontakt & FAQ</a>
           <a href="/impressum">Impressum</a>
           <a href="/datenschutz">Datenschutz</a>
         </div>
         <div class="social-links">
-          <!-- Placeholder Icons -->
-          <a href="https://www.facebook.com/Theatergruppe.Kleinraming/" target="_blank" rel="noopener noreferrer">Facebook</a>
-          <a href="https://www.instagram.com/theatergruppe.kleinraming/" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a
+            href="https://www.facebook.com/Theatergruppe.Kleinraming/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-icon facebook"
+            aria-label="Facebook"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+          <a
+            href="https://www.instagram.com/theatergruppe.kleinraming/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-icon instagram"
+            aria-label="Instagram"
+          >
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="url(#insta-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          </a>
         </div>
       </div>
+      
+      <!-- Shared SVG Gradients -->
+      <svg width="0" height="0" style="position: absolute;">
+        <defs>
+          <linearGradient id="insta-grad" x1="100%" y1="100%" x2="0%" y2="0%">
+            <stop stop-color="#f09433" offset="0%"></stop>
+            <stop stop-color="#e6683c" offset="25%"></stop>
+            <stop stop-color="#dc2743" offset="50%"></stop>
+            <stop stop-color="#cc2366" offset="75%"></stop>
+            <stop stop-color="#bc1888" offset="100%"></stop>
+          </linearGradient>
+        </defs>
+      </svg>
     </footer>
 
     <script>
-      const toggle = document.getElementById('mobile-menu-toggle');
-      const nav = document.getElementById('main-nav');
+      const toggle = document.getElementById("mobile-menu-toggle");
+      const nav = document.getElementById("main-nav");
       if (toggle && nav) {
-        toggle.addEventListener('click', () => {
-          nav.classList.toggle('open');
+        toggle.addEventListener("click", () => {
+          nav.classList.toggle("open");
         });
       }
     </script>
@@ -152,7 +205,7 @@ const isTicketsActive = ticketPromo?.aktiv;
 
   @media (min-width: 768px) {
     .main-nav a.active::after {
-      content: '';
+      content: "";
       position: absolute;
       bottom: -5px;
       left: 0;
@@ -208,19 +261,39 @@ const isTicketsActive = ticketPromo?.aktiv;
     }
   }
 
-  .footer-links, .social-links {
+  .footer-links,
+  .social-links {
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: center;
   }
 
-  .footer-links a, .social-links a {
+  .footer-links a,
+  .social-links a {
     color: var(--text-muted);
     font-size: 0.9rem;
   }
 
-  .footer-links a:hover, .social-links a:hover {
+  .social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .social-icon.facebook {
+    color: #1877f2 !important;
+  }
+
+  .social-icon:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.3);
+  }
+
+  .footer-links a:hover {
     color: var(--accent-green);
   }
 </style>

@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import MemberCard from '../components/MemberCard.astro';
 import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
@@ -24,7 +25,7 @@ const ticketPromo = await directus.request(
       'genre',
       'preis_erwachsene',
       'preis_jugendliche',
-      'google_maps_link',
+      'map_embed',
       'crew.theatermenschen_id.*',
       'crew.theatermenschen_id.foto.*',
       'crew.rolle',
@@ -58,7 +59,8 @@ const dateFormat: Intl.DateTimeFormatOptions = {
   month: '2-digit', 
   year: 'numeric',
   hour: '2-digit',
-  minute: '2-digit'
+  minute: '2-digit',
+  timeZone: 'Europe/Vienna'
 };
 
 const termineArray = [
@@ -129,27 +131,12 @@ const castMembers = ticketPromo.crew
           <h2>Die Mitwirkenden</h2>
           <div class="cast-grid">
             {castMembers.map((member: any) => (
-              <div class="cast-card">
-                {member.foto ? (
-                  <Image 
-                    src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
-                    alt={member.name}
-                    width={100}
-                    height={100}
-                    format="webp"
-                    class="cast-photo"
-                  />
-                ) : (
-                  <div class="cast-photo-placeholder">
-                    <span>{member.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div class="cast-info">
-                  <span class="actor-name">{member.name}</span>
-                  <span class="role-name">{member.rolle}</span>
-                  {member.rolle_beschreibung && <span class="role-desc">{member.rolle_beschreibung}</span>}
-                </div>
-              </div>
+              <MemberCard 
+                name={member.name}
+                role={member.rolle}
+                roleDescription={member.rolle_beschreibung}
+                image={member.foto}
+              />
             ))}
           </div>
         </div>
@@ -223,13 +210,13 @@ const castMembers = ticketPromo.crew
         {ticketPromo.spielort && (
           <>
             <hr class="divider" />
-            <div class="info-group">
+            <div class="info-group location-group">
               <h3>Spielort</h3>
               <p>{ticketPromo.spielort}</p>
-              {ticketPromo.google_maps_link && (
-                <a href={ticketPromo.google_maps_link} target="_blank" rel="noopener noreferrer" class="map-link">
-                  In Google Maps öffnen
-                </a>
+              {ticketPromo.map_embed && (
+                <div class="map-container">
+                  <div class="map-embed" set:html={ticketPromo.map_embed} />
+                </div>
               )}
             </div>
           </>
@@ -354,60 +341,6 @@ const castMembers = ticketPromo.crew
     }
   }
 
-  .cast-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .cast-photo, .cast-photo-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--accent-green);
-  }
-
-  .cast-photo-placeholder {
-    background: var(--bg-color-light);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: var(--accent-green);
-    font-size: 1.2rem;
-  }
-
-  .cast-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .actor-name {
-    font-weight: bold;
-    color: var(--text-main);
-  }
-
-  .role-name {
-    color: var(--accent-gold);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.2rem;
-  }
-
-  .role-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.1rem;
-  }
-
   /* Sticky Sidebar */
   @media (min-width: 900px) {
     .flyer-sidebar {
@@ -482,10 +415,20 @@ const castMembers = ticketPromo.crew
     margin: 2rem 0;
   }
 
-  .map-link {
-    display: inline-block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    font-weight: 600;
+  .location-group p {
+    margin-bottom: 1rem;
+  }
+
+  .map-container {
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .map-embed :global(iframe) {
+    width: 100% !important;
+    height: 250px !important;
+    border: 0;
+    display: block;
   }
 </style>

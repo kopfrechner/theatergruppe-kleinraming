@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile } from '@lucide/astro';
 ---
 
 <Layout title="Mitmachen">
@@ -13,19 +14,19 @@ import Layout from '../layouts/Layout.astro';
       <div class="grid grid-2">
         <div>
           <h2>Warum Mitmachen?</h2>
-          <ul>
-            <li>Tolle Gemeinschaft und Zusammenhalt</li>
-            <li>Gemeinsam kreative Projekte umsetzen</li>
-            <li>Viel Spaß bei Proben und Aufführungen</li>
+          <ul class="icon-list">
+            <li><Heart class="text-green" size={20} /> Tolle Gemeinschaft und Zusammenhalt</li>
+            <li><Sparkles class="text-green" size={20} /> Gemeinsam kreative Projekte umsetzen</li>
+            <li><Smile class="text-green" size={20} /> Viel Spaß bei Proben und Aufführungen</li>
           </ul>
         </div>
         <div>
           <h2>Welche Rollen gibt es?</h2>
-          <ul>
-            <li>Schauspiel: Steh im Rampenlicht!</li>
-            <li>Bühnenbau & Technik: Für die Bastler und Tüftler.</li>
-            <li>Maske & Kostüm: Kreativität gefragt.</li>
-            <li>Gastro & Kassa: Das Team am Veranstaltungsabend.</li>
+          <ul class="icon-list">
+            <li><Users class="text-green" size={20} /> Schauspiel: Steh im Rampenlicht!</li>
+            <li><Construction class="text-green" size={20} /> Bühnenbau & Technik: Bastler und Tüftler.</li>
+            <li><Paintbrush class="text-green" size={20} /> Maske & Kostüm: Kreativität gefragt.</li>
+            <li><Utensils class="text-green" size={20} /> Gastro & Kassa: Das Team am Abend.</li>
           </ul>
         </div>
       </div>
@@ -58,16 +59,27 @@ import Layout from '../layouts/Layout.astro';
   .grid-2 h2 {
     color: var(--accent-green);
     font-size: 1.5rem;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
   }
 
-  ul {
-    list-style-position: inside;
+  .icon-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .icon-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     color: var(--text-main);
   }
 
-  li {
-    margin-bottom: 0.5rem;
+  .text-green {
+    color: var(--accent-green);
+    flex-shrink: 0;
   }
 
   .contact-box {

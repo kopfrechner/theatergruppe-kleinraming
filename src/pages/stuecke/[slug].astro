@@ -1,9 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import CastSection from '../../components/CastSection.astro';
+import PlayGallery from '../../components/PlayGallery.astro';
 import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
-import { Image, getImage, inferRemoteSize } from 'astro:assets';
-import 'photoswipe/style.css';
+import { prepareGalleryImages } from '../../lib/mappers';
 
 export async function getStaticPaths() {
   const stuecke = await directus.request(
@@ -31,49 +32,7 @@ export async function getStaticPaths() {
 
 const { stueck } = Astro.props;
 
-// Vorbereitung der optimierten Galerie-Bilder (Großansicht) für PhotoSwipe
-const galleryImages = stueck.foto_gallerie && stueck.foto_gallerie.length > 0 
-  ? await Promise.all(
-      stueck.foto_gallerie.map(async (item) => {
-        if (!item.directus_files_id) return null;
-        
-        const remoteUrl = `${DIRECTUS_URL}/assets/${item.directus_files_id}`;
-        
-        try {
-          // 1. Holen der originalen Dimensionen vom CMS
-          const { width: origWidth, height: origHeight } = await inferRemoteSize(remoteUrl);
-          
-          // 2. Zielbreite festlegen (max 1600px)
-          const targetWidth = Math.min(origWidth, 1600);
-          
-          // 3. Zielhöhe basierend auf dem originalen Seitenverhältnis berechnen
-          const aspectRatio = origWidth / origHeight;
-          const targetHeight = Math.round(targetWidth / aspectRatio);
-          
-          // 4. Generiere optimiertes lokales Asset
-          const optimized = await getImage({
-            src: remoteUrl,
-            width: targetWidth,
-            height: targetHeight,
-            format: 'webp'
-          });
-          
-          return {
-            src: optimized.src,
-            width: targetWidth,
-            height: targetHeight,
-            thumbnail: remoteUrl,
-            id: item.directus_files_id
-          };
-        } catch (e) {
-          console.error(`Fehler beim Verarbeiten von Bild ${item.directus_files_id}:`, e);
-          return null;
-        }
-      })
-    )
-  : [];
-
-const filteredGallery = galleryImages.filter(img => img !== null);
+const filteredGallery = await prepareGalleryImages(stueck.foto_gallerie, DIRECTUS_URL);
 ---
 
 <Layout title={stueck.titel}>
@@ -95,130 +54,15 @@ const filteredGallery = galleryImages.filter(img => img !== null);
       </div>
       
       {stueck.spieler && stueck.spieler.length > 0 && (
-        <div class="cast-section">
-          <h3>Besetzung</h3>
-          <div class="cast-grid">
-            {stueck.spieler.map((s) => (
-              <div class="cast-card">
-                {s.theatermenschen_id.foto ? (
-                  <Image 
-                    src={`${DIRECTUS_URL}/assets/${s.theatermenschen_id.foto.id || s.theatermenschen_id.foto}`} 
-                    alt={s.theatermenschen_id.name}
-                    width={100}
-                    height={100}
-                    format="webp"
-                    class="cast-photo"
-                  />
-                ) : (
-                  <div class="cast-photo-placeholder">
-                    <span>{s.theatermenschen_id.name.charAt(0)}</span>
-                  </div>
-                )}
-                <div class="cast-info">
-                  <span class="actor-name">{s.theatermenschen_id.name}</span>
-                  <span class="role-name">{s.rolle_name}</span>
-                  {s.rolle_beschreibung && <span class="role-desc">{s.rolle_beschreibung}</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+        <CastSection spieler={stueck.spieler} />
       )}
 
       {filteredGallery.length > 0 && (
-        <div class="gallery">
-          <h3>Galerie</h3>
-          <div class="grid-3 pswp-gallery" id="play-gallery">
-            {filteredGallery.map((img, index) => (
-              <a 
-                href={img.src}
-                data-pswp-width={img.width}
-                data-pswp-height={img.height}
-                target="_blank"
-                class="gallery-item"
-              >
-                <Image 
-                  src={img.thumbnail} 
-                  alt={`${stueck.titel} - Galeriebild ${index + 1}`} 
-                  width={400}
-                  height={300}
-                  format="webp"
-                />
-              </a>
-            ))}
-          </div>
-        </div>
+        <PlayGallery images={filteredGallery} title={stueck.titel} />
       )}
     </div>
   </section>
 </Layout>
-
-<script>
-  import PhotoSwipeLightbox from 'photoswipe/lightbox';
-  
-  let slideshowInterval;
-  
-  const lightbox = new PhotoSwipeLightbox({
-    gallery: '#play-gallery',
-    children: 'a',
-    pswpModule: () => import('photoswipe'),
-    showHideAnimationType: 'zoom',
-    bgOpacity: 0.95,
-  });
-
-  lightbox.on('uiRegister', function() {
-    lightbox.pswp.ui.registerElement({
-      name: 'download-button',
-      order: 10,
-      isButton: true,
-      tagName: 'a',
-      html: {
-        isCustomSVG: true,
-        inner: '<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 15.8l5 5.2 5-5.2ZM10 13.3a2 2 0 0 1-2-2V4.7c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v6.6a2 2 0 0 1-2 2H10Z" fill="currentColor"/>',
-        outlineID: 'pswp__icn-download'
-      },
-      onInit: (el, pswp) => {
-        el.setAttribute('download', '');
-        el.setAttribute('target', '_blank');
-        el.setAttribute('rel', 'noopener');
-        el.setAttribute('title', 'Bild herunterladen');
-        pswp.on('change', () => {
-          el.href = pswp.currSlide.data.src;
-        });
-      }
-    });
-
-    lightbox.pswp.ui.registerElement({
-      name: 'play-pause-button',
-      order: 9,
-      isButton: true,
-      html: '<svg aria-hidden="true" class="pswp__icn pswp__icn-play" viewBox="0 0 32 32" width="32" height="32"><path d="M10 6l16 10-16 10z" fill="currentColor"/></svg><svg aria-hidden="true" class="pswp__icn pswp__icn-pause" viewBox="0 0 32 32" width="32" height="32" style="display:none"><path d="M8 6h6v20H8zM18 6h6v20h-6z" fill="currentColor"/></svg>',
-      onClick: (event, el, pswp) => {
-        if (slideshowInterval) {
-          clearInterval(slideshowInterval);
-          slideshowInterval = null;
-          el.querySelector('.pswp__icn-play').style.display = 'block';
-          el.querySelector('.pswp__icn-pause').style.display = 'none';
-        } else {
-          slideshowInterval = setInterval(() => {
-            pswp.next();
-          }, 3000);
-          el.querySelector('.pswp__icn-play').style.display = 'none';
-          el.querySelector('.pswp__icn-pause').style.display = 'block';
-        }
-      }
-    });
-  });
-
-  lightbox.on('close', () => {
-    if (slideshowInterval) {
-      clearInterval(slideshowInterval);
-      slideshowInterval = null;
-    }
-  });
-
-  lightbox.init();
-</script>
 
 <style>
   .back-link {
@@ -250,130 +94,5 @@ const filteredGallery = galleryImages.filter(img => img !== null);
   .abstract {
     font-size: 1.1rem;
     line-height: 1.8;
-  }
-
-  .cast-section {
-    margin-top: 3rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 2rem;
-  }
-
-  .cast-section h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-  }
-
-  .cast-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .cast-card {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
-    padding: 1rem;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .cast-photo, .cast-photo-placeholder {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    object-fit: cover;
-    flex-shrink: 0;
-    border: 2px solid var(--accent-green);
-  }
-
-  .cast-photo-placeholder {
-    background: var(--bg-card);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    color: var(--accent-green);
-    font-size: 1.2rem;
-  }
-
-  .cast-info {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .actor-name {
-    font-weight: bold;
-    color: var(--text-bright);
-  }
-
-  .role-name {
-    color: var(--accent-gold);
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.2rem;
-  }
-
-  .role-desc {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    font-style: italic;
-    margin-top: 0.1rem;
-  }
-
-  .gallery {
-    margin-top: 3rem;
-  }
-
-  .gallery h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-  }
-
-  .grid-3 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .gallery-item {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-  }
-
-  .gallery-item:hover {
-    transform: scale(1.02);
-    border-color: var(--accent-green);
-    box-shadow: 0 4px 20px rgba(143, 194, 56, 0.2);
-  }
-
-  .gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  :global(.pswp) {
-    --pswp-bg: rgba(10, 10, 10, 0.98);
-    --pswp-placeholder-bg: #1a1a1a;
-  }
-
-  :global(.pswp__button--download-button), 
-  :global(.pswp__button--play-pause-button) {
-    opacity: 0.75;
-  }
-
-  :global(.pswp__button--download-button:hover),
-  :global(.pswp__button--play-pause-button:hover) {
-    opacity: 1;
-    color: var(--accent-green);
   }
 </style>
