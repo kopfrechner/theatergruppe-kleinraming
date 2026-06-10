@@ -6,12 +6,14 @@ import { readItems, readSingleton } from '@directus/sdk';
 // Fetch contact page configuration
 const config = await directus.request(
   readSingleton('kontakt_seite', {
-    fields: ['email', 'telefon', 'faq']
+    fields: ['email', 'telefon', 'faq', 'location_name', 'google_maps_link']
   })
 ).catch(() => ({
   email: "info@theatergruppe-kleinraming.at",
   telefon: "0680 / 3110037",
-  faq: []
+  faq: [],
+  location_name: "Gasthof Froschauer",
+  google_maps_link: "https://www.google.com/maps/search/?api=1&query=Gasthof+Froschauer+Kleinraming"
 }));
 
 // Fetch board members
@@ -27,6 +29,8 @@ const vorstand = await directus.request(
 const contactEmail = config.email || "info@theatergruppe-kleinraming.at";
 const contactPhone = config.telefon || "0680 / 3110037";
 const faqs = config.faq || [];
+const locationName = config.location_name || "Gasthof Froschauer";
+const mapsLink = config.google_maps_link || "https://www.google.com/maps/search/?api=1&query=Gasthof+Froschauer+Kleinraming";
 ---
 
 <Layout title="Kontakt">
@@ -118,9 +122,9 @@ const faqs = config.faq || [];
 
     <div class="glass-panel location-section">
       <h2>Hier findest du uns</h2>
-      <p>Unsere Aufführungen finden meist im <strong>Gasthof Froschauer</strong> in Kleinraming statt.</p>
+      <p>Unsere Aufführungen finden meist im <strong>{locationName}</strong> statt.</p>
       <div class="map-placeholder">
-        <a href="https://www.google.com/maps/search/?api=1&query=Gasthof+Froschauer+Kleinraming" target="_blank" rel="noopener noreferrer" class="btn">
+        <a href={mapsLink} target="_blank" rel="noopener noreferrer" class="btn">
           In Google Maps öffnen
         </a>
       </div>
