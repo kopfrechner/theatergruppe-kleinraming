@@ -1,0 +1,310 @@
+---
+import Layout from '../layouts/Layout.astro';
+import directus from '../lib/directus';
+import { readItems, readSingleton } from '@directus/sdk';
+
+// Fetch contact page configuration
+const config = await directus.request(
+  readSingleton('kontakt_seite', {
+    fields: ['email', 'telefon', 'faq']
+  })
+).catch(() => ({
+  email: "info@theatergruppe-kleinraming.at",
+  telefon: "0680 / 3110037",
+  faq: []
+}));
+
+// Fetch board members
+const vorstand = await directus.request(
+  readItems('theatermenschen', {
+    filter: {
+      vorstandsmitglied: { _eq: true }
+    },
+    sort: ['name']
+  })
+).catch(() => []);
+
+const contactEmail = config.email || "info@theatergruppe-kleinraming.at";
+const contactPhone = config.telefon || "0680 / 3110037";
+const faqs = config.faq || [];
+---
+
+<Layout title="Kontakt">
+  <div class="container page-header">
+    <h1>Kontakt</h1>
+    <p class="subtitle">Du hast Fragen, Wünsche oder Anregungen? Wir freuen uns auf deine Nachricht!</p>
+  </div>
+
+  <section class="container contact-section">
+    <div class="grid grid-2">
+      <div class="glass-panel contact-card">
+        <h2>Allgemeine Anfragen</h2>
+        <div class="contact-methods">
+          <div class="method">
+            <span class="icon">📧</span>
+            <div>
+              <strong>E-Mail</strong>
+              <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>
+            </div>
+          </div>
+          <div class="method">
+            <span class="icon">📞</span>
+            <div>
+              <strong>Telefon</strong>
+              <p><a href={`tel:${contactPhone.replace(/\s/g, '')}`}>{contactPhone}</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-panel contact-card">
+        <h2>Social Media</h2>
+        <p>Folge uns für aktuelle Infos und Einblicke hinter die Kulissen:</p>
+        <div class="social-links-large">
+          <a href="https://www.facebook.com/Theatergruppe.Kleinraming/" target="_blank" rel="noopener noreferrer" class="social-btn facebook">
+            Facebook
+          </a>
+          <a href="https://www.instagram.com/theatergruppe.kleinraming/" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+            Instagram
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {faqs.length > 0 && (
+      <div class="glass-panel faq-section">
+        <h2>Häufig gestellte Fragen (FAQ)</h2>
+        <div class="faq-list">
+          {faqs.map((item) => (
+            <div class="faq-item">
+              <h3>{item.frage}</h3>
+              <p>{item.antwort}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <div class="glass-panel quick-links">
+      <h2>Quick Links</h2>
+      <div class="links-grid">
+        <a href="/tickets" class="link-item">
+          <strong>Karten reservieren</strong>
+          <span>Hier geht es zu unserem Ticket-System.</span>
+        </a>
+        <a href="/mitmachen" class="link-item">
+          <strong>Mitspielen / Mithelfen</strong>
+          <span>Erfahre, wie du Teil unserer Gruppe werden kannst.</span>
+        </a>
+        <a href="/stuecke" class="link-item">
+          <strong>Vergangene Stücke</strong>
+          <span>Schau dir an, was wir in den letzten Jahren gespielt haben.</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="glass-panel board-section">
+      <h2>Unser Vorstand</h2>
+      <p class="section-intro">Für spezifische Anliegen kannst du dich auch direkt an unsere Vorstandsmitglieder wenden:</p>
+      <div class="board-grid">
+        {vorstand.map((mensch) => (
+          <div class="board-member">
+            <strong>{mensch.name}</strong>
+            <p>{mensch.funktionen}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="glass-panel location-section">
+      <h2>Hier findest du uns</h2>
+      <p>Unsere Aufführungen finden meist im <strong>Gasthof Froschauer</strong> in Kleinraming statt.</p>
+      <div class="map-placeholder">
+        <a href="https://www.google.com/maps/search/?api=1&query=Gasthof+Froschauer+Kleinraming" target="_blank" rel="noopener noreferrer" class="btn">
+          In Google Maps öffnen
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .contact-section {
+    max-width: 1000px;
+    margin-bottom: 5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+
+  .contact-card, .faq-section, .quick-links, .board-section, .location-section {
+    padding: 2.5rem;
+  }
+
+  h2 {
+    color: var(--accent-green);
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+  }
+
+  .contact-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .method {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .method .icon {
+    font-size: 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 0.5rem;
+    border-radius: 8px;
+    line-height: 1;
+  }
+
+  .method div p {
+    margin-top: 0.2rem;
+  }
+
+  .method a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1.1rem;
+  }
+
+  .method a:hover {
+    color: var(--accent-green);
+  }
+
+  .social-links-large {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .social-btn {
+    flex: 1;
+    text-align: center;
+    padding: 0.8rem;
+    border-radius: 8px;
+    text-decoration: none;
+    color: white;
+    font-weight: 600;
+    transition: transform 0.2s;
+  }
+
+  .social-btn:hover {
+    transform: translateY(-2px);
+  }
+
+  .facebook {
+    background-color: #1877F2;
+  }
+
+  .instagram {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+  }
+
+  .faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .faq-item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-main);
+  }
+
+  .faq-item p {
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .link-item {
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: all 0.2s;
+  }
+
+  .link-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--accent-green);
+    transform: translateY(-2px);
+  }
+
+  .link-item strong {
+    color: var(--accent-green);
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+  }
+
+  .link-item span {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+
+  .section-intro {
+    margin-bottom: 2rem;
+    color: var(--text-muted);
+  }
+
+  .board-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 2rem;
+  }
+
+  .board-member strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .board-member p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    white-space: pre-line;
+  }
+
+  .map-placeholder {
+    margin-top: 1.5rem;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+
+  @media (max-width: 600px) {
+    .social-links-large {
+      flex-direction: column;
+    }
+  }
+</style>
