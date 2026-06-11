@@ -387,7 +387,7 @@ const ogImage = isPreBooking
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
   }
 
   .scene-item img {
@@ -400,10 +400,10 @@ const ogImage = isPreBooking
   .ensemble-photo {
     width: 100%;
     aspect-ratio: 10 / 7;
-    background-color: rgba(255, 255, 255, 0.02);
+    background-color: var(--card-bg);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid var(--card-border);
   }
 
   .ensemble-photo img {
@@ -470,16 +470,16 @@ const ogImage = isPreBooking
     align-items: center;
     justify-content: center;
     gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg);
     padding: 1.2rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
     transition: var(--transition);
   }
 
   .phone-wrapper:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-hover);
+    border-color: rgba(var(--text-main-rgb), 0.1);
   }
 
   .phone-icon {
@@ -494,7 +494,7 @@ const ogImage = isPreBooking
   }
 
   .phone-link {
-    color: #fff;
+    color: var(--text-main);
     text-decoration: none;
     transition: var(--transition);
   }
@@ -514,7 +514,7 @@ const ogImage = isPreBooking
     justify-content: space-between;
     align-items: center;
     padding: 0.8rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--card-border);
   }
 
   .date-row, .time-row {
@@ -551,7 +551,7 @@ const ogImage = isPreBooking
     justify-content: space-between;
     align-items: center;
     padding: 0.5rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid var(--card-border);
   }
 
   .price-label {
@@ -570,7 +570,7 @@ const ogImage = isPreBooking
   .divider {
     border: 0;
     height: 1px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--card-border);
     margin: 2rem 0;
   }
 
@@ -582,8 +582,8 @@ const ogImage = isPreBooking
     aspect-ratio: 16 / 9;
     border-radius: 8px;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    background-color: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--card-border);
+    background-color: var(--card-bg);
     position: relative;
   }
 
