@@ -65,8 +65,6 @@ const optimizedBg = await getImage({
   .hero {
     min-height: 82vh;
     width: 100%;
-    margin-top: -80px; /* Pull under the sticky header */
-    padding-top: 80px; /* Offset content so it stays centered in viewport */
     display: flex;
     align-items: center;
     background-size: cover;
@@ -77,44 +75,8 @@ const optimizedBg = await getImage({
     overflow: hidden;
   }
 
-  .hero::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 140px; /* Narrower height */
-    background: linear-gradient(
-      to bottom,
-      var(--bg-color) 0%,
-      var(--bg-color) 80px, /* Solid behind the header */
-      transparent 100%
-    );
-    pointer-events: none;
-    z-index: 0;
-  }
-
-  .hero::after {
-    content: "";
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(
-      to top,
-      var(--bg-color) 5%,
-      rgba(var(--bg-color-rgb), 0.8) 20%,
-      transparent 100%
-    );
-    pointer-events: none;
-  }
-
   .hero-content {
     text-align: center;
-    transform: translateY(
-      2.5rem
-    ); /* Fine-tune vertical position to center in stage opening */
     z-index: 1;
   }
 
@@ -160,25 +122,6 @@ const optimizedBg = await getImage({
     margin-bottom: 2.5rem;
     max-width: 600px;
     margin-inline: auto;
-  }
-
-  :global([data-theme="light"]) .hero::before {
-    background: linear-gradient(
-      to bottom,
-      var(--bg-color) 0%,
-      var(--bg-color) 80px,
-      transparent 100%
-    );
-  }
-
-  :global([data-theme="light"]) .hero::after {
-    height: 30%; /* Less tall on light mode */
-    background: linear-gradient(
-      to top,
-      var(--bg-color) 0%,
-      rgba(var(--bg-color-rgb), 0.2) 20%,
-      transparent 100%
-    );
   }
 
   .hero-actions {
