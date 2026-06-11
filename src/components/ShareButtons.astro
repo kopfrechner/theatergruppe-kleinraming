@@ -49,6 +49,7 @@ const shareLinks = {
       aria-label="Link kopieren"
       title="Link kopieren"
     >
+      <span class="sr-only" id="copy-status">Link kopieren</span>
       <svg class="icon-link" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
         <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
@@ -70,24 +71,24 @@ const shareLinks = {
   shareTriggers.forEach(btn => {
     btn.addEventListener('click', async () => {
       const url = btn.getAttribute('data-url');
+      const statusEl = btn.querySelector('#copy-status');
       if (!url) return;
 
       try {
-        // Use Web Share API if available (mobile)
         if (navigator.share) {
           await navigator.share({
             title: document.title,
             url: url
           });
         } else {
-          // Fallback to Clipboard API
           await navigator.clipboard.writeText(url);
           
-          // Visual feedback
           btn.classList.add('copied');
+          if (statusEl) statusEl.textContent = "Link in die Zwischenablage kopiert";
           
           setTimeout(() => {
             btn.classList.remove('copied');
+            if (statusEl) statusEl.textContent = "Link kopieren";
           }, 2000);
         }
       } catch (err) {
@@ -98,6 +99,18 @@ const shareLinks = {
 </script>
 
 <style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
   .share-container {
     display: flex;
     align-items: center;

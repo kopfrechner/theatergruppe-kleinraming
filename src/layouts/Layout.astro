@@ -78,10 +78,12 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
           id="mobile-menu-toggle"
           class="mobile-menu-toggle"
           aria-label="Menü wechseln"
+          aria-expanded="false"
+          aria-controls="main-nav"
         >
           <Menu size={24} />
         </button>
-        <nav class="main-nav" id="main-nav">
+        <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
           {
             isTicketsActive && (
@@ -164,7 +166,8 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
       const nav = document.getElementById("main-nav");
       if (toggle && nav) {
         toggle.addEventListener("click", () => {
-          nav.classList.toggle("open");
+          const isOpen = nav.classList.toggle("open");
+          toggle.setAttribute("aria-expanded", isOpen.toString());
         });
       }
     </script>
