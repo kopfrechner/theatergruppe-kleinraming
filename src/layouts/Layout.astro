@@ -170,6 +170,43 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
   </body>
 </html>
 
+<style is:global>
+  /* Critical CSS for Header/Nav to prevent flickering */
+  .main-header {
+    background-color: rgba(15, 14, 13, 0.8);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 230, 200, 0.05);
+    height: 80px; /* Fixed height for stability */
+  }
+
+  .main-nav {
+    display: none; /* Mobile first: hidden by default */
+  }
+
+  @media (min-width: 768px) {
+    .main-nav {
+      display: flex !important; /* Force visible on desktop immediately */
+      position: static;
+      flex-direction: row;
+      background-color: transparent;
+      padding: 0;
+      border: none;
+      gap: 2rem;
+    }
+    
+    .mobile-menu-toggle {
+      display: none !important;
+    }
+  }
+
+  .main-nav.open {
+    display: flex;
+  }
+</style>
+
 <style>
   .main-header {
     background-color: rgba(15, 14, 13, 0.8);
