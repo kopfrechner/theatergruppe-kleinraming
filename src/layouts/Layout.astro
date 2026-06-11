@@ -96,44 +96,47 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
         </a>
         
         <div class="header-actions">
-          <ThemeToggle />
-          <button
-            id="mobile-menu-toggle"
-            class="mobile-menu-toggle"
-            aria-label="Menü wechseln"
-            aria-expanded="false"
-            aria-controls="main-nav"
-          >
-            <Menu size={24} />
-          </button>
+          <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
+            <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
+            {
+              isTicketsActive && (
+                <a
+                  href="/tickets"
+                  class={normalizedPath === "/tickets" ? "active" : ""}
+                >
+                  Tickets
+                </a>
+              )
+            }
+            <a
+              href="/theatermenschen"
+              class={normalizedPath === "/theatermenschen" ? "active" : ""}
+              >Theatermenschen</a
+            >
+            <a
+              href="/stuecke"
+              class={normalizedPath.startsWith("/stuecke") ? "active" : ""}
+              >Stücke</a
+            >
+            <a
+              href="/sponsoren"
+              class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a
+            >
+          </nav>
+
+          <div class="header-controls">
+            <ThemeToggle />
+            <button
+              id="mobile-menu-toggle"
+              class="mobile-menu-toggle"
+              aria-label="Menü wechseln"
+              aria-expanded="false"
+              aria-controls="main-nav"
+            >
+              <Menu size={24} />
+            </button>
+          </div>
         </div>
-        <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
-          <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
-          {
-            isTicketsActive && (
-              <a
-                href="/tickets"
-                class={normalizedPath === "/tickets" ? "active" : ""}
-              >
-                Tickets
-              </a>
-            )
-          }
-          <a
-            href="/theatermenschen"
-            class={normalizedPath === "/theatermenschen" ? "active" : ""}
-            >Theatermenschen</a
-          >
-          <a
-            href="/stuecke"
-            class={normalizedPath.startsWith("/stuecke") ? "active" : ""}
-            >Stücke</a
-          >
-          <a
-            href="/sponsoren"
-            class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a
-          >
-        </nav>
       </div>
     </header>
 
@@ -255,6 +258,12 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
   .header-actions {
     display: flex;
     align-items: center;
+    gap: 2rem;
+  }
+
+  .header-controls {
+    display: flex;
+    align-items: center;
     gap: 0.5rem;
   }
 
@@ -275,7 +284,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
   .main-nav {
     display: none;
     position: absolute;
-    top: 100%;
+    top: 80px;
     left: 0;
     right: 0;
     background-color: var(--bg-color);
@@ -334,7 +343,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
       background-color: transparent;
       padding: 0;
       border: none;
-      gap: 2rem;
+      gap: 1.5rem;
     }
 
     .main-nav a {
