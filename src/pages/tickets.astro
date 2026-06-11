@@ -579,16 +579,25 @@ const ogImage = isPreBooking
   }
 
   .map-container {
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 16 / 9;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
     background-color: rgba(255, 255, 255, 0.02);
+    position: relative;
+  }
+
+  .map-embed {
+    width: 100%;
+    height: 100%;
   }
 
   .map-embed :global(iframe) {
     width: 100% !important;
     height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
     border: 0;
     display: block;
   }
