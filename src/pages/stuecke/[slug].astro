@@ -11,6 +11,7 @@ export async function getStaticPaths() {
   const stuecke = await directus.request(
     readItems('stuecke', {
       fields: ['*', 'foto_gallerie.*', 'foto_gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
+      filter: { veroffentlicht: { _eq: true } },
       deep: {
         foto_gallerie: {
           _sort: ['sort']
