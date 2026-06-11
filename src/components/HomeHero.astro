@@ -83,11 +83,11 @@ const optimizedBg = await getImage({
     top: 0;
     left: 0;
     right: 0;
-    height: 200px;
+    height: 140px; /* Narrower height */
     background: linear-gradient(
       to bottom,
       var(--bg-color) 0%,
-      rgba(var(--bg-color-rgb), 0.8) 40%,
+      var(--bg-color) 80px, /* Solid behind the header */
       transparent 100%
     );
     pointer-events: none;
@@ -166,7 +166,7 @@ const optimizedBg = await getImage({
     background: linear-gradient(
       to bottom,
       var(--bg-color) 0%,
-      rgba(var(--bg-color-rgb), 0.4) 25%,
+      var(--bg-color) 80px,
       transparent 100%
     );
   }
