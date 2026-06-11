@@ -307,7 +307,9 @@ const ogImage = isPreBooking
 
 <style>
   .play-status {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: rgba(143, 194, 56, 0.15);
     color: var(--accent-green);
     padding: 0.4rem 1rem;
@@ -318,7 +320,7 @@ const ogImage = isPreBooking
     text-transform: uppercase;
     letter-spacing: 0.05em;
     min-height: 2.1rem; /* Stabilize height for font loading */
-    line-height: 1.3;
+    line-height: 1;
   }
 
   .page-header {
