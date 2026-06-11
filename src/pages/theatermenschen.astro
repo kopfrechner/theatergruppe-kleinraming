@@ -156,7 +156,7 @@ const activeMembers = members.filter(m => !m.vorstandsmitglied);
 
           .category-title {
           color: var(--accent-green);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid var(--card-border);
           padding-bottom: 0.5rem;
           margin-bottom: 3rem;
           text-align: left;
@@ -177,7 +177,8 @@ const activeMembers = members.filter(m => !m.vorstandsmitglied);
             display: flex;
             flex-direction: column;
             position: relative;
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
 
             /* Disable system context menu on long-press for mobile */
             -webkit-touch-callout: none;
@@ -185,7 +186,7 @@ const activeMembers = members.filter(m => !m.vorstandsmitglied);
             user-select: none;
           }
           .board-card {
-          border: 1px solid rgba(143, 194, 56, 0.3);
+          border: 1px solid rgba(143, 194, 56, 0.5); /* Slightly more visible green for board */
           }
 
           .member-card.has-funny-photo {
@@ -194,8 +195,9 @@ const activeMembers = members.filter(m => !m.vorstandsmitglied);
 
   .member-card:hover {
           transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+          box-shadow: 0 10px 20px rgba(var(--bg-color-rgb), 0.15);
           border-color: var(--accent-green);
+          background: var(--card-bg-hover);
           }
 
           .member-photo-container {
