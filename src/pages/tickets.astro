@@ -317,11 +317,14 @@ const ogImage = isPreBooking
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    min-height: 2.1rem; /* Stabilize height for font loading */
+    line-height: 1.3;
   }
 
   .page-header {
     text-align: center;
     margin-bottom: 4rem;
+    min-height: 180px; /* Reserve space for header content */
   }
 
   .flyer-title {
@@ -576,14 +579,16 @@ const ogImage = isPreBooking
   }
 
   .map-container {
+    aspect-ratio: 4 / 3;
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid rgba(255, 255, 255, 0.05);
+    background-color: rgba(255, 255, 255, 0.02);
   }
 
   .map-embed :global(iframe) {
     width: 100% !important;
-    height: 250px !important;
+    height: 100% !important;
     border: 0;
     display: block;
   }

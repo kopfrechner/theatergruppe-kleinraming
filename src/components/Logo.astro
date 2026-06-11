@@ -12,6 +12,8 @@
   .logo-wrapper {
     display: flex;
     align-items: center;
+    min-height: 40px;
+    min-width: 160px;
   }
 
   .logo-text {
@@ -27,6 +29,7 @@
     color: var(--text-main, #f3f4f6);
     letter-spacing: 0.02em;
     white-space: nowrap;
+    min-width: 140px; /* Prevent shrinking before font loads */
   }
 
   .logo-name strong {
