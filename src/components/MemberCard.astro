@@ -39,16 +39,16 @@ const { name, role, roleDescription, image } = Astro.props;
     display: flex;
     align-items: center;
     gap: 1rem;
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--card-bg);
     padding: 1rem;
     border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
     transition: var(--transition);
   }
 
   .cast-card:hover {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: rgba(255, 255, 255, 0.1);
+    background: var(--card-bg-hover);
+    border-color: rgba(var(--text-main-rgb), 0.1);
     transform: translateY(-2px);
   }
 
@@ -62,7 +62,7 @@ const { name, role, roleDescription, image } = Astro.props;
   }
 
   .cast-photo-placeholder {
-    background: var(--bg-card, rgba(20, 20, 20, 0.5));
+    background: var(--bg-color-light);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -78,7 +78,7 @@ const { name, role, roleDescription, image } = Astro.props;
 
   .actor-name {
     font-weight: bold;
-    color: var(--text-bright, #fff);
+    color: var(--text-main);
   }
 
   .role-name {

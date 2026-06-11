@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import Logo from "../components/Logo.astro";
+import ThemeToggle from "../components/ThemeToggle.astro";
 import { Menu } from "@lucide/astro";
 import directus from "../lib/directus";
 import { readSingleton } from "@directus/sdk";
@@ -54,6 +55,25 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
 
+    <!-- Theme Initialization Script (Prevent FOUC) -->
+    <script is:inline>
+      const theme = (() => {
+        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+          return localStorage.getItem('theme');
+        }
+        if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          return 'light';
+        }
+        return 'dark';
+      })();
+      
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    </script>
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
@@ -74,15 +94,19 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
         <a href="/" class="logo-link" aria-label="Startseite">
           <Logo />
         </a>
-        <button
-          id="mobile-menu-toggle"
-          class="mobile-menu-toggle"
-          aria-label="Menü wechseln"
-          aria-expanded="false"
-          aria-controls="main-nav"
-        >
-          <Menu size={24} />
-        </button>
+        
+        <div class="header-actions">
+          <ThemeToggle />
+          <button
+            id="mobile-menu-toggle"
+            class="mobile-menu-toggle"
+            aria-label="Menü wechseln"
+            aria-expanded="false"
+            aria-controls="main-nav"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
         <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
           <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
           {
@@ -177,12 +201,12 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
 <style is:global>
   /* Critical CSS for Header/Nav to prevent flickering */
   .main-header {
-    background-color: rgba(15, 14, 13, 0.8);
+    background-color: rgba(var(--bg-color-rgb), 0.8);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(255, 230, 200, 0.05);
+    border-bottom: 1px solid var(--glass-border);
     height: 80px; /* Fixed height for stability */
   }
 
@@ -213,12 +237,12 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
 
 <style>
   .main-header {
-    background-color: rgba(15, 14, 13, 0.8);
+    background-color: rgba(var(--bg-color-rgb), 0.8);
     backdrop-filter: blur(10px);
     position: sticky;
     top: 0;
     z-index: 100;
-    border-bottom: 1px solid rgba(255, 230, 200, 0.05);
+    border-bottom: 1px solid var(--glass-border);
   }
 
   .header-content {
@@ -226,6 +250,12 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     justify-content: space-between;
     align-items: center;
     height: 80px;
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .logo-link {
@@ -252,7 +282,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     padding: 2rem;
     flex-direction: column;
     gap: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--card-border);
   }
 
   .main-nav.open {
@@ -316,7 +346,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     background-color: var(--bg-color-light);
     padding: 2rem 0;
     margin-top: 4rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: 1px solid var(--card-border);
   }
 
   .footer-content {
