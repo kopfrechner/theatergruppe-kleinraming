@@ -30,5 +30,5 @@ sponsoren_logos/
 # Gemini settings (secrets)
 .gemini/settings.json
 
-# Strapi uploads
-strapi/public/uploads/
+# Playwright
+.playwright-mcp/
