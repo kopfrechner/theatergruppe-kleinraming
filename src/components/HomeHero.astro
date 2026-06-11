@@ -141,6 +141,7 @@ const optimizedBg = await getImage({
     font-size: 2.2rem;
     margin-bottom: 1rem;
     line-height: 1.1;
+    color: #faf7f2; /* Always light on dark stage image */
   }
 
   @media (min-width: 768px) {
@@ -155,10 +156,29 @@ const optimizedBg = await getImage({
 
   .hero-subtitle {
     font-size: 1.25rem;
-    color: var(--text-muted);
+    color: #b5ada3; /* Forced muted light color */
     margin-bottom: 2.5rem;
     max-width: 600px;
     margin-inline: auto;
+  }
+
+  :global([data-theme="light"]) .hero::before {
+    background: linear-gradient(
+      to bottom,
+      var(--bg-color) 0%,
+      rgba(var(--bg-color-rgb), 0.4) 25%,
+      transparent 100%
+    );
+  }
+
+  :global([data-theme="light"]) .hero::after {
+    height: 30%; /* Less tall on light mode */
+    background: linear-gradient(
+      to top,
+      var(--bg-color) 0%,
+      rgba(var(--bg-color-rgb), 0.2) 20%,
+      transparent 100%
+    );
   }
 
   .hero-actions {
