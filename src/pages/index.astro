@@ -13,7 +13,7 @@ import { mapHighlightPlay } from "../lib/mappers";
 const [startseite, ticketPromo, latestPlays] = await Promise.all([
   directus.request(readSingleton("startseite", { fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.*"] })).catch(() => null),
   directus.request(readSingleton("ticket_promotion", { fields: ["anzeige_modus", "titel", "vorab_titel", "kurzbeschreibung", "vorab_text", "vorab_bild", "termin_1", "termin_2", "termin_3", "termin_4", "termin_5", "termin_6", "ticketlotse_link", "hauptfoto"] })).catch(() => ({ anzeige_modus: "inaktiv" })),
-  directus.request(readItems("stuecke", { filter: { status: { _eq: "published" } }, fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"], sort: ["-auffuehrung_im_jahr"], limit: 1 })).catch(() => [])
+  directus.request(readItems("stuecke", { fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"], sort: ["-auffuehrung_im_jahr"], limit: 1 })).catch(() => [])
 ]);
 
 const lastPlay = latestPlays.length > 0 ? latestPlays[0] : null;

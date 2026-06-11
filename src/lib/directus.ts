@@ -2,7 +2,6 @@ import { createDirectus, rest, readItems, readItem, readSingleton } from '@direc
 
 interface Stueck {
   id: string;
-  status: string;
   titel: string;
   auffuehrung_im_jahr: number;
   synopsis: string;
@@ -14,7 +13,6 @@ interface Stueck {
 
 interface Theatermensch {
   id: string;
-  status: string;
   name: string;
   funktionen: string;
   steckbrief: string;

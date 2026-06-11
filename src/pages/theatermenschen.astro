@@ -7,7 +7,6 @@ import { Image } from 'astro:assets';
 const members = await directus.request(
   readItems('theatermenschen', {
     filter: {
-      status: { _eq: 'published' },
       aktiver_theatermensch: { _eq: true }
     },
     fields: ['*', 'foto.*', 'foto_funny.*'],

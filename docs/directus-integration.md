@@ -22,7 +22,6 @@ Folgende Collections sind in Directus definiert und werden in der App genutzt:
 ### `stuecke` (Theaterstücke)
 Zentrales Verzeichnis aller Aufführungen.
 - **id**: UUID (Primärschlüssel & Route)
-- **status**: published | draft | archived
 - **titel**: Name des Stücks
 - **auffuehrung_im_jahr**: Jahr der Premiere (dient als Sortierkriterium)
 - **synopsis**: Inhaltsangabe (HTML)
@@ -34,7 +33,6 @@ Zentrales Verzeichnis aller Aufführungen.
 ### `theatermenschen` (Mitglieder)
 Personenverzeichnis der Theatergruppe.
 - **id**: UUID
-- **status**: published | draft
 - **name**: Vor- und Nachname
 - **funktionen**: Textfeld für Rollen im Verein
 - **steckbrief**: Kurze Beschreibung / Bio

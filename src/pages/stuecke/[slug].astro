@@ -10,9 +10,6 @@ import { prepareGalleryImages } from '../../lib/mappers';
 export async function getStaticPaths() {
   const stuecke = await directus.request(
     readItems('stuecke', {
-      filter: {
-        status: { _eq: 'published' }
-      },
       fields: ['*', 'foto_gallerie.*', 'foto_gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
       deep: {
         foto_gallerie: {

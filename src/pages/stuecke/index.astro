@@ -7,9 +7,6 @@ import { Image } from 'astro:assets';
 
 const stuecke = await directus.request(
   readItems('stuecke', {
-    filter: {
-      status: { _eq: 'published' }
-    },
     sort: ['-auffuehrung_im_jahr']
   })
 );
