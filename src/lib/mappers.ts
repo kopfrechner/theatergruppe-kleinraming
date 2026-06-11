@@ -6,9 +6,11 @@ export async function prepareGalleryImages(foto_gallerie: any[], directusUrl: st
 
   const images = await Promise.all(
     foto_gallerie.map(async (item) => {
-      if (!item.directus_files_id) return null;
+      // Extract file ID from M2M junction or direct ID
+      const fileId = item.directus_files_id?.id || item.directus_files_id || item.id;
+      if (!fileId) return null;
 
-      const remoteUrl = `${directusUrl}/assets/${item.directus_files_id}`;
+      const remoteUrl = `${directusUrl}/assets/${fileId}`;
 
       try {
         const { width: origWidth, height: origHeight } =
@@ -29,10 +31,10 @@ export async function prepareGalleryImages(foto_gallerie: any[], directusUrl: st
           width: targetWidth,
           height: targetHeight,
           thumbnail: remoteUrl,
-          id: item.directus_files_id,
+          id: fileId,
         };
       } catch (e) {
-        console.error(`Fehler beim Verarbeiten von Bild ${item.directus_files_id}:`, e);
+        console.error(`Fehler beim Verarbeiten von Bild ${fileId}:`, e);
         return null;
       }
     })

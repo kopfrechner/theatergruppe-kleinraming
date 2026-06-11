@@ -29,7 +29,7 @@ Zentrales Verzeichnis aller Aufführungen.
 - **flyer**: PDF-Datei (Relation zu `directus_files`)
 - **titelfoto**: Hauptbild (Relation zu `directus_files`)
 - **spieler**: M2M Beziehung zu `theatermenschen` (mit Zusatzfeldern für Rolle/Beschreibung)
-- **foto_gallerie**: Bildergalerie (M2M zu `directus_files` über `stuecke_files`)
+- **foto_gallerie**: Bildergalerie (M2M zu `directus_files` über `stuecke_directus_files`)
 
 ### `theatermenschen` (Mitglieder)
 Personenverzeichnis der Theatergruppe.
@@ -49,7 +49,7 @@ Verzeichnis aller Unterstützer und Partner.
 - **link**: URL zur Webseite des Sponsors
 - **bild**: Logo des Unternehmens (Relation zu `directus_files`)
 
-### `stuecke_files` (Junction-Tabelle)
+### `stuecke_directus_files` (Junction-Tabelle)
 Hilfstabelle für die Bildergalerie der Stücke.
 - Ermöglicht manuelle Sortierung der Fotos innerhalb eines Stücks.
 - Löschregel: **CASCADE** (Löschen eines Stücks entfernt auch die Galerie-Verknüpfungen).
@@ -61,7 +61,7 @@ Damit die Daten im Frontend erscheinen, müssen in Directus unter **Settings -> 
 2. `theatermenschen`
 3. `sponsoren`
 4. `stuecke_theatermenschen` (für die Rollen-Verknüpfung)
-4. `stuecke_files` (für die Bildergalerie)
+4. `stuecke_directus_files` (für die Bildergalerie)
 5. **Directus Files** (System-Collection für Bilder/PDFs)
 
 ## 4. Bilder & Assets

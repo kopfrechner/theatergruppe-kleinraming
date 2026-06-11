@@ -13,7 +13,7 @@ export async function getStaticPaths() {
       filter: {
         status: { _eq: 'published' }
       },
-      fields: ['*', 'foto_gallerie.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
+      fields: ['*', 'foto_gallerie.*', 'foto_gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
       deep: {
         foto_gallerie: {
           _sort: ['sort']
