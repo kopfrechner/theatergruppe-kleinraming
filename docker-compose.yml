@@ -5,7 +5,7 @@ services:
     image: postgres:18
     restart: always
     volumes:
-      - database_data:/var/lib/postgresql/data
+      - database_data:/var/lib/postgresql/18/docker
     environment:
       POSTGRES_USER: ${DB_USER:-directus}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
