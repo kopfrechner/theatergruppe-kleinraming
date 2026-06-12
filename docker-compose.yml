@@ -12,8 +12,8 @@ services:
       POSTGRES_DB: ${DB_NAME:-directus}
 
   directus:
-    # Aktuelle Version - Für das Upgrade später einfach auf '12.0.1' ändern.
-    image: directus/directus:11.17.4
+    # Aktuelle Version
+    image: directus/directus:12.0.2
     restart: always
     ports:
       - "8055:8055"
