@@ -18,10 +18,10 @@ services:
     ports:
       - "8055:8055"
     volumes:
-      # Volumes für persistente Daten wie Bilder und Erweiterungen
-      - ./uploads:/directus/uploads
-      - ./extensions:/directus/extensions
-      - ./templates:/directus/templates
+      # Volumes für persistente Daten wie Bilder und Erweiterungen (Benannte Volumes für Dokploy Backups)
+      - directus_uploads:/directus/uploads
+      - directus_extensions:/directus/extensions
+      - directus_templates:/directus/templates
     depends_on:
       - database
     environment:
@@ -53,3 +53,6 @@ services:
 
 volumes:
   database_data:
+  directus_uploads:
+  directus_extensions:
+  directus_templates:
