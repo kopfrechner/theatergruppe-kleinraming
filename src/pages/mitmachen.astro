@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile } from '@lucide/astro';
+import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile, ArrowRight } from '@lucide/astro';
 ---
 
 <Layout 
@@ -13,91 +13,259 @@ import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile } fro
   </div>
 
   <section class="container join-section">
-    <div class="glass-panel content-box">
-      <div class="grid grid-2">
-        <div>
-          <h2>Warum Mitwirken?</h2>
-          <ul class="icon-list">
-            <li><Heart class="text-green" size={20} /> Tolle Gemeinschaft und Zusammenhalt</li>
-            <li><Sparkles class="text-green" size={20} /> Gemeinsam kreative Projekte umsetzen</li>
-            <li><Smile class="text-green" size={20} /> Viel Spaß bei Proben und Aufführungen</li>
-          </ul>
+    <!-- Warum Mitwirken Banner -->
+    <div class="glass-panel feature-banner">
+      <h2>Warum Mitwirken?</h2>
+      <div class="benefits-grid">
+        <div class="benefit-item">
+          <div class="icon-wrapper">
+            <Heart size={28} />
+          </div>
+          <p>Tolle Gemeinschaft und ein starker Zusammenhalt</p>
         </div>
-        <div>
-          <h2>Welche Rollen gibt es?</h2>
-          <ul class="icon-list">
-            <li><Users class="text-green" size={20} /> Schauspiel: Steh im Rampenlicht!</li>
-            <li><Construction class="text-green" size={20} /> Bühnenbau & Technik: Bastler und Tüftler.</li>
-            <li><Paintbrush class="text-green" size={20} /> Maske & Kostüm: Kreativität gefragt.</li>
-            <li><Utensils class="text-green" size={20} /> Gastro & Kassa: Das Team am Abend.</li>
-          </ul>
+        <div class="benefit-item">
+          <div class="icon-wrapper">
+            <Sparkles size={28} />
+          </div>
+          <p>Gemeinsam kreative Projekte von Null aufbauen</p>
+        </div>
+        <div class="benefit-item">
+          <div class="icon-wrapper">
+            <Smile size={28} />
+          </div>
+          <p>Riesiger Spaß bei den Proben und nach Aufführungen</p>
         </div>
       </div>
+    </div>
 
-      <div class="contact-box">
-        <h3>Interessiert?</h3>
-        <p>Melde dich bei uns! Wir freuen uns auf dich.</p>
-        <a href="/kontakt" class="btn">Kontakt aufnehmen</a>
+    <!-- Rollen Grid -->
+    <div class="section-title-wrapper">
+      <h2>Welche Rollen gibt es?</h2>
+      <p class="text-muted">Jedes Talent findet bei uns seinen Platz.</p>
+    </div>
+    
+    <div class="roles-grid">
+      <div class="glass-panel role-card">
+        <Users class="role-icon" size={40} stroke-width={1.5} />
+        <h3>Schauspiel</h3>
+        <p>Du liebst es, in andere Rollen zu schlüpfen? Steh bei uns im Rampenlicht und begeistere das Publikum.</p>
       </div>
+      
+      <div class="glass-panel role-card">
+        <Construction class="role-icon" size={40} stroke-width={1.5} />
+        <h3>Bühnenbau & Technik</h3>
+        <p>Für Bastler, Tüftler und Handwerker. Wir bauen unsere Kulissen selbst und sorgen für das perfekte Licht.</p>
+      </div>
+      
+      <div class="glass-panel role-card">
+        <Paintbrush class="role-icon" size={40} stroke-width={1.5} />
+        <h3>Maske & Kostüm</h3>
+        <p>Kreativität ist hier gefragt. Verwandle unsere Darsteller optisch in die Charaktere, die sie spielen.</p>
+      </div>
+      
+      <div class="glass-panel role-card">
+        <Utensils class="role-icon" size={40} stroke-width={1.5} />
+        <h3>Gastro & Kassa</h3>
+        <p>Das wichtigste Team am Abend. Sorge dafür, dass unsere Gäste bestens versorgt sind und sich wohlfühlen.</p>
+      </div>
+    </div>
+
+    <!-- CTA Box -->
+    <div class="glass-panel cta-box">
+      <div class="cta-content">
+        <h3>Bereit für dein erstes Projekt?</h3>
+        <p>Egal ob du schon Erfahrung hast oder kompletter Neuling bist – melde dich unverbindlich bei uns! Wir beißen nicht (außer es steht im Skript).</p>
+      </div>
+      <a href="/kontakt" class="btn btn-large cta-btn">
+        Kontakt aufnehmen <ArrowRight size={20} />
+      </a>
     </div>
   </section>
 </Layout>
 
 <style>
   .join-section {
-    max-width: 900px;
-    margin-bottom: 5rem;
+    max-width: 1000px;
+    margin-bottom: 6rem;
   }
 
-  .content-box {
+  /* Feature Banner */
+  .feature-banner {
     padding: 3rem;
+    margin-bottom: 4rem;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(var(--bg-color-rgb), 0.4) 0%, rgba(143, 194, 56, 0.05) 100%);
   }
 
-  .grid-2 {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
-    margin-bottom: 3rem;
+  .feature-banner h2 {
+    color: var(--accent-gold);
+    margin-bottom: 2rem;
+    font-size: 2rem;
   }
 
-  .grid-2 h2 {
-    color: var(--accent-green);
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
+  .benefits-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
   }
 
-  .icon-list {
-    list-style: none;
-    padding: 0;
+  @media (min-width: 768px) {
+    .benefits-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .benefit-item {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 1rem;
   }
 
-  .icon-list li {
+  .icon-wrapper {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(143, 194, 56, 0.1);
+    color: var(--accent-green);
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center;
+    border: 1px solid rgba(143, 194, 56, 0.2);
+  }
+
+  .benefit-item p {
+    font-size: 1.05rem;
+    line-height: 1.5;
     color: var(--text-main);
   }
 
-  .text-green {
-    color: var(--accent-green);
-    flex-shrink: 0;
-  }
-
-  .contact-box {
+  /* Roles Grid */
+  .section-title-wrapper {
     text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 3rem;
+    margin-bottom: 2rem;
   }
 
-  .contact-box h3 {
-    font-size: 1.8rem;
+  .section-title-wrapper h2 {
+    font-size: 2rem;
+    color: var(--accent-green);
     margin-bottom: 0.5rem;
   }
 
-  .contact-box p {
-    color: var(--text-muted);
+  .roles-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+
+  @media (min-width: 600px) {
+    .roles-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .role-card {
+    padding: 2.5rem 2rem;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .role-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(143, 194, 56, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  }
+
+  .role-icon {
+    color: var(--accent-gold);
     margin-bottom: 1.5rem;
+    transition: transform 0.3s ease;
+  }
+
+  .role-card:hover .role-icon {
+    transform: scale(1.1);
+  }
+
+  .role-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+    color: var(--text-main);
+  }
+
+  .role-card p {
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* CTA Box */
+  .cta-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    gap: 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    background: var(--accent-green);
+    filter: blur(100px);
+    opacity: 0.15;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .cta-content {
+    z-index: 1;
+    max-width: 600px;
+  }
+
+  .cta-content h3 {
+    font-size: 2.2rem;
+    color: var(--text-main);
+    margin-bottom: 1rem;
+  }
+
+  .cta-content p {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .cta-btn {
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .cta-box {
+      flex-direction: row;
+      text-align: left;
+      justify-content: space-between;
+      padding: 4rem;
+    }
+
+    .cta-content {
+      margin-bottom: 0;
+    }
+
+    .cta-btn {
+      flex-shrink: 0;
+    }
   }
 </style>
