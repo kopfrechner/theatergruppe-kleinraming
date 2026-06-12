@@ -190,6 +190,10 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
           </linearGradient>
         </defs>
       </svg>
+
+      <div class="container footer-bottom">
+        <p>&copy; {new Date().getFullYear()} Theatergruppe Kleinraming. Alle Rechte vorbehalten.</p>
+      </div>
     </footer>
 
     <script>
@@ -410,5 +414,14 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
 
   .footer-links a:hover {
     color: var(--accent-green);
+  }
+
+  .footer-bottom {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--card-border);
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
   }
 </style>
