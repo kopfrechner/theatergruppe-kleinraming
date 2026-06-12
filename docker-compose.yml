@@ -1,0 +1,48 @@
+services:
+  database:
+    # Hinweis: PostgreSQL 18 ist noch nicht offiziell als Stable erschienen. 
+    # Falls das Image nicht gefunden wird, auf 'postgres:17' oder 'postgres:16' zurückgreifen.
+    image: postgres:18
+    restart: always
+    volumes:
+      - database_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER:-directus}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
+      POSTGRES_DB: ${DB_NAME:-directus}
+
+  directus:
+    # Aktuelle Version - Für das Upgrade später einfach auf '12.0.1' ändern.
+    image: directus/directus:11.17.4
+    restart: always
+    ports:
+      - "8055:8055"
+    volumes:
+      # Volumes für persistente Daten wie Bilder und Erweiterungen
+      - ./uploads:/directus/uploads
+      - ./extensions:/directus/extensions
+      - ./templates:/directus/templates
+    depends_on:
+      - database
+    environment:
+      # Sicherheit (Muss in Dokploy als Environment Variable gesetzt werden!)
+      KEY: ${KEY:-replace-with-secure-random-string}
+      SECRET: ${SECRET:-replace-with-secure-random-string}
+      
+      # Datenbankverbindung
+      DB_CLIENT: 'pg'
+      DB_HOST: 'database'
+      DB_PORT: '5432'
+      DB_DATABASE: ${DB_NAME:-directus}
+      DB_USER: ${DB_USER:-directus}
+      DB_PASSWORD: ${DB_PASSWORD:-directus}
+      
+      # Websockets für Echtzeit-Updates im CMS (optional, aber empfohlen)
+      WEBSOCKETS_ENABLED: 'true'
+
+      # Admin User (Wird beim allerersten Start erstellt)
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-d1r3ctu5}
+
+volumes:
+  database_data:
