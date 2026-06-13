@@ -13,7 +13,7 @@ services:
 
   directus:
     # Aktuelle Version
-    image: directus/directus:12.0.2
+    image: directus/directus:11.17.4
     restart: always
     ports:
       - "8056:8055"
