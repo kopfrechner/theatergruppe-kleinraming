@@ -16,7 +16,7 @@ services:
     image: directus/directus:11.17.4
     restart: always
     ports:
-      - "8056:8055"
+      - "8057:8055"
     volumes:
       # Volumes für persistente Daten wie Bilder und Erweiterungen (Benannte Volumes für Dokploy Backups)
       - directus_uploads:/directus/uploads
