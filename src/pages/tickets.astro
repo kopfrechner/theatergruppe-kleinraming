@@ -283,10 +283,7 @@ const ogImage = isPreBooking
       )}
 
       {scenePhotos.length > 0 && (
-        <div class="gallery-section">
-          <h2>Bilder aus dem Stück</h2>
-          <ImageGallery images={scenePhotos} title={displayTitle} />
-        </div>
+        <ImageGallery images={scenePhotos} title={displayTitle} />
       )}
     </div>
   </section>
