@@ -7,7 +7,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - database_data:/var/lib/postgresql
+      - database_data:/var/lib/postgresql/18/docker
     environment:
       POSTGRES_USER: ${DB_USER:-directus}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
