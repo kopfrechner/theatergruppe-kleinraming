@@ -16,6 +16,11 @@ export default defineConfig({
         protocol: 'https',
         hostname: 'cms.kopfarbeit.dev',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3333',
+      },
     ],
   },
 

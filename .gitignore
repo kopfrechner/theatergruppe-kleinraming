@@ -32,3 +32,10 @@ sponsoren_logos/
 
 # Playwright
 .playwright-mcp/
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+.env.local
+.env.test

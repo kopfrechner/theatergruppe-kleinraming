@@ -113,7 +113,8 @@ interface Schema {
   datenschutz: Datenschutz;
 }
 
-export const DIRECTUS_URL = 'https://cms.kopfarbeit.dev';
+export const DIRECTUS_URL =
+  import.meta.env.PUBLIC_DIRECTUS_URL || 'https://cms.kopfarbeit.dev';
 
 const client = createDirectus<Schema>(DIRECTUS_URL).with(rest());
 
