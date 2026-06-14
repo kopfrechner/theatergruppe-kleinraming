@@ -13,7 +13,7 @@ test.describe('Ticket Promotion States', () => {
       try {
         await request.get('http://localhost:4321/');
         break;
-      } catch (e) {
+      } catch {
         retries--;
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }

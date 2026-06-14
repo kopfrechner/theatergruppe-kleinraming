@@ -3,7 +3,7 @@ import { mapHighlightPlay, prepareGalleryImages } from './mappers';
 
 // Mock astro:assets
 vi.mock('astro:assets', () => ({
-  getImage: vi.fn(({ src, width, height }) => Promise.resolve({ src })),
+  getImage: vi.fn(({ src }) => Promise.resolve({ src })),
   inferRemoteSize: vi.fn(() => Promise.resolve({ width: 1600, height: 1200 })),
 }));
 

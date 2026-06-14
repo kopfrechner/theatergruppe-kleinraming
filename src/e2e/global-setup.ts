@@ -1,5 +1,4 @@
 import fs from 'fs';
-import path from 'fs';
 
 async function globalSetup() {
   const envPath = '.env.local';
