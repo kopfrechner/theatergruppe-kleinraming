@@ -28,6 +28,7 @@ const ticketPromo = await directus.request(
       'termin_4',
       'termin_5',
       'termin_6',
+      'ticketlotse_link_aktiv',
       'autor',
       'genre',
       'preis_erwachsene',
@@ -174,7 +175,7 @@ const ogImage = isPreBooking
     <!-- Booking Sidebar (Mobile: Middle, Desktop: Right) -->
     <div class="flyer-sidebar">
       <div class="glass-panel sticky-box">
-        {ticketPromo.ticketlotse_link && (
+        {ticketPromo.ticketlotse_link_aktiv && ticketPromo.ticketlotse_link && (
           <a href={ticketPromo.ticketlotse_link} target="_blank" rel="noopener noreferrer" class="btn btn-large btn-full">
             <Ticket size={24} class="btn-icon" />
             Online reservieren
