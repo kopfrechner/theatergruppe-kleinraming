@@ -11,10 +11,17 @@ export default defineConfig({
   },
 
   image: {
-    remotePatterns: [{
-      protocol: 'https',
-      hostname: 'cms.kopfarbeit.dev',
-    }],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cms.kopfarbeit.dev',
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '3333',
+      },
+    ],
   },
 
   integrations: [sitemap()],

@@ -1,10 +1,10 @@
 ---
-import "../styles/global.css";
-import Logo from "../components/Logo.astro";
-import ThemeToggle from "../components/ThemeToggle.astro";
-import { Menu } from "@lucide/astro";
-import directus from "../lib/directus";
-import { readSingleton } from "@directus/sdk";
+import '../styles/global.css';
+import Logo from '../components/Logo.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { Menu } from '@lucide/astro';
+import directus from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
 
 interface Props {
   title: string;
@@ -15,22 +15,22 @@ interface Props {
 
 const {
   title,
-  description = "Die Theatergruppe Kleinraming präsentiert professionelles Amateurtheater mit Herz und Leidenschaft.",
-  image = "/assets/hero-stage.webp",
+  description = 'Die Theatergruppe Kleinraming präsentiert professionelles Amateurtheater mit Herz und Leidenschaft.',
+  image = '/assets/hero-stage.webp',
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
 } = Astro.props;
 const pathname = new URL(Astro.request.url).pathname;
 // Remove trailing slash for comparison (except for home page)
 const normalizedPath =
-  pathname.endsWith("/") && pathname.length > 1
+  pathname.endsWith('/') && pathname.length > 1
     ? pathname.slice(0, -1)
     : pathname;
 
 // Fetch ticket promotion status for the menu
 const ticketPromo = await directus
-  .request(readSingleton("ticket_promotion", { fields: ["anzeige_modus"] }))
-  .catch(() => ({ anzeige_modus: "inaktiv" }));
-const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
+  .request(readSingleton('ticket_promotion', { fields: ['anzeige_modus'] }))
+  .catch(() => ({ anzeige_modus: 'inaktiv' }));
+const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
 ---
 
 <!doctype html>
@@ -42,12 +42,48 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     <meta name="generator" content={Astro.generator} />
 
     <!-- Font Preloading -->
-    <link rel="preload" href="/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-500.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/inter-600.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-600.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-700.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/outfit-800.woff2" as="font" type="font/woff2" crossorigin />
+    <link
+      rel="preload"
+      href="/fonts/inter-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/inter-500.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/inter-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/outfit-600.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/outfit-700.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/outfit-800.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
 
     <!-- Primary Meta Tags -->
     <title>{title} | Theatergruppe Kleinraming</title>
@@ -58,7 +94,10 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     <!-- Theme Initialization Script (Prevent FOUC) -->
     <script is:inline>
       const theme = (() => {
-        if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
+        if (
+          typeof localStorage !== 'undefined' &&
+          localStorage.getItem('theme')
+        ) {
           return localStorage.getItem('theme');
         }
         if (window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -66,7 +105,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
         }
         return 'dark';
       })();
-      
+
       if (theme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
       } else {
@@ -77,14 +116,20 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content={Astro.url} />
-    <meta property="og:title" content={`${title} | Theatergruppe Kleinraming`} />
+    <meta
+      property="og:title"
+      content={`${title} | Theatergruppe Kleinraming`}
+    />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(image, Astro.url)} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={Astro.url} />
-    <meta property="twitter:title" content={`${title} | Theatergruppe Kleinraming`} />
+    <meta
+      property="twitter:title"
+      content={`${title} | Theatergruppe Kleinraming`}
+    />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
   </head>
@@ -94,15 +139,15 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
         <a href="/" class="logo-link" aria-label="Startseite">
           <Logo />
         </a>
-        
+
         <div class="header-actions">
           <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
-            <a href="/" class={normalizedPath === "/" ? "active" : ""}>Start</a>
+            <a href="/" class={normalizedPath === '/' ? 'active' : ''}>Start</a>
             {
               isTicketsActive && (
                 <a
                   href="/tickets"
-                  class={normalizedPath === "/tickets" ? "active" : ""}
+                  class={normalizedPath === '/tickets' ? 'active' : ''}
                 >
                   Tickets
                 </a>
@@ -110,22 +155,23 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
             }
             <a
               href="/theatermenschen"
-              class={normalizedPath === "/theatermenschen" ? "active" : ""}
+              class={normalizedPath === '/theatermenschen' ? 'active' : ''}
               >Theatermenschen</a
             >
             <a
               href="/stuecke"
-              class={normalizedPath.startsWith("/stuecke") ? "active" : ""}
+              class={normalizedPath.startsWith('/stuecke') ? 'active' : ''}
               >Stücke</a
             >
             <a
               href="/mitmachen"
-              class={normalizedPath === "/mitmachen" ? "active" : ""}
+              class={normalizedPath === '/mitmachen' ? 'active' : ''}
               >Mitwirken</a
             >
             <a
               href="/sponsoren"
-              class={normalizedPath === "/sponsoren" ? "active" : ""}>Sponsoren</a
+              class={normalizedPath === '/sponsoren' ? 'active' : ''}
+              >Sponsoren</a
             >
           </nav>
 
@@ -164,7 +210,11 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
             class="social-icon facebook"
             aria-label="Facebook"
           >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"
+              ><path
+                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+              ></path></svg
+            >
           </a>
           <a
             href="https://www.instagram.com/theatergruppe.kleinraming/"
@@ -173,11 +223,23 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
             class="social-icon instagram"
             aria-label="Instagram"
           >
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="url(#insta-grad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+            <svg
+              viewBox="0 0 24 24"
+              width="24"
+              height="24"
+              fill="none"
+              stroke="url(#insta-grad)"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              ><rect x="2" y="2" width="20" height="20" rx="5" ry="5"
+              ></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+              ></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg
+            >
           </a>
         </div>
       </div>
-      
+
       <!-- Shared SVG Gradients -->
       <svg width="0" height="0" style="position: absolute;">
         <defs>
@@ -192,24 +254,32 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
       </svg>
 
       <div class="container footer-bottom">
-        <p>&copy; {new Date().getFullYear()} Theatergruppe Kleinraming. Alle Rechte vorbehalten.</p>
+        <p>
+          &copy; {new Date().getFullYear()} Theatergruppe Kleinraming. Alle Rechte
+          vorbehalten.
+        </p>
       </div>
     </footer>
 
     <script>
-      const toggle = document.getElementById("mobile-menu-toggle");
-      const nav = document.getElementById("main-nav");
+      const toggle = document.getElementById('mobile-menu-toggle');
+      const nav = document.getElementById('main-nav');
       if (toggle && nav) {
-        toggle.addEventListener("click", (e) => {
+        toggle.addEventListener('click', (e) => {
           e.stopPropagation();
-          const isOpen = nav.classList.toggle("open");
-          toggle.setAttribute("aria-expanded", isOpen.toString());
+          const isOpen = nav.classList.toggle('open');
+          toggle.setAttribute('aria-expanded', isOpen.toString());
         });
 
-        document.addEventListener("click", (e) => {
-          if (nav.classList.contains("open") && !nav.contains(e.target) && !toggle.contains(e.target)) {
-            nav.classList.remove("open");
-            toggle.setAttribute("aria-expanded", "false");
+        document.addEventListener('click', (e) => {
+          const target = e.target as Node;
+          if (
+            nav.classList.contains('open') &&
+            !nav.contains(target) &&
+            !toggle.contains(target)
+          ) {
+            nav.classList.remove('open');
+            toggle.setAttribute('aria-expanded', 'false');
           }
         });
       }
@@ -243,7 +313,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
       border: none;
       gap: 2rem;
     }
-    
+
     .mobile-menu-toggle {
       display: none !important;
     }
@@ -332,7 +402,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== "inaktiv";
 
   @media (min-width: 768px) {
     .main-nav a.active::after {
-      content: "";
+      content: '';
       position: absolute;
       bottom: -5px;
       left: 0;

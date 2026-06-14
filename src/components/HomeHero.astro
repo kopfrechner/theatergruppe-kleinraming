@@ -1,6 +1,6 @@
 ---
-import { getImage } from "astro:assets";
-import heroBgSrc from "../assets/hero-stage.webp";
+import { getImage } from 'astro:assets';
+import heroBgSrc from '../assets/hero-stage.webp';
 
 interface Props {
   isTicketsActive: boolean;
@@ -15,16 +15,17 @@ const { isTicketsActive, lastPlay } = Astro.props;
 const optimizedBg = await getImage({
   src: heroBgSrc,
   width: 1920,
-  format: "webp",
+  format: 'webp',
   quality: 80,
 });
 ---
 
 <section class="hero">
-  <div 
-    class="hero-bg" 
+  <div
+    class="hero-bg"
     style={`background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url(${optimizedBg.src});`}
-  ></div>
+  >
+  </div>
   <div class="container hero-content">
     <h1>
       Willkommen bei der<br /><span class="text-green"

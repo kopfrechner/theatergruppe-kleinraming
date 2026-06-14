@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { Image } from 'astro:assets';
 
 interface Props {
   src: string;
@@ -15,35 +15,37 @@ interface Props {
   origHeight?: number;
 }
 
-const { 
-  src, 
-  alt, 
-  width = 600, 
-  height: propHeight, 
-  aspectRatio: propAspectRatio, 
+const {
+  src,
+  alt,
+  width = 600,
+  height: propHeight,
+  aspectRatio: propAspectRatio,
   class: className,
   lightbox = false,
   largeSrc,
   origWidth,
-  origHeight
+  origHeight,
 } = Astro.props;
 
 // Detect orientation
 const isPortrait = origWidth && origHeight && origHeight > origWidth;
-const orientationClass = isPortrait ? "is-portrait" : "is-landscape";
+const orientationClass = isPortrait ? 'is-portrait' : 'is-landscape';
 
 // Determine aspect ratio
 let computedAspectRatio = propAspectRatio;
 if (!computedAspectRatio) {
-  computedAspectRatio = isPortrait ? "3 / 4" : "4 / 3";
+  computedAspectRatio = isPortrait ? '3 / 4' : '4 / 3';
 }
 
-const imageClass = lightbox ? "gallery-image-lightbox" : "gallery-image-simple";
+const imageClass = lightbox ? 'gallery-image-lightbox' : 'gallery-image-simple';
 
 // Calculate height based on aspect ratio if not provided
 let finalHeight = propHeight;
 if (!finalHeight) {
-  const [w, h] = computedAspectRatio.split("/").map((s) => parseFloat(s.trim()));
+  const [w, h] = computedAspectRatio
+    .split('/')
+    .map((s) => parseFloat(s.trim()));
   if (w && h) {
     finalHeight = Math.round(width / (w / h));
   } else {
@@ -59,7 +61,12 @@ if (!finalHeight) {
       data-pswp-width={origWidth}
       data-pswp-height={origHeight}
       target="_blank"
-      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+      class:list={[
+        'gallery-image-wrapper',
+        imageClass,
+        orientationClass,
+        className,
+      ]}
       style={{ aspectRatio: computedAspectRatio }}
     >
       <Image
@@ -71,8 +78,13 @@ if (!finalHeight) {
       />
     </a>
   ) : (
-    <div 
-      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+    <div
+      class:list={[
+        'gallery-image-wrapper',
+        imageClass,
+        orientationClass,
+        className,
+      ]}
       style={{ aspectRatio: computedAspectRatio }}
     >
       <Image

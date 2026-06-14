@@ -1,7 +1,11 @@
-import { getImage, inferRemoteSize } from "astro:assets";
-import he from "he";
+import { getImage, inferRemoteSize } from 'astro:assets';
+import he from 'he';
+import type { Stueck, TicketPromotion } from './directus';
 
-export async function prepareGalleryImages(gallerie: any[], directusUrl: string) {
+export async function prepareGalleryImages(
+  gallerie: any[],
+  directusUrl: string,
+) {
   if (!gallerie || gallerie.length === 0) return [];
 
   // Sort by 'sort' field from the junction table
@@ -14,7 +18,8 @@ export async function prepareGalleryImages(gallerie: any[], directusUrl: string)
   const images = await Promise.all(
     sortedGallerie.map(async (item) => {
       // Extract file ID from M2M junction or direct ID
-      const fileId = item.directus_files_id?.id || item.directus_files_id || item.id;
+      const fileId =
+        item.directus_files_id?.id || item.directus_files_id || item.id;
       if (!fileId) return null;
 
       const remoteUrl = `${directusUrl}/assets/${fileId}`;
@@ -30,7 +35,7 @@ export async function prepareGalleryImages(gallerie: any[], directusUrl: string)
           src: remoteUrl,
           width: targetWidth,
           height: targetHeight,
-          format: "webp",
+          format: 'webp',
         });
 
         return {
@@ -44,20 +49,24 @@ export async function prepareGalleryImages(gallerie: any[], directusUrl: string)
         console.error(`Fehler beim Verarbeiten von Bild ${fileId}:`, e);
         return null;
       }
-    })
+    }),
   );
 
   return images.filter((img) => img !== null);
 }
 
-export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: string) {
-  const anzeigeModus = ticketPromo?.anzeige_modus || (ticketPromo?.aktiv ? 'ticket_promotion' : 'inaktiv');
+export function mapHighlightPlay(
+  ticketPromo: TicketPromotion | null | undefined,
+  lastPlay: Stueck | null | undefined,
+  directusUrl: string,
+) {
+  const anzeigeModus = ticketPromo?.anzeige_modus || 'inaktiv';
 
   if (anzeigeModus === 'inaktiv') {
     if (!lastPlay) return null;
 
     const cleanSynopsis = he.decode(
-      (lastPlay.synopsis || "").replace(/<[^>]*>?/gm, ""),
+      (lastPlay.synopsis || '').replace(/<[^>]*>?/gm, ''),
     );
 
     return {
@@ -65,26 +74,30 @@ export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: s
       titel: lastPlay.titel,
       text:
         cleanSynopsis.length > 180
-          ? cleanSynopsis.substring(0, 180).trim() + "..."
+          ? cleanSynopsis.substring(0, 180).trim() + '...'
           : cleanSynopsis,
       link: `/stuecke/${lastPlay.slug || lastPlay.id}`,
-      buttonText: "Zum Stück",
-      status: "Rückblick",
+      buttonText: 'Zum Stück',
+      status: 'Rückblick',
       termine: [],
-      image: lastPlay.titelfoto ? `${directusUrl}/assets/${lastPlay.titelfoto}` : null,
+      image: lastPlay.titelfoto
+        ? `${directusUrl}/assets/${lastPlay.titelfoto.id || lastPlay.titelfoto}`
+        : null,
     };
   }
 
+  if (!ticketPromo) return null;
+
   // Active Ticket Promotion (either vorab_reservierung or ticket_promotion)
   const isPreBooking = anzeigeModus === 'vorab_reservierung';
-  const locale = "de-AT";
+  const locale = 'de-AT';
   const dateFormat: Intl.DateTimeFormatOptions = {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Vienna",
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'Europe/Vienna',
   };
 
   const termineArray = [
@@ -95,31 +108,31 @@ export function mapHighlightPlay(ticketPromo: any, lastPlay: any, directusUrl: s
     ticketPromo.termin_5,
     ticketPromo.termin_6,
   ]
-    .filter((t) => t)
-    .map((t) => new Date(t).toLocaleString(locale, dateFormat) + " Uhr");
+    .filter((t): t is string => !!t)
+    .map((t) => new Date(t).toLocaleString(locale, dateFormat) + ' Uhr');
 
   const displayTitle = isPreBooking
-    ? (ticketPromo.vorab_titel || ticketPromo.titel)
+    ? ticketPromo.vorab_titel || ticketPromo.titel
     : ticketPromo.titel;
 
-  const displayText = isPreBooking 
-    ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung)
+  const displayText = isPreBooking
+    ? ticketPromo.vorab_text || ticketPromo.kurzbeschreibung
     : ticketPromo.kurzbeschreibung;
 
   const displayImage = isPreBooking
-    ? (ticketPromo.vorab_bild || ticketPromo.hauptfoto)
+    ? ticketPromo.vorab_bild || ticketPromo.hauptfoto
     : ticketPromo.hauptfoto;
 
   return {
     isHistorical: false,
     titel: displayTitle,
     text:
-      (displayText || "").length > 180
-        ? displayText.substring(0, 180).trim() + "..."
+      (displayText || '').length > 180
+        ? displayText.substring(0, 180).trim() + '...'
         : displayText,
-    link: "/tickets",
-    buttonText: "Tickets reservieren",
-    status: isPreBooking ? "Saison-Vorschau" : "Nächste Premiere",
+    link: '/tickets',
+    buttonText: 'Tickets reservieren',
+    status: isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere',
     termine: termineArray,
     image: displayImage
       ? `${directusUrl}/assets/${displayImage.id || displayImage}`
