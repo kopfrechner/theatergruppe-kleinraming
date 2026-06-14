@@ -211,7 +211,9 @@ const ogImage = isPreBooking
               href={ticketPromo.ticketlotse_link}
               target="_blank"
               rel="noopener noreferrer"
-              class="btn btn-large btn-full umami--click--tickets-online"
+              class="btn btn-large btn-full"
+              data-umami-event="Reserve tickets click"
+              data-umami-event-type="online"
             >
               <Ticket size={24} class="btn-icon" />
               Online reservieren
@@ -233,7 +235,9 @@ const ogImage = isPreBooking
                 <p class="highlight-text">
                   <a
                     href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`}
-                    class="phone-link umami--click--tickets-telefon"
+                    class="phone-link"
+                    data-umami-event="Reserve tickets click"
+                    data-umami-event-type="phone"
                   >
                     {ticketPromo.telefon_reservierung}
                   </a>

@@ -39,12 +39,19 @@ const optimizedBg = await getImage({
       {
         isTicketsActive ? (
           <>
-            <a href="/tickets" class="btn umami--click--tickets-hero">
+            <a
+              href="/tickets"
+              class="btn"
+              data-umami-event="Tickets button click"
+              data-umami-event-position="hero"
+            >
               Tickets reservieren
             </a>
             <a
               href="/stuecke"
-              class="btn btn-outline umami--click--archiv-hero"
+              class="btn btn-outline"
+              data-umami-event="Archiv button click"
+              data-umami-event-position="hero"
             >
               Alle Stücke ansehen
             </a>
@@ -54,14 +61,18 @@ const optimizedBg = await getImage({
             {lastPlay && (
               <a
                 href={`/stuecke/${lastPlay.slug || lastPlay.id}`}
-                class="btn umami--click--letztes-stueck-hero"
+                class="btn"
+                data-umami-event="Last play button click"
+                data-umami-event-position="hero"
               >
                 Zum letzten Stück
               </a>
             )}
             <a
               href="/stuecke"
-              class="btn btn-outline umami--click--archiv-hero"
+              class="btn btn-outline"
+              data-umami-event="Archiv button click"
+              data-umami-event-position="hero"
             >
               Alle Stücke ansehen
             </a>

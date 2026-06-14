@@ -52,7 +52,13 @@ const { play } = Astro.props;
       )
     }
 
-    <a href={play.link} class={`btn ${play.umamiEvent}`}>
+    <a
+      href={play.link}
+      class="btn"
+      data-umami-event={play.umamiEvent}
+      data-umami-event-type="bento-highlight"
+      data-umami-event-status={play.status.toLowerCase()}
+    >
       {play.buttonText}
     </a>
   </div>

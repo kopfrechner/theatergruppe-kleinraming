@@ -11,6 +11,6 @@ const umamiUrl = import.meta.env.PUBLIC_UMAMI_URL || 'https://cloud.umami.is';
 
 {
   umamiId && (
-    <script defer src={`${umamiUrl}/analytics`} data-website-id={umamiId} />
+    <script defer src={`${umamiUrl}/analytics.js`} data-website-id={umamiId} />
   )
 }
