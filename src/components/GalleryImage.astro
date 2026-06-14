@@ -20,7 +20,7 @@ const {
   alt, 
   width = 600, 
   height: propHeight, 
-  aspectRatio = "4 / 3", 
+  aspectRatio: propAspectRatio, 
   class: className,
   lightbox = false,
   largeSrc,
@@ -28,16 +28,26 @@ const {
   origHeight
 } = Astro.props;
 
+// Detect orientation
+const isPortrait = origWidth && origHeight && origHeight > origWidth;
+const orientationClass = isPortrait ? "is-portrait" : "is-landscape";
+
+// Determine aspect ratio
+let computedAspectRatio = propAspectRatio;
+if (!computedAspectRatio) {
+  computedAspectRatio = isPortrait ? "3 / 4" : "4 / 3";
+}
+
 const imageClass = lightbox ? "gallery-image-lightbox" : "gallery-image-simple";
 
 // Calculate height based on aspect ratio if not provided
 let finalHeight = propHeight;
 if (!finalHeight) {
-  const [w, h] = aspectRatio.split("/").map((s) => parseFloat(s.trim()));
+  const [w, h] = computedAspectRatio.split("/").map((s) => parseFloat(s.trim()));
   if (w && h) {
     finalHeight = Math.round(width / (w / h));
   } else {
-    finalHeight = Math.round(width / 1.333); // Fallback to 4:3
+    finalHeight = Math.round(width / 1.333); // Fallback
   }
 }
 ---
@@ -49,8 +59,8 @@ if (!finalHeight) {
       data-pswp-width={origWidth}
       data-pswp-height={origHeight}
       target="_blank"
-      class:list={["gallery-image-wrapper", imageClass, className]}
-      style={{ aspectRatio }}
+      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+      style={{ aspectRatio: computedAspectRatio }}
     >
       <Image
         src={src}
@@ -62,8 +72,8 @@ if (!finalHeight) {
     </a>
   ) : (
     <div 
-      class:list={["gallery-image-wrapper", imageClass, className]}
-      style={{ aspectRatio }}
+      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+      style={{ aspectRatio: computedAspectRatio }}
     >
       <Image
         src={src}
