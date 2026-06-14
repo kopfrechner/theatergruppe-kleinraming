@@ -75,7 +75,7 @@ services:
       - directus_extensions:/directus/extensions
       - directus_templates:/directus/templates
     depends_on:
-      database:
+      directus_db:
         condition: service_healthy
     environment:
       # Sicherheit (Muss in Dokploy als Environment Variable gesetzt werden!)
@@ -84,7 +84,7 @@ services:
 
       # Datenbankverbindung
       DB_CLIENT: 'pg'
-      DB_HOST: 'database'
+      DB_HOST: 'directus_db'
       DB_PORT: '5432'
       DB_DATABASE: ${DB_NAME:-directus}
       DB_USER: ${DB_USER:-directus}
