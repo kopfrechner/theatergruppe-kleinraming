@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import GalleryImage from "./GalleryImage.astro";
 import "photoswipe/style.css";
 
 interface Props {
@@ -17,25 +18,18 @@ const { images, title } = Astro.props;
 ---
 
 <div class="gallery">
-  <h3>Galerie</h3>
   <div class="grid-3 pswp-gallery" id="play-gallery">
     {
       images.map((img, index) => (
-        <a
-          href={img.src}
-          data-pswp-width={img.width}
-          data-pswp-height={img.height}
-          target="_blank"
-          class="gallery-item"
-        >
-          <Image
-            src={img.thumbnail}
-            alt={`${title} - Galeriebild ${index + 1}`}
-            width={400}
-            height={300}
-            format="webp"
-          />
-        </a>
+        <GalleryImage
+          src={img.thumbnail}
+          largeSrc={img.src}
+          alt={`${title} - Galeriebild ${index + 1}`}
+          width={400}
+          origWidth={img.width}
+          origHeight={img.height}
+          lightbox={true}
+        />
       ))
     }
   </div>
@@ -114,38 +108,11 @@ const { images, title } = Astro.props;
     margin-top: 3rem;
   }
 
-  .gallery h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
-  }
-
   .grid-3 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
-  }
-
-  .gallery-item {
-    display: block;
-    width: 100%;
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-  }
-
-  .gallery-item:hover {
-    transform: scale(1.02);
-    border-color: var(--accent-green);
-    box-shadow: 0 4px 20px rgba(143, 194, 56, 0.2);
-  }
-
-  .gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
+    align-items: center;
   }
 
   :global(.pswp) {

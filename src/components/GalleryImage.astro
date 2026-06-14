@@ -1,0 +1,111 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  aspectRatio?: string;
+  class?: string;
+  // Lightbox props
+  lightbox?: boolean;
+  largeSrc?: string;
+  origWidth?: number;
+  origHeight?: number;
+}
+
+const { 
+  src, 
+  alt, 
+  width = 600, 
+  height: propHeight, 
+  aspectRatio: propAspectRatio, 
+  class: className,
+  lightbox = false,
+  largeSrc,
+  origWidth,
+  origHeight
+} = Astro.props;
+
+// Detect orientation
+const isPortrait = origWidth && origHeight && origHeight > origWidth;
+const orientationClass = isPortrait ? "is-portrait" : "is-landscape";
+
+// Determine aspect ratio
+let computedAspectRatio = propAspectRatio;
+if (!computedAspectRatio) {
+  computedAspectRatio = isPortrait ? "3 / 4" : "4 / 3";
+}
+
+const imageClass = lightbox ? "gallery-image-lightbox" : "gallery-image-simple";
+
+// Calculate height based on aspect ratio if not provided
+let finalHeight = propHeight;
+if (!finalHeight) {
+  const [w, h] = computedAspectRatio.split("/").map((s) => parseFloat(s.trim()));
+  if (w && h) {
+    finalHeight = Math.round(width / (w / h));
+  } else {
+    finalHeight = Math.round(width / 1.333); // Fallback
+  }
+}
+---
+
+{
+  lightbox ? (
+    <a
+      href={largeSrc || src}
+      data-pswp-width={origWidth}
+      data-pswp-height={origHeight}
+      target="_blank"
+      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+      style={{ aspectRatio: computedAspectRatio }}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={finalHeight}
+        format="webp"
+      />
+    </a>
+  ) : (
+    <div 
+      class:list={["gallery-image-wrapper", imageClass, orientationClass, className]}
+      style={{ aspectRatio: computedAspectRatio }}
+    >
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={finalHeight}
+        format="webp"
+      />
+    </div>
+  )
+}
+
+<style>
+  .gallery-image-wrapper {
+    display: block;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition);
+  }
+
+  .gallery-image-wrapper:hover {
+    transform: scale(1.02);
+    border-color: var(--accent-green);
+    box-shadow: 0 4px 20px rgba(143, 194, 56, 0.2);
+  }
+
+  .gallery-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+</style>

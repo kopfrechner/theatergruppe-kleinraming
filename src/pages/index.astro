@@ -2,7 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import HomeHero from "../components/HomeHero.astro";
 import HighlightPlayTile from "../components/HighlightPlayTile.astro";
-import ImpressionFilmstrip from "../components/ImpressionFilmstrip.astro";
+import ImageGallery from "../components/ImageGallery.astro";
 import BentoTile from "../components/BentoTile.astro";
 import directus, { DIRECTUS_URL } from "../lib/directus";
 import { readItems, readSingleton } from "@directus/sdk";
@@ -11,7 +11,7 @@ import { mapHighlightPlay } from "../lib/mappers";
 
 // 1. Fetch Data
 const [startseite, ticketPromo, latestPlays] = await Promise.all([
-  directus.request(readSingleton("startseite", { fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.*"] })).catch(() => null),
+  directus.request(readSingleton("startseite", { fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.directus_files_id.*"] })).catch(() => null),
   directus.request(readSingleton("ticket_promotion", { fields: ["anzeige_modus", "titel", "vorab_titel", "kurzbeschreibung", "vorab_text", "vorab_bild", "termin_1", "termin_2", "termin_3", "termin_4", "termin_5", "termin_6", "ticketlotse_link", "hauptfoto"] })).catch(() => ({ anzeige_modus: "inaktiv" })),
   directus.request(readItems("stuecke", { fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"], sort: ["-auffuehrung_im_jahr"], filter: { veroffentlicht: { _eq: true } }, limit: 1 })).catch(() => [])
 ]);
@@ -22,9 +22,13 @@ const lastPlay = latestPlays.length > 0 ? latestPlays[0] : null;
 const highlightPlay = mapHighlightPlay(ticketPromo, lastPlay, DIRECTUS_URL);
 
 const impressionImages = startseite?.impressionen_gallerie
-  ? startseite.impressionen_gallerie.map(
-      (img: any) => `${DIRECTUS_URL}/assets/${img.directus_files_id || img}`,
-    )
+  ? startseite.impressionen_gallerie.map((img: any) => ({
+      src: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
+      width: img.directus_files_id?.width || 1600,
+      height: img.directus_files_id?.height || 1200,
+      thumbnail: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
+      id: img.directus_files_id?.id || img.directus_files_id || img
+    }))
   : [];
 
 const emotionImage = startseite?.emotionen_bild
@@ -105,7 +109,10 @@ if (emotionImage) {
     </div>
   </section>
 
-  <ImpressionFilmstrip images={impressionImages} />
+  <section class="container impression-section">
+    <h2>Impressionen</h2>
+    <ImageGallery images={impressionImages} title="Impressionen" />
+  </section>
 </Layout>
 
 <style>
@@ -191,5 +198,15 @@ if (emotionImage) {
 
   :global(.tile-actors) h3 {
     color: var(--accent-green);
+  }
+
+  .impression-section {
+    margin-bottom: 8rem;
+    text-align: center;
+  }
+
+  .impression-section h2 {
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
   }
 </style>
