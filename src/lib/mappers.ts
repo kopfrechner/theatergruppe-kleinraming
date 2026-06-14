@@ -1,11 +1,18 @@
 import { getImage, inferRemoteSize } from "astro:assets";
 import he from "he";
 
-export async function prepareGalleryImages(foto_gallerie: any[], directusUrl: string) {
-  if (!foto_gallerie || foto_gallerie.length === 0) return [];
+export async function prepareGalleryImages(gallerie: any[], directusUrl: string) {
+  if (!gallerie || gallerie.length === 0) return [];
+
+  // Sort by 'sort' field from the junction table
+  const sortedGallerie = [...gallerie].sort((a, b) => {
+    const sortA = a.sort ?? 0;
+    const sortB = b.sort ?? 0;
+    return sortA - sortB;
+  });
 
   const images = await Promise.all(
-    foto_gallerie.map(async (item) => {
+    sortedGallerie.map(async (item) => {
       // Extract file ID from M2M junction or direct ID
       const fileId = item.directus_files_id?.id || item.directus_files_id || item.id;
       if (!fileId) return null;

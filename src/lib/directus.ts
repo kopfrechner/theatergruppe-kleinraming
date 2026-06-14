@@ -7,7 +7,7 @@ interface Stueck {
   synopsis: string;
   flyer?: string;
   titelfoto?: string;
-  foto_gallerie?: any[];
+  gallerie?: any[];
   spieler?: any[];
 }
 

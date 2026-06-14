@@ -10,10 +10,10 @@ import { prepareGalleryImages } from '../../lib/mappers';
 export async function getStaticPaths() {
   const stuecke = await directus.request(
     readItems('stuecke', {
-      fields: ['*', 'foto_gallerie.*', 'foto_gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
+      fields: ['*', 'gallerie.*', 'gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
       filter: { veroffentlicht: { _eq: true } },
       deep: {
-        foto_gallerie: {
+        gallerie: {
           _sort: ['sort']
         },
         spieler: {
@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 
 const { stueck } = Astro.props;
 
-const filteredGallery = await prepareGalleryImages(stueck.foto_gallerie, DIRECTUS_URL);
+const filteredGallery = await prepareGalleryImages(stueck.gallerie, DIRECTUS_URL);
 
 // Prepare SEO metadata
 const cleanSynopsis = stueck.synopsis 
