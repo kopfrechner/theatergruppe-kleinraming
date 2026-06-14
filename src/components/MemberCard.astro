@@ -13,20 +13,22 @@ const { name, role, roleDescription, image } = Astro.props;
 ---
 
 <div class="cast-card">
-  {image ? (
-    <Image 
-      src={`${DIRECTUS_URL}/assets/${image.id || image}`} 
-      alt={name}
-      width={100}
-      height={100}
-      format="webp"
-      class="cast-photo"
-    />
-  ) : (
-    <div class="cast-photo-placeholder">
-      <span>{name.charAt(0)}</span>
-    </div>
-  )}
+  {
+    image ? (
+      <Image
+        src={`${DIRECTUS_URL}/assets/${image.id || image}`}
+        alt={name}
+        width={100}
+        height={100}
+        format="webp"
+        class="cast-photo"
+      />
+    ) : (
+      <div class="cast-photo-placeholder">
+        <span>{name.charAt(0)}</span>
+      </div>
+    )
+  }
   <div class="cast-info">
     <span class="actor-name">{name}</span>
     {role && <span class="role-name">{role}</span>}
@@ -52,7 +54,8 @@ const { name, role, roleDescription, image } = Astro.props;
     transform: translateY(-2px);
   }
 
-  .cast-photo, .cast-photo-placeholder {
+  .cast-photo,
+  .cast-photo-placeholder {
     width: 60px;
     height: 60px;
     border-radius: 50%;

@@ -6,43 +6,50 @@ import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
 // Fetch contact page configuration
-const config = await directus.request(
-  readSingleton('kontakt_seite', {
-    fields: ['email', 'telefon', 'faq', 'location_name', 'map_embed']
-  })
-).catch(() => ({
-  email: "info@theatergruppe-kleinraming.at",
-  telefon: "0680 / 3110037",
-  faq: [],
-  location_name: "Gasthof Froschauer",
-  map_embed: ""
-}));
+const config = await directus
+  .request(
+    readSingleton('kontakt_seite', {
+      fields: ['email', 'telefon', 'faq', 'location_name', 'map_embed'],
+    }),
+  )
+  .catch(() => ({
+    email: 'info@theatergruppe-kleinraming.at',
+    telefon: '0680 / 3110037',
+    faq: [],
+    location_name: 'Gasthof Froschauer',
+    map_embed: '',
+  }));
 
 // Fetch board members
-const vorstand = await directus.request(
-  readItems('theatermenschen', {
-    filter: {
-      vorstandsmitglied: { _eq: true }
-    },
-    fields: ['name', 'funktionen', 'foto'],
-    sort: ['sort', 'name']
-  })
-).catch(() => []);
+const vorstand = await directus
+  .request(
+    readItems('theatermenschen', {
+      filter: {
+        vorstandsmitglied: { _eq: true },
+      },
+      fields: ['name', 'funktionen', 'foto'],
+      sort: ['sort', 'name'],
+    }),
+  )
+  .catch(() => []);
 
-const contactEmail = config.email || "info@theatergruppe-kleinraming.at";
-const contactPhone = config.telefon || "0680 / 3110037";
+const contactEmail = config.email || 'info@theatergruppe-kleinraming.at';
+const contactPhone = config.telefon || '0680 / 3110037';
 const faqs = config.faq || [];
-const locationName = config.location_name || "Gasthof Froschauer";
-const mapEmbed = config.map_embed || "";
+const locationName = config.location_name || 'Gasthof Froschauer';
+const mapEmbed = config.map_embed || '';
 ---
 
-<Layout 
-  title="Kontakt & FAQ" 
+<Layout
+  title="Kontakt & FAQ"
   description="Haben Sie Fragen? Hier finden Sie Kontaktmöglichkeiten zur Theatergruppe Kleinraming sowie Antworten auf häufig gestellte Fragen."
 >
   <div class="container page-header">
     <h1>Kontakt</h1>
-    <p class="subtitle">Du hast Fragen, Wünsche oder Anregungen? Wir freuen uns auf deine Nachricht!</p>
+    <p class="subtitle">
+      Du hast Fragen, Wünsche oder Anregungen? Wir freuen uns auf deine
+      Nachricht!
+    </p>
   </div>
 
   <section class="container contact-section">
@@ -61,7 +68,10 @@ const mapEmbed = config.map_embed || "";
             <span class="icon"><Phone size={20} /></span>
             <div>
               <strong>Telefon</strong>
-              <p><a href={`tel:${contactPhone.replace(/\s/g, '')}`}>{contactPhone}</a></p>
+              <p>
+                <a href={`tel:${contactPhone.replace(/\s/g, '')}`}
+                  >{contactPhone}</a>
+              </p>
             </div>
           </div>
         </div>
@@ -71,54 +81,78 @@ const mapEmbed = config.map_embed || "";
         <h2>Social Media</h2>
         <p>Folge uns für aktuelle Infos und Einblicke hinter die Kulissen:</p>
         <div class="social-links-large">
-          <a href="https://www.facebook.com/Theatergruppe.Kleinraming/" target="_blank" rel="noopener noreferrer" class="social-btn facebook">
+          <a
+            href="https://www.facebook.com/Theatergruppe.Kleinraming/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-btn facebook"
+          >
             Facebook
           </a>
-          <a href="https://www.instagram.com/theatergruppe.kleinraming/" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+          <a
+            href="https://www.instagram.com/theatergruppe.kleinraming/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="social-btn instagram"
+          >
             Instagram
           </a>
         </div>
       </div>
     </div>
 
-    {faqs.length > 0 && (
-      <div class="glass-panel faq-section">
-        <h2>Häufig gestellte Fragen (FAQ)</h2>
-        <div class="faq-list">
-          {faqs.map((item) => (
-            <div class="faq-item">
-              <h3>{item.frage}</h3>
-              <p>{item.antwort}</p>
-            </div>
-          ))}
+    {
+      faqs.length > 0 && (
+        <div class="glass-panel faq-section">
+          <h2>Häufig gestellte Fragen (FAQ)</h2>
+          <div class="faq-list">
+            {faqs.map((item) => (
+              <div class="faq-item">
+                <h3>{item.frage}</h3>
+                <p>{item.antwort}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-    )}
+      )
+    }
 
     <div class="glass-panel board-section">
       <h2>Unser Vorstand</h2>
-      <p class="section-intro">Für spezifische Anliegen kannst du dich auch direkt an unsere Vorstandsmitglieder wenden:</p>
+      <p class="section-intro">
+        Für spezifische Anliegen kannst du dich auch direkt an unsere
+        Vorstandsmitglieder wenden:
+      </p>
       <div class="board-grid">
-        {vorstand.map((mensch) => (
-          <MemberCard 
-            name={mensch.name}
-            role={mensch.funktionen.split('\n')[0]}
-            roleDescription={mensch.funktionen.split('\n').slice(1).join(', ')}
-            image={mensch.foto}
-          />
-        ))}
+        {
+          vorstand.map((mensch) => (
+            <MemberCard
+              name={mensch.name}
+              role={mensch.funktionen.split('\n')[0]}
+              roleDescription={mensch.funktionen
+                .split('\n')
+                .slice(1)
+                .join(', ')}
+              image={mensch.foto}
+            />
+          ))
+        }
       </div>
     </div>
 
     <div class="glass-panel location-section">
       <h2>Hier findest du uns</h2>
-      <p>Unsere Aufführungen finden meist im <strong>{locationName}</strong> statt.</p>
-      
-      {mapEmbed && (
-        <div class="map-container">
-          <div class="map-embed" set:html={mapEmbed} />
-        </div>
-      )}
+      <p>
+        Unsere Aufführungen finden meist im <strong>{locationName}</strong> statt.
+      </p>
+
+      {
+        mapEmbed && (
+          <div class="map-container">
+            <div class="map-embed" set:html={mapEmbed} />
+          </div>
+        )
+      }
     </div>
   </section>
 </Layout>
@@ -138,7 +172,10 @@ const mapEmbed = config.map_embed || "";
     gap: 2rem;
   }
 
-  .contact-card, .faq-section, .board-section, .location-section {
+  .contact-card,
+  .faq-section,
+  .board-section,
+  .location-section {
     padding: 2.5rem;
   }
 
@@ -204,11 +241,18 @@ const mapEmbed = config.map_embed || "";
   }
 
   .facebook {
-    background-color: #1877F2;
+    background-color: #1877f2;
   }
 
   .instagram {
-    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    background: linear-gradient(
+      45deg,
+      #f09433 0%,
+      #e6683c 25%,
+      #dc2743 50%,
+      #cc2366 75%,
+      #bc1888 100%
+    );
   }
 
   .faq-list {

@@ -1,7 +1,6 @@
 ---
-import { Image } from "astro:assets";
-import GalleryImage from "./GalleryImage.astro";
-import "photoswipe/style.css";
+import GalleryImage from './GalleryImage.astro';
+import 'photoswipe/style.css';
 
 interface Props {
   images: Array<{
@@ -36,64 +35,67 @@ const { images, title } = Astro.props;
 </div>
 
 <script>
-  import PhotoSwipeLightbox from "photoswipe/lightbox";
+  import PhotoSwipeLightbox from 'photoswipe/lightbox';
 
   let slideshowInterval: any;
 
   const lightbox = new PhotoSwipeLightbox({
-    gallery: "#play-gallery",
-    children: "a",
-    pswpModule: () => import("photoswipe"),
-    showHideAnimationType: "zoom",
+    gallery: '#play-gallery',
+    children: 'a',
+    pswpModule: () => import('photoswipe'),
+    showHideAnimationType: 'zoom',
     bgOpacity: 0.95,
   });
 
-  lightbox.on("uiRegister", function () {
-    lightbox.pswp.ui.registerElement({
-      name: "download-button",
+  lightbox.on('uiRegister', function () {
+    const pswp = lightbox.pswp;
+    if (!pswp || !pswp.ui) return;
+
+    pswp.ui.registerElement({
+      name: 'download-button',
       order: 10,
       isButton: true,
-      tagName: "a",
+      tagName: 'a',
       html: {
         isCustomSVG: true,
         inner:
           '<path d="M20.5 14.3 17.1 18V10h-2.2v7.9l-3.4-3.6L10 15.8l5 5.2 5-5.2ZM10 13.3a2 2 0 0 1-2-2V4.7c0-1.1.9-2 2-2h12a2 2 0 0 1 2 2v6.6a2 2 0 0 1-2 2H10Z" fill="currentColor"/>',
-        outlineID: "pswp__icn-download",
+        outlineID: 'pswp__icn-download',
       },
       onInit: (el: any, pswp: any) => {
-        el.setAttribute("download", "");
-        el.setAttribute("target", "_blank");
-        el.setAttribute("rel", "noopener");
-        el.setAttribute("title", "Bild herunterladen");
-        pswp.on("change", () => {
+        el.setAttribute('download', '');
+        el.setAttribute('target', '_blank');
+        el.setAttribute('rel', 'noopener');
+        el.setAttribute('title', 'Bild herunterladen');
+        pswp.on('change', () => {
           el.href = pswp.currSlide.data.src;
         });
       },
     });
 
-    lightbox.pswp.ui.registerElement({
-      name: "play-pause-button",
+    pswp.ui.registerElement({
+      name: 'play-pause-button',
       order: 9,
       isButton: true,
       html: '<svg aria-hidden="true" class="pswp__icn pswp__icn-play" viewBox="0 0 32 32" width="32" height="32"><path d="M10 6l16 10-16 10z" fill="currentColor"/></svg><svg aria-hidden="true" class="pswp__icn pswp__icn-pause" viewBox="0 0 32 32" width="32" height="32" style="display:none"><path d="M8 6h6v20H8zM18 6h6v20h-6z" fill="currentColor"/></svg>',
-      onClick: (event: any, el: any, pswp: any) => {
+      onClick: (_event: any, el: any, pswpInstance: any) => {
         if (slideshowInterval) {
           clearInterval(slideshowInterval);
           slideshowInterval = null;
-          el.querySelector(".pswp__icn-play").style.display = "block";
-          el.querySelector(".pswp__icn-pause").style.display = "none";
+          el.querySelector('.pswp__icn-play').style.display = 'block';
+          el.querySelector('.pswp__icn-pause').style.display = 'none';
         } else {
           slideshowInterval = setInterval(() => {
-            pswp.next();
+            pswpInstance.next();
           }, 3000);
-          el.querySelector(".pswp__icn-play").style.display = "none";
-          el.querySelector(".pswp__icn-pause").style.display = "block";
+          el.querySelector('.pswp__icn-play').style.display = 'none';
+          el.querySelector('.pswp__icn-pause').style.display = 'block';
         }
       },
     });
   });
 
-  lightbox.on("close", () => {
+  lightbox.on('close', () => {
     if (slideshowInterval) {
       clearInterval(slideshowInterval);
       slideshowInterval = null;

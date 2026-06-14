@@ -1,6 +1,6 @@
 ---
-import { Image } from "astro:assets";
-import BentoTile from "./BentoTile.astro";
+import { Image } from 'astro:assets';
+import BentoTile from './BentoTile.astro';
 
 interface Props {
   play: {
@@ -147,7 +147,7 @@ const { play } = Astro.props;
     min-height: 2.2rem;
   }
 
-  :global([data-theme="light"]) .play-status {
+  :global([data-theme='light']) .play-status {
     background: rgba(143, 194, 56, 0.15);
     color: #4a661c; /* Darker green for contrast on light background */
     border-color: rgba(143, 194, 56, 0.4);

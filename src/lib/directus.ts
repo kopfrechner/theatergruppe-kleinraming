@@ -1,42 +1,52 @@
-import { createDirectus, rest, readItems, readItem, readSingleton } from '@directus/sdk';
+import {
+  createDirectus,
+  rest,
+  readItems,
+  readItem,
+  readSingleton,
+} from '@directus/sdk';
 
-interface Stueck {
+export interface Stueck {
   id: string;
+  status: string;
+  veroffentlicht: boolean;
   titel: string;
+  slug: string;
   auffuehrung_im_jahr: number;
   synopsis: string;
-  flyer?: string;
-  titelfoto?: string;
+  flyer?: string | any;
+  titelfoto?: string | any;
   gallerie?: any[];
   spieler?: any[];
 }
 
-interface Theatermensch {
+export interface Theatermensch {
   id: string;
   name: string;
   funktionen: string;
   steckbrief: string;
-  foto?: string;
-  foto_funny?: string;
+  foto?: string | any;
+  foto_funny?: string | any;
   aktiver_theatermensch: boolean;
   vorstandsmitglied: boolean;
+  sort?: number;
 }
 
-interface Sponsor {
+export interface Sponsor {
   id: string;
   unternehmen: string;
   link?: string;
-  bild?: string;
+  bild?: string | any;
 }
 
-interface Startseite {
+export interface Startseite {
   id: string;
   emotionen_titel: string;
   emotionen_bild: string | any;
   impressionen_gallerie: any[];
 }
 
-interface TicketPromotion {
+export interface TicketPromotion {
   id: string;
   anzeige_modus: 'inaktiv' | 'vorab_reservierung' | 'ticket_promotion';
   titel: string;
@@ -45,6 +55,7 @@ interface TicketPromotion {
   vorab_text?: string;
   vorab_bild?: any;
   ticketlotse_link: string;
+  ticketlotse_link_aktiv: boolean;
   spielort?: string;
   telefon_reservierung?: string;
   termin_1?: string;
@@ -64,14 +75,15 @@ interface TicketPromotion {
   foto_szene_2?: any;
   foto_szene_3?: any;
   foto_szene_4?: any;
+  teaser_fotos?: any[];
 }
 
-interface FAQItem {
+export interface FAQItem {
   frage: string;
   antwort: string;
 }
 
-interface KontaktSeite {
+export interface KontaktSeite {
   id: string;
   email: string;
   telefon: string;
@@ -80,12 +92,12 @@ interface KontaktSeite {
   map_embed: string;
 }
 
-interface Impressum {
+export interface Impressum {
   id: string;
   content: string;
 }
 
-interface Datenschutz {
+export interface Datenschutz {
   id: string;
   content: string;
 }

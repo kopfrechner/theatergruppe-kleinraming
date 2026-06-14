@@ -1,13 +1,12 @@
 ---
-import { Image } from "astro:assets";
-import GalleryImage from "./GalleryImage.astro";
+import GalleryImage from './GalleryImage.astro';
 
 interface Props {
   images: string[];
   title?: string;
 }
 
-const { images, title = "Impressionen" } = Astro.props;
+const { images, title = 'Impressionen' } = Astro.props;
 ---
 
 <section class="container filmstrip-section">
@@ -17,11 +16,7 @@ const { images, title = "Impressionen" } = Astro.props;
   <div class="filmstrip-grid">
     {
       images.map((imgUrl: string) => (
-        <GalleryImage
-          src={imgUrl}
-          alt="Impression"
-          width={600}
-        />
+        <GalleryImage src={imgUrl} alt="Impression" width={600} />
       ))
     }
   </div>

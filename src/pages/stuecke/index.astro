@@ -5,16 +5,16 @@ import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-const stuecke = await directus.request(
+const stuecke = (await directus.request(
   readItems('stuecke', {
-    sort: ['-auffuehrung_im_jahr'],
-    filter: { veroffentlicht: { _eq: true } }
-  })
-);
+    sort: ['-auffuehrung_im_jahr'] as any,
+    filter: { veroffentlicht: { _eq: true } } as any,
+  }),
+)) as any[];
 ---
 
-<Layout 
-  title="Bisherige Stücke" 
+<Layout
+  title="Bisherige Stücke"
   description="Entdecken Sie das Archiv der Theatergruppe Kleinraming. Eine Übersicht über alle Aufführungen und Stücke der vergangenen Jahre."
 >
   <div class="container page-header">
@@ -24,35 +24,47 @@ const stuecke = await directus.request(
 
   <section class="container plays-section">
     <div class="grid play-grid">
-      {stuecke && stuecke.length > 0 ? (
-        stuecke.map(stueck => (
-          <article class="glass-panel play-card">
-            <div class="play-poster-placeholder">
-              {stueck.titelfoto && (
-                <Image 
-                  src={`${DIRECTUS_URL}/assets/${stueck.titelfoto}`} 
-                  alt={stueck.titel} 
-                  width={600}
-                  height={338}
-                  format="webp"
-                />
-              )}
-            </div>
-            <div class="play-content">
-              <h2>{stueck.titel}</h2>
-              <p class="play-year">{stueck.auffuehrung_im_jahr}</p>
-              <a href={`/stuecke/${stueck.slug || stueck.id}`} class="btn btn-outline" style="width:100%; text-align:center;">Details ansehen</a>
-            </div>
-          </article>
-        ))
-      ) : (
-        <div class="glass-panel" style="grid-column: 1 / -1; padding: 4rem; text-align: center;">
-          <p class="subtitle">Noch keine Stücke vorhanden.</p>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
-            Sobald du in Directus ein Stück veröffentlichst, erscheint es hier.
-          </p>
-        </div>
-      )}
+      {
+        stuecke && stuecke.length > 0 ? (
+          stuecke.map((stueck) => (
+            <article class="glass-panel play-card">
+              <div class="play-poster-placeholder">
+                {stueck.titelfoto && (
+                  <Image
+                    src={`${DIRECTUS_URL}/assets/${stueck.titelfoto}`}
+                    alt={stueck.titel}
+                    width={600}
+                    height={338}
+                    format="webp"
+                  />
+                )}
+              </div>
+              <div class="play-content">
+                <h2>{stueck.titel}</h2>
+                <p class="play-year">{stueck.auffuehrung_im_jahr}</p>
+                <a
+                  href={`/stuecke/${stueck.slug || stueck.id}`}
+                  class="btn btn-outline"
+                  style="width:100%; text-align:center;"
+                >
+                  Details ansehen
+                </a>
+              </div>
+            </article>
+          ))
+        ) : (
+          <div
+            class="glass-panel"
+            style="grid-column: 1 / -1; padding: 4rem; text-align: center;"
+          >
+            <p class="subtitle">Noch keine Stücke vorhanden.</p>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+              Sobald du in Directus ein Stück veröffentlichst, erscheint es
+              hier.
+            </p>
+          </div>
+        )
+      }
     </div>
   </section>
 </Layout>
@@ -82,7 +94,10 @@ const stuecke = await directus.request(
     max-width: 360px;
     margin: 0 auto;
     width: 100%;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
   }
 
   .play-card:hover {

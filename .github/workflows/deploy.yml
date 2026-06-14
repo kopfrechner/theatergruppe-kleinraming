@@ -9,7 +9,7 @@ on:
       - main
   # Das hier faengt den Directus-Hook ab:
   repository_dispatch:
-    types: [ cms_publish_trigger ]
+    types: [cms_publish_trigger]
 
 jobs:
   deploy:

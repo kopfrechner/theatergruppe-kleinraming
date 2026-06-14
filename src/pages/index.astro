@@ -1,41 +1,90 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import HomeHero from "../components/HomeHero.astro";
-import HighlightPlayTile from "../components/HighlightPlayTile.astro";
-import ImageGallery from "../components/ImageGallery.astro";
-import BentoTile from "../components/BentoTile.astro";
-import directus, { DIRECTUS_URL } from "../lib/directus";
-import { readItems, readSingleton } from "@directus/sdk";
-import { Image, inferRemoteSize } from "astro:assets";
-import { mapHighlightPlay } from "../lib/mappers";
+import Layout from '../layouts/Layout.astro';
+import HomeHero from '../components/HomeHero.astro';
+import HighlightPlayTile from '../components/HighlightPlayTile.astro';
+import ImageGallery from '../components/ImageGallery.astro';
+import BentoTile from '../components/BentoTile.astro';
+import directus, { DIRECTUS_URL, type Stueck } from '../lib/directus';
+import { readItems, readSingleton } from '@directus/sdk';
+import { Image, inferRemoteSize } from 'astro:assets';
+import { mapHighlightPlay } from '../lib/mappers';
 
 // 1. Fetch Data
-const [startseite, ticketPromo, latestPlays] = await Promise.all([
-  directus.request(readSingleton("startseite", { fields: ["emotionen_titel", "emotionen_bild", "impressionen_gallerie.directus_files_id.*"] })).catch(() => null),
-  directus.request(readSingleton("ticket_promotion", { fields: ["anzeige_modus", "titel", "vorab_titel", "kurzbeschreibung", "vorab_text", "vorab_bild", "termin_1", "termin_2", "termin_3", "termin_4", "termin_5", "termin_6", "ticketlotse_link", "hauptfoto"] })).catch(() => ({ anzeige_modus: "inaktiv" })),
-  directus.request(readItems("stuecke", { fields: ["id", "titel", "synopsis", "auffuehrung_im_jahr", "titelfoto", "slug"], sort: ["-auffuehrung_im_jahr"], filter: { veroffentlicht: { _eq: true } }, limit: 1 })).catch(() => [])
-]);
+const [startseite, ticketPromo, latestPlays] = (await Promise.all([
+  directus
+    .request(
+      readSingleton('startseite', {
+        fields: [
+          'emotionen_titel',
+          'emotionen_bild',
+          'impressionen_gallerie.directus_files_id.*',
+        ],
+      } as any),
+    )
+    .catch(() => null),
+  directus
+    .request(
+      readSingleton('ticket_promotion', {
+        fields: [
+          'anzeige_modus',
+          'titel',
+          'vorab_titel',
+          'kurzbeschreibung',
+          'vorab_text',
+          'vorab_bild',
+          'termin_1',
+          'termin_2',
+          'termin_3',
+          'termin_4',
+          'termin_5',
+          'termin_6',
+          'ticketlotse_link',
+          'hauptfoto',
+        ],
+      } as any),
+    )
+    .catch(() => ({ anzeige_modus: 'inaktiv' }) as any),
+  directus
+    .request(
+      readItems('stuecke', {
+        fields: [
+          'id',
+          'titel',
+          'synopsis',
+          'auffuehrung_im_jahr',
+          'titelfoto',
+          'slug',
+        ],
+        sort: ['-auffuehrung_im_jahr'] as any,
+        filter: { veroffentlicht: { _eq: true } } as any,
+        limit: 1,
+      }),
+    )
+    .catch(() => []),
+])) as [any, any, Stueck[]];
 
 const lastPlay = latestPlays.length > 0 ? latestPlays[0] : null;
 
 // 2. Map Data
 const highlightPlay = mapHighlightPlay(ticketPromo, lastPlay, DIRECTUS_URL);
 
-const impressionImages = startseite?.impressionen_gallerie
-  ? startseite.impressionen_gallerie.map((img: any) => ({
-      src: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
-      width: img.directus_files_id?.width || 1600,
-      height: img.directus_files_id?.height || 1200,
-      thumbnail: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
-      id: img.directus_files_id?.id || img.directus_files_id || img
-    }))
-  : [];
+const impressionImages =
+  startseite?.impressionen_gallerie &&
+  Array.isArray(startseite.impressionen_gallerie)
+    ? startseite.impressionen_gallerie.map((img: any) => ({
+        src: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
+        width: img.directus_files_id?.width || 1600,
+        height: img.directus_files_id?.height || 1200,
+        thumbnail: `${DIRECTUS_URL}/assets/${img.directus_files_id?.id || img.directus_files_id || img}`,
+        id: img.directus_files_id?.id || img.directus_files_id || img,
+      }))
+    : [];
 
 const emotionImage = startseite?.emotionen_bild
   ? `${DIRECTUS_URL}/assets/${startseite.emotionen_bild}`
   : null;
 
-const emotionTitel = startseite?.emotionen_titel || "";
+const emotionTitel = startseite?.emotionen_titel || '';
 
 // Infer dimensions for the emotion image to prevent cropping
 let emotionWidth = 800;
@@ -47,15 +96,15 @@ if (emotionImage) {
     emotionWidth = dims.width;
     emotionHeight = dims.height;
   } catch (e) {
-    console.warn("Could not infer remote size for emotion image", e);
+    console.warn('Could not infer remote size for emotion image', e);
   }
 }
 ---
 
 <Layout title="Startseite">
-  <HomeHero 
-    isTicketsActive={ticketPromo?.anzeige_modus !== "inaktiv"} 
-    lastPlay={lastPlay} 
+  <HomeHero
+    isTicketsActive={ticketPromo?.anzeige_modus !== 'inaktiv'}
+    lastPlay={lastPlay}
   />
 
   <section class="container bento-section">

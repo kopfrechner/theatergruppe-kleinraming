@@ -4,45 +4,56 @@ import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-const sponsors = await directus.request(
+const sponsors = (await directus.request(
   readItems('sponsoren', {
-    fields: ['id', 'unternehmen', 'link', 'bild.*'],
-    sort: ['unternehmen']
-  })
-);
+    fields: ['id', 'unternehmen', 'link', 'bild.*'] as any,
+    sort: ['unternehmen'],
+  }),
+)) as any[];
 ---
 
-<Layout 
-  title="Sponsoren & Partner" 
+<Layout
+  title="Sponsoren & Partner"
   description="Vielen Dank an unsere Sponsoren und Partner, die die kulturelle Arbeit der Theatergruppe Kleinraming unterstützen."
 >
   <div class="container page-header">
     <h1>Unsere Sponsoren</h1>
-    <p class="subtitle">Vielen Dank für die Unterstützung unserer Theatergruppe.</p>
+    <p class="subtitle">
+      Vielen Dank für die Unterstützung unserer Theatergruppe.
+    </p>
   </div>
 
   <section class="container sponsoren-section">
     <div class="grid sponsoren-grid">
-      {sponsors.map(sponsor => (
-        <a href={sponsor.link || '#'} target="_blank" rel="noopener noreferrer" class={`glass-panel sponsor-card ${!sponsor.link ? 'no-link' : ''}`}>
-          <div class="sponsor-logo-placeholder">
-            {sponsor.bild ? (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${sponsor.bild.id}`} 
-                alt={sponsor.unternehmen}
-                width={400}
-                height={Math.round(400 * (sponsor.bild.height / sponsor.bild.width))}
-                format="webp"
-              />
-            ) : (
-              <div class="no-logo">Kein Logo verfügbar</div>
-            )}
-          </div>
-          <div class="sponsor-info">
-            <h3>{sponsor.unternehmen}</h3>
-          </div>
-        </a>
-      ))}
+      {
+        sponsors.map((sponsor) => (
+          <a
+            href={sponsor.link || '#'}
+            target="_blank"
+            rel="noopener noreferrer"
+            class={`glass-panel sponsor-card ${!sponsor.link ? 'no-link' : ''}`}
+          >
+            <div class="sponsor-logo-placeholder">
+              {sponsor.bild ? (
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${sponsor.bild.id}`}
+                  alt={sponsor.unternehmen}
+                  width={400}
+                  height={Math.round(
+                    400 * (sponsor.bild.height / sponsor.bild.width),
+                  )}
+                  format="webp"
+                />
+              ) : (
+                <div class="no-logo">Kein Logo verfügbar</div>
+              )}
+            </div>
+            <div class="sponsor-info">
+              <h3>{sponsor.unternehmen}</h3>
+            </div>
+          </a>
+        ))
+      }
     </div>
   </section>
 </Layout>
@@ -67,7 +78,10 @@ const sponsors = await directus.request(
   .sponsor-card {
     text-align: center;
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
     display: flex;
     flex-direction: column;
     text-decoration: none;

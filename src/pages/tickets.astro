@@ -1,60 +1,59 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import MemberCard from "../components/MemberCard.astro";
-import ShareButtons from "../components/ShareButtons.astro";
-import directus, { DIRECTUS_URL } from "../lib/directus";
-import { readSingleton } from "@directus/sdk";
-import { Image } from "astro:assets";
-import GalleryImage from "../components/GalleryImage.astro";
-import ImageGallery from "../components/ImageGallery.astro";
-import { Ticket, Phone, Calendar, Clock } from "@lucide/astro";
+import Layout from '../layouts/Layout.astro';
+import MemberCard from '../components/MemberCard.astro';
+import ShareButtons from '../components/ShareButtons.astro';
+import directus, { DIRECTUS_URL } from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
+import GalleryImage from '../components/GalleryImage.astro';
+import ImageGallery from '../components/ImageGallery.astro';
+import { Ticket, Phone, Calendar, Clock } from '@lucide/astro';
 
-const ticketPromo = await directus
+const ticketPromo = (await directus
   .request(
-    readSingleton("ticket_promotion", {
+    readSingleton('ticket_promotion', {
       fields: [
-        "id",
-        "anzeige_modus",
-        "titel",
-        "vorab_titel",
-        "kurzbeschreibung",
-        "vorab_text",
-        "vorab_bild.*",
-        "ticketlotse_link",
-        "spielort",
-        "telefon_reservierung",
-        "termin_1",
-        "termin_2",
-        "termin_3",
-        "termin_4",
-        "termin_5",
-        "termin_6",
-        "ticketlotse_link_aktiv",
-        "autor",
-        "genre",
-        "preis_erwachsene",
-        "preis_jugendliche",
-        "map_embed",
-        "crew.theatermenschen_id.*",
-        "crew.theatermenschen_id.foto.*",
-        "crew.rolle",
-        "crew.rolle_beschreibung",
-        "hauptfoto.*",
-        "teaser_fotos.directus_files_id.*",
-        "teaser_fotos.sort",
+        'id',
+        'anzeige_modus',
+        'titel',
+        'vorab_titel',
+        'kurzbeschreibung',
+        'vorab_text',
+        'vorab_bild.*',
+        'ticketlotse_link',
+        'spielort',
+        'telefon_reservierung',
+        'termin_1',
+        'termin_2',
+        'termin_3',
+        'termin_4',
+        'termin_5',
+        'termin_6',
+        'ticketlotse_link_aktiv',
+        'autor',
+        'genre',
+        'preis_erwachsene',
+        'preis_jugendliche',
+        'map_embed',
+        'crew.theatermenschen_id.*',
+        'crew.theatermenschen_id.foto.*',
+        'crew.rolle',
+        'crew.rolle_beschreibung',
+        'hauptfoto.*',
+        'teaser_fotos.directus_files_id.*',
+        'teaser_fotos.sort',
       ],
-    }),
+    } as any),
   )
-  .catch(() => null);
+  .catch(() => null)) as any;
 
-const anzeigeModus = ticketPromo?.anzeige_modus || "inaktiv";
+const anzeigeModus = ticketPromo?.anzeige_modus || 'inaktiv';
 
 // If inactive or no data, redirect to home
-if (!ticketPromo || anzeigeModus === "inaktiv") {
-  return Astro.redirect("/");
+if (!ticketPromo || anzeigeModus === 'inaktiv') {
+  return Astro.redirect('/');
 }
 
-const isPreBooking = anzeigeModus === "vorab_reservierung";
+const isPreBooking = anzeigeModus === 'vorab_reservierung';
 
 // Prepare scene photos array (only if not pre-booking)
 const scenePhotos = isPreBooking
@@ -70,15 +69,7 @@ const scenePhotos = isPreBooking
       }));
 
 // Format dates from termin_1..6
-const locale = "de-AT";
-const dateFormat: Intl.DateTimeFormatOptions = {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-  timeZone: "Europe/Vienna",
-};
+const locale = 'de-AT';
 
 const termineArray = [
   ticketPromo.termin_1,
@@ -88,44 +79,44 @@ const termineArray = [
   ticketPromo.termin_5,
   ticketPromo.termin_6,
 ]
-  .filter((t) => t)
-  .map((t) => {
+  .filter((t: any) => t)
+  .map((t: any) => {
     const d = new Date(t);
     return {
       date: d.toLocaleDateString(locale, {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        timeZone: "Europe/Vienna",
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        timeZone: 'Europe/Vienna',
       }),
       time: d.toLocaleTimeString(locale, {
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZone: "Europe/Vienna",
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZone: 'Europe/Vienna',
       }),
       weekday: d
         .toLocaleDateString(locale, {
-          weekday: "short",
-          timeZone: "Europe/Vienna",
+          weekday: 'short',
+          timeZone: 'Europe/Vienna',
         })
-        .replace(".", ""),
+        .replace('.', ''),
     };
   });
 
 const formatPrice = (price: string | undefined) => {
   if (!price) return null;
   const trimmed = price.trim();
-  if (trimmed.includes("€")) return trimmed;
+  if (trimmed.includes('€')) return trimmed;
   return `${trimmed} €`;
 };
 
 const preiseArray = [
   ticketPromo.preis_erwachsene
-    ? { label: "Erwachsene", value: formatPrice(ticketPromo.preis_erwachsene) }
+    ? { label: 'Erwachsene', value: formatPrice(ticketPromo.preis_erwachsene) }
     : null,
   ticketPromo.preis_jugendliche
     ? {
-        label: "Kinder/Jugendliche",
+        label: 'Kinder/Jugendliche',
         value: formatPrice(ticketPromo.preis_jugendliche),
       }
     : null,
@@ -133,7 +124,7 @@ const preiseArray = [
 
 const autorGenre = isPreBooking
   ? null
-  : [ticketPromo.autor, ticketPromo.genre].filter((x) => x).join(" / ");
+  : [ticketPromo.autor, ticketPromo.genre].filter((x) => x).join(' / ');
 
 // Filter valid cast members from 'crew' (only if not pre-booking)
 const castMembers = isPreBooking
@@ -155,10 +146,10 @@ const displayText = isPreBooking
   ? ticketPromo.vorab_text || ticketPromo.kurzbeschreibung
   : ticketPromo.kurzbeschreibung;
 const metaDescription =
-  (displayText || "").length > 160
-    ? displayText.substring(0, 157) + "..."
+  (displayText || '').length > 160
+    ? displayText.substring(0, 157) + '...'
     : displayText ||
-      "Sichern Sie sich Tickets für die aktuelle Produktion der Theatergruppe Kleinraming.";
+      'Sichern Sie sich Tickets für die aktuelle Produktion der Theatergruppe Kleinraming.';
 const ogImage = isPreBooking
   ? ticketPromo.vorab_bild
     ? `${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`
@@ -175,7 +166,7 @@ const ogImage = isPreBooking
 >
   <div class="container page-header">
     <span class="play-status">
-      {isPreBooking ? "Saison-Vorschau" : "Nächste Premiere"}
+      {isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere'}
     </span>
     <h1 class="flyer-title">
       {
@@ -241,7 +232,7 @@ const ogImage = isPreBooking
                 <Phone size={24} class="phone-icon" />
                 <p class="highlight-text">
                   <a
-                    href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, "+43").replace(/[^0-9+]/g, "")}`}
+                    href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`}
                     class="phone-link"
                   >
                     {ticketPromo.telefon_reservierung}
@@ -288,8 +279,8 @@ const ogImage = isPreBooking
               <ul class="prices-list">
                 {preiseArray.map((preis) => (
                   <li>
-                    <span class="price-label">{preis.label}</span>
-                    <span class="price-val">{preis.value}</span>
+                    <span class="price-label">{preis?.label}</span>
+                    <span class="price-val">{preis?.value}</span>
                   </li>
                 ))}
               </ul>
@@ -321,7 +312,7 @@ const ogImage = isPreBooking
     <!-- Main Content Section -->
     <div class="flyer-content">
       <div class="glass-panel content-box">
-        <h2>{isPreBooking ? "Vorschau auf die Saison" : "Aus dem Inhalt"}</h2>
+        <h2>{isPreBooking ? 'Vorschau auf die Saison' : 'Aus dem Inhalt'}</h2>
         <p class="synopsis-text">
           {
             isPreBooking
@@ -379,7 +370,7 @@ const ogImage = isPreBooking
     line-height: 1;
   }
 
-  :global([data-theme="light"]) .play-status {
+  :global([data-theme='light']) .play-status {
     background: rgba(143, 194, 56, 0.15);
     color: #4a661c; /* Darker green for contrast on light background */
     border-color: rgba(143, 194, 56, 0.4);

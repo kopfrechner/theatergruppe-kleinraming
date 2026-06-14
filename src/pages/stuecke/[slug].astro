@@ -10,47 +10,58 @@ import { prepareGalleryImages } from '../../lib/mappers';
 export async function getStaticPaths() {
   const stuecke = await directus.request(
     readItems('stuecke', {
-      fields: ['*', 'gallerie.*', 'gallerie.directus_files_id.*', 'spieler.*', 'spieler.theatermenschen_id.*', 'spieler.theatermenschen_id.foto.*'],
-      filter: { veroffentlicht: { _eq: true } },
+      fields: [
+        '*',
+        'gallerie.*',
+        'gallerie.directus_files_id.*',
+        'spieler.*',
+        'spieler.theatermenschen_id.*',
+        'spieler.theatermenschen_id.foto.*',
+      ],
+      filter: { veroffentlicht: { _eq: true } } as any,
       deep: {
         gallerie: {
-          _sort: ['sort']
+          _sort: ['sort'],
         },
         spieler: {
-          _sort: ['sort']
-        }
-      }
-    })
+          _sort: ['sort'],
+        },
+      } as any,
+    } as any),
   );
 
-  return stuecke.map((stueck) => ({
+  return stuecke.map((stueck: any) => ({
     params: { slug: stueck.slug || stueck.id },
     props: { stueck },
   }));
 }
 
-const { stueck } = Astro.props;
+const { stueck } = Astro.props as any;
 
-const filteredGallery = await prepareGalleryImages(stueck.gallerie, DIRECTUS_URL);
+const filteredGallery = await prepareGalleryImages(
+  stueck.gallerie || [],
+  DIRECTUS_URL,
+);
 
 // Prepare SEO metadata
-const cleanSynopsis = stueck.synopsis 
-  ? stueck.synopsis.replace(/<[^>]*>?/gm, "").replace(/\s+/g, " ").trim()
-  : "";
-const metaDescription = cleanSynopsis.length > 160 
-  ? cleanSynopsis.substring(0, 157) + "..." 
-  : cleanSynopsis || `Informationen zum Theaterstück ${stueck.titel} der Theatergruppe Kleinraming.`;
+const cleanSynopsis = stueck.synopsis
+  ? stueck.synopsis
+      .replace(/<[^>]*>?/gm, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  : '';
+const metaDescription =
+  cleanSynopsis.length > 160
+    ? cleanSynopsis.substring(0, 157) + '...'
+    : cleanSynopsis ||
+      `Informationen zum Theaterstück ${stueck.titel} der Theatergruppe Kleinraming.`;
 
-const ogImage = stueck.titelfoto 
-  ? `${DIRECTUS_URL}/assets/${stueck.titelfoto}` 
+const ogImage = stueck.titelfoto
+  ? `${DIRECTUS_URL}/assets/${stueck.titelfoto}`
   : undefined;
 ---
 
-<Layout 
-  title={stueck.titel} 
-  description={metaDescription}
-  image={ogImage}
->
+<Layout title={stueck.titel} description={metaDescription} image={ogImage}>
   <div class="container page-header">
     <a href="/stuecke" class="back-link">&larr; Zurück zur Übersicht</a>
     <h1>{stueck.titel}</h1>
@@ -62,23 +73,29 @@ const ogImage = stueck.titelfoto
     <div class="glass-panel content-box">
       <h2>Zusammenfassung</h2>
       <div class="abstract">
-        {stueck.synopsis ? (
-          <div set:html={stueck.synopsis} />
-        ) : (
-          <p>Keine Beschreibung verfügbar.</p>
-        )}
+        {
+          stueck.synopsis ? (
+            <div set:html={stueck.synopsis} />
+          ) : (
+            <p>Keine Beschreibung verfügbar.</p>
+          )
+        }
       </div>
-      
-      {stueck.spieler && stueck.spieler.length > 0 && (
-        <CastSection spieler={stueck.spieler} />
-      )}
 
-      {filteredGallery.length > 0 && (
-        <div class="gallery-section">
-          <h2>Galerie</h2>
-          <ImageGallery images={filteredGallery} title={stueck.titel} />
-        </div>
-      )}
+      {
+        stueck.spieler && stueck.spieler.length > 0 && (
+          <CastSection spieler={stueck.spieler} />
+        )
+      }
+
+      {
+        filteredGallery.length > 0 && (
+          <div class="gallery-section">
+            <h2>Galerie</h2>
+            <ImageGallery images={filteredGallery} title={stueck.titel} />
+          </div>
+        )
+      }
     </div>
   </section>
 </Layout>

@@ -1,15 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile, ArrowRight } from '@lucide/astro';
+import {
+  Users,
+  Construction,
+  Paintbrush,
+  Utensils,
+  Heart,
+  Sparkles,
+  Smile,
+  ArrowRight,
+} from '@lucide/astro';
 ---
 
-<Layout 
-  title="Mitwirken" 
+<Layout
+  title="Mitwirken"
   description="Werde Teil der Theatergruppe Kleinraming. Wir suchen immer motivierte Menschen für die Bühne und dahinter – vom Schauspiel bis zur Technik."
 >
   <div class="container page-header">
     <h1>Werde Teil der Theatergruppe</h1>
-    <p class="subtitle">Wir suchen immer motivierte Leute für die Bühne und dahinter!</p>
+    <p class="subtitle">
+      Wir suchen immer motivierte Leute für die Bühne und dahinter!
+    </p>
   </div>
 
   <section class="container join-section">
@@ -43,30 +54,42 @@ import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile, Arro
       <h2>Welche Rollen gibt es?</h2>
       <p class="text-muted">Jedes Talent findet bei uns seinen Platz.</p>
     </div>
-    
+
     <div class="roles-grid">
       <div class="glass-panel role-card">
         <Users class="role-icon" size={40} stroke-width={1.5} />
         <h3>Schauspiel</h3>
-        <p>Du liebst es, in andere Rollen zu schlüpfen? Steh bei uns im Rampenlicht und begeistere das Publikum.</p>
+        <p>
+          Du liebst es, in andere Rollen zu schlüpfen? Steh bei uns im
+          Rampenlicht und begeistere das Publikum.
+        </p>
       </div>
-      
+
       <div class="glass-panel role-card">
         <Construction class="role-icon" size={40} stroke-width={1.5} />
         <h3>Bühnenbau & Technik</h3>
-        <p>Für Bastler, Tüftler und Handwerker. Wir bauen unsere Kulissen selbst und sorgen für das perfekte Licht.</p>
+        <p>
+          Für Bastler, Tüftler und Handwerker. Wir bauen unsere Kulissen selbst
+          und sorgen für das perfekte Licht.
+        </p>
       </div>
-      
+
       <div class="glass-panel role-card">
         <Paintbrush class="role-icon" size={40} stroke-width={1.5} />
         <h3>Maske & Kostüm</h3>
-        <p>Kreativität ist hier gefragt. Verwandle unsere Darsteller optisch in die Charaktere, die sie spielen.</p>
+        <p>
+          Kreativität ist hier gefragt. Verwandle unsere Darsteller optisch in
+          die Charaktere, die sie spielen.
+        </p>
       </div>
-      
+
       <div class="glass-panel role-card">
         <Utensils class="role-icon" size={40} stroke-width={1.5} />
         <h3>Gastro & Kassa</h3>
-        <p>Das wichtigste Team am Abend. Sorge dafür, dass unsere Gäste bestens versorgt sind und sich wohlfühlen.</p>
+        <p>
+          Das wichtigste Team am Abend. Sorge dafür, dass unsere Gäste bestens
+          versorgt sind und sich wohlfühlen.
+        </p>
       </div>
     </div>
 
@@ -74,7 +97,11 @@ import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile, Arro
     <div class="glass-panel cta-box">
       <div class="cta-content">
         <h3>Bereit für dein erstes Projekt?</h3>
-        <p>Egal ob du schon Erfahrung hast oder kompletter Neuling bist – melde dich unverbindlich bei uns! Wir beißen nicht (außer es steht im Skript).</p>
+        <p>
+          Egal ob du schon Erfahrung hast oder kompletter Neuling bist – melde
+          dich unverbindlich bei uns! Wir beißen nicht (außer es steht im
+          Skript).
+        </p>
       </div>
       <a href="/kontakt" class="btn btn-large cta-btn">
         Kontakt aufnehmen <ArrowRight size={20} />
@@ -94,7 +121,11 @@ import { Users, Construction, Paintbrush, Utensils, Heart, Sparkles, Smile, Arro
     padding: 3rem;
     margin-bottom: 4rem;
     text-align: center;
-    background: linear-gradient(135deg, rgba(var(--bg-color-rgb), 0.4) 0%, rgba(143, 194, 56, 0.05) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(var(--bg-color-rgb), 0.4) 0%,
+      rgba(143, 194, 56, 0.05) 100%
+    );
   }
 
   .feature-banner h2 {

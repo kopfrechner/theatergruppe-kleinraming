@@ -1,11 +1,11 @@
 services:
   database:
-    # Hinweis: PostgreSQL 18 ist noch nicht offiziell als Stable erschienen. 
+    # Hinweis: PostgreSQL 18 ist noch nicht offiziell als Stable erschienen.
     # Falls das Image nicht gefunden wird, auf 'postgres:17' oder 'postgres:16' zurückgreifen.
     image: postgres:18
     restart: always
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - database_data:/var/lib/postgresql/18/docker
     environment:
@@ -18,7 +18,7 @@ services:
     image: directus/directus:11.17.4
     restart: always
     ports:
-      - "8055:8055"
+      - '8055:8055'
     volumes:
       # Volumes für persistente Daten wie Bilder und Erweiterungen (Benannte Volumes für Dokploy Backups)
       - directus_uploads:/directus/uploads
@@ -30,7 +30,7 @@ services:
       # Sicherheit (Muss in Dokploy als Environment Variable gesetzt werden!)
       KEY: ${KEY:-replace-with-secure-random-string}
       SECRET: ${SECRET:-replace-with-secure-random-string}
-      
+
       # Datenbankverbindung
       DB_CLIENT: 'pg'
       DB_HOST: 'database'
@@ -38,7 +38,7 @@ services:
       DB_DATABASE: ${DB_NAME:-directus}
       DB_USER: ${DB_USER:-directus}
       DB_PASSWORD: ${DB_PASSWORD:-directus}
-      
+
       # Websockets für Echtzeit-Updates im CMS (optional, aber empfohlen)
       WEBSOCKETS_ENABLED: 'true'
 

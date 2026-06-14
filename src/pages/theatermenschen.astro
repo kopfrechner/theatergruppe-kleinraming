@@ -4,22 +4,20 @@ import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readItems } from '@directus/sdk';
 import { Image } from 'astro:assets';
 
-const members = await directus.request(
+const ensemble = (await directus.request(
   readItems('theatermenschen', {
-    filter: {
-      aktiver_theatermensch: { _eq: true }
-    },
-    fields: ['*', 'foto.*', 'foto_funny.*'],
-    sort: ['sort']
-  })
-);
+    filter: { aktiver_theatermensch: { _eq: true } } as any,
+    fields: ['*', 'foto.*', 'foto_funny.*'] as any,
+    sort: ['sort'] as any,
+  }),
+)) as any[];
 
-const boardMembers = members.filter(m => m.vorstandsmitglied);
-const activeMembers = members.filter(m => !m.vorstandsmitglied);
+const boardMembers = ensemble.filter((m) => m.vorstandsmitglied);
+const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
 ---
 
-<Layout 
-  title="Unsere Mitglieder" 
+<Layout
+  title="Unsere Mitglieder"
   description="Lernen Sie das Ensemble der Theatergruppe Kleinraming kennen. Die Menschen vor und hinter der Bühne, die jedes Stück zum Leben erwecken."
 >
   <div class="container page-header">
@@ -30,237 +28,260 @@ const activeMembers = members.filter(m => !m.vorstandsmitglied);
   <section class="container members-section">
     <h2 class="category-title">Unser Vorstand</h2>
     <div class="grid members-grid">
-      {boardMembers.map(member => (
-        <article class={`glass-panel member-card board-card ${member.foto_funny ? 'has-funny-photo' : ''}`}>
-          <div class="member-photo-container">
-            {member.foto ? (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
-                alt={member.name}
-                width={240}
-                height={320}
-                format="webp"
-                class="member-photo photo-main"
-              />
-            ) : (
-              <div class="no-photo photo-main">Kein Foto verfügbar</div>
-            )}
-            
-            {member.foto_funny && (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`} 
-                alt={`${member.name} - Funny`}
-                width={240}
-                height={320}
-                format="webp"
-                class="member-photo photo-funny"
-              />
-            )}
-          </div>
-          <div class="member-info">
-            <h3>{member.name}</h3>
-            <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
-          </div>
+      {
+        boardMembers.map((member) => (
+          <article
+            class={`glass-panel member-card board-card ${member.foto_funny ? 'has-funny-photo' : ''}`}
+          >
+            <div class="member-photo-container">
+              {member.foto ? (
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`}
+                  alt={member.name}
+                  width={240}
+                  height={320}
+                  format="webp"
+                  class="member-photo photo-main"
+                />
+              ) : (
+                <div class="no-photo photo-main">Kein Foto verfügbar</div>
+              )}
+
+              {member.foto_funny && (
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`}
+                  alt={`${member.name} - Funny`}
+                  width={240}
+                  height={320}
+                  format="webp"
+                  class="member-photo photo-funny"
+                />
+              )}
+            </div>
+            <div class="member-info">
+              <h3>{member.name}</h3>
+              <p class="member-role" style="white-space: pre-line;">
+                {member.funktionen}
+              </p>
+            </div>
           </article>
-          ))}
-          </div>
-          </section>
+        ))
+      }
+    </div>
+  </section>
 
-          <section class="container members-section">
-          <h2 class="category-title">Weitere aktive Theatermenschen</h2>
-          <div class="grid members-grid">
-          {activeMembers.map(member => (
-          <article class={`glass-panel member-card ${member.foto_funny ? 'has-funny-photo' : ''}`}>
-          <div class="member-photo-container">
-            {member.foto ? (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`} 
-                alt={member.name}
-                width={240}
-                height={320}
-                format="webp"
-                class="member-photo photo-main"
-              />
-            ) : (
-              <div class="no-photo photo-main">Kein Foto verfügbar</div>
-            )}
+  <section class="container members-section">
+    <h2 class="category-title">Weitere aktive Theatermenschen</h2>
+    <div class="grid members-grid">
+      {
+        activeMembers.map((member) => (
+          <article
+            class={`glass-panel member-card ${member.foto_funny ? 'has-funny-photo' : ''}`}
+          >
+            <div class="member-photo-container">
+              {member.foto ? (
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`}
+                  alt={member.name}
+                  width={240}
+                  height={320}
+                  format="webp"
+                  class="member-photo photo-main"
+                />
+              ) : (
+                <div class="no-photo photo-main">Kein Foto verfügbar</div>
+              )}
 
-            {member.foto_funny && (
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`} 
-                alt={`${member.name} - Funny`}
-                width={240}
-                height={320}
-                format="webp"
-                class="member-photo photo-funny"
-              />
-            )}
-          </div>
-          <div class="member-info">
-            <h3>{member.name}</h3>
-            <p class="member-role" style="white-space: pre-line;">{member.funktionen}</p>
-          </div>
+              {member.foto_funny && (
+                <Image
+                  src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`}
+                  alt={`${member.name} - Funny`}
+                  width={240}
+                  height={320}
+                  format="webp"
+                  class="member-photo photo-funny"
+                />
+              )}
+            </div>
+            <div class="member-info">
+              <h3>{member.name}</h3>
+              <p class="member-role" style="white-space: pre-line;">
+                {member.funktionen}
+              </p>
+            </div>
           </article>
-          ))}
-          </div>
-          </section>
-          </Layout>
+        ))
+      }
+    </div>
+  </section>
+</Layout>
 
-          <script>
-          // Handle touch gestures for funny photos on mobile to simulate hover during scroll
-          const cards = document.querySelectorAll('.member-card.has-funny-photo');
-          let currentActiveCard = null;
+<script>
+  // Handle touch gestures for funny photos on mobile to simulate hover during scroll
+  const cards = document.querySelectorAll('.member-card.has-funny-photo');
+  let currentActiveCard: Element | null = null;
 
-          // Helper to toggle active state
-          const setActiveCard = (card) => {
-            if (currentActiveCard !== card) {
-              if (currentActiveCard) currentActiveCard.classList.remove('is-touching');
-              if (card) card.classList.add('is-touching');
-              currentActiveCard = card;
-            }
-          };
+  // Helper to toggle active state
+  const setActiveCard = (card: Element | null) => {
+    if (currentActiveCard !== card) {
+      if (currentActiveCard) currentActiveCard.classList.remove('is-touching');
+      if (card) card.classList.add('is-touching');
+      currentActiveCard = card;
+    }
+  };
 
-          // 1. Handle direct touch start
-          cards.forEach(card => {
-            card.addEventListener('touchstart', () => setActiveCard(card), { passive: true });
-            
-            // Prevent context menu on long-press
-            card.addEventListener('contextmenu', (e) => {
-              e.preventDefault();
-            });
-          });
+  // 1. Handle direct touch start
+  cards.forEach((card) => {
+    card.addEventListener('touchstart', () => setActiveCard(card), {
+      passive: true,
+    });
 
-          // 2. Handle scrolling/dragging over cards
-          document.addEventListener('touchmove', (e) => {
-            if (!e.touches.length) return;
-            const touch = e.touches[0];
-            const element = document.elementFromPoint(touch.clientX, touch.clientY);
-            const card = element?.closest('.member-card.has-funny-photo');
-            setActiveCard(card as HTMLElement);
-          }, { passive: true });
+    // Prevent context menu on long-press
+    card.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
+  });
 
-          // 3. Global cleanup on release to prevent sticky state
-          document.addEventListener('touchend', () => setActiveCard(null), { passive: true });
-          document.addEventListener('touchcancel', () => setActiveCard(null), { passive: true });
-          </script>
+  // 2. Handle scrolling/dragging over cards
+  document.addEventListener(
+    'touchmove',
+    (e) => {
+      if (!e.touches.length) return;
+      const touch = e.touches[0];
+      const element = document.elementFromPoint(touch.clientX, touch.clientY);
+      const card = element?.closest('.member-card.has-funny-photo');
+      setActiveCard(card as HTMLElement);
+    },
+    { passive: true },
+  );
 
-          <style>
-          .page-header {
+  // 3. Global cleanup on release to prevent sticky state
+  document.addEventListener('touchend', () => setActiveCard(null), {
+    passive: true,
+  });
+  document.addEventListener('touchcancel', () => setActiveCard(null), {
+    passive: true,
+  });
+</script>
 
-          margin-bottom: 3rem;
-          }
+<style>
+  .page-header {
+    margin-bottom: 3rem;
+  }
 
-          .members-section {
-          margin-bottom: 5rem;
-          }
+  .members-section {
+    margin-bottom: 5rem;
+  }
 
-          .category-title {
-          color: var(--accent-green);
-          border-bottom: 1px solid var(--card-border);
-          padding-bottom: 0.5rem;
-          margin-bottom: 3rem;
-          text-align: left;
-          font-size: 2rem;
-          width: 100%;
-          }
+  .category-title {
+    color: var(--accent-green);
+    border-bottom: 1px solid var(--card-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 3rem;
+    text-align: left;
+    font-size: 2rem;
+    width: 100%;
+  }
 
-          .members-grid {
-          grid-template-columns: repeat(auto-fit, 240px);
-          justify-content: center;
-          gap: 2rem;
-          }
+  .members-grid {
+    grid-template-columns: repeat(auto-fit, 240px);
+    justify-content: center;
+    gap: 2rem;
+  }
 
-          .member-card {
-            text-align: center;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
+  .member-card {
+    text-align: center;
+    overflow: hidden;
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
 
-            /* Disable system context menu on long-press for mobile */
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-          }
-          .board-card {
-          border: 1px solid rgba(143, 194, 56, 0.5); /* Slightly more visible green for board */
-          }
+    /* Disable system context menu on long-press for mobile */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  .board-card {
+    border: 1px solid rgba(143, 194, 56, 0.5); /* Slightly more visible green for board */
+  }
 
-          .member-card.has-funny-photo {
+  .member-card.has-funny-photo {
     /* Cursor stays default */
   }
 
   .member-card:hover {
-          transform: translateY(-5px);
-          box-shadow: 0 10px 20px rgba(var(--bg-color-rgb), 0.15);
-          border-color: var(--accent-green);
-          background: var(--card-bg-hover);
-          }
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(var(--bg-color-rgb), 0.15);
+    border-color: var(--accent-green);
+    background: var(--card-bg-hover);
+  }
 
-          .member-photo-container {
-          height: 320px;
-          aspect-ratio: 3 / 4;
-          background-color: var(--bg-color-light);
-          border-bottom: 2px solid var(--accent-green);
-          position: relative;
-          overflow: hidden;
-          }
+  .member-photo-container {
+    height: 320px;
+    aspect-ratio: 3 / 4;
+    background-color: var(--bg-color-light);
+    border-bottom: 2px solid var(--accent-green);
+    position: relative;
+    overflow: hidden;
+  }
 
-          .member-photo {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          position: absolute;
-          top: 0;
-          left: 0;
-          transition: opacity 0.4s ease-in-out;
-          }
+  .member-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: opacity 0.4s ease-in-out;
+  }
 
-          .photo-main {
-          z-index: 2;
-          opacity: 1;
-          }
+  .photo-main {
+    z-index: 2;
+    opacity: 1;
+  }
 
-          .photo-funny {
-          z-index: 1;
-          opacity: 0;
-          }
+  .photo-funny {
+    z-index: 1;
+    opacity: 0;
+  }
 
-          .member-card.has-funny-photo:hover .photo-main,
-          .member-card.has-funny-photo.is-touching .photo-main {
-            opacity: 0;
-          }
+  .member-card.has-funny-photo:hover .photo-main,
+  .member-card.has-funny-photo.is-touching .photo-main {
+    opacity: 0;
+  }
 
-          .member-card.has-funny-photo:hover .photo-funny,
-          .member-card.has-funny-photo.is-touching .photo-funny {
-            opacity: 1;
-            z-index: 3;
-          }
+  .member-card.has-funny-photo:hover .photo-funny,
+  .member-card.has-funny-photo.is-touching .photo-funny {
+    opacity: 1;
+    z-index: 3;
+  }
 
-          .no-photo {
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-muted);
-          font-size: 0.8rem;
-          }
+  .no-photo {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
 
-          .member-info {
-          padding: 1.5rem;
-          flex-grow: 1;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          }
+  .member-info {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 
-          .member-role {
-          color: var(--accent-green);
-          font-weight: 600;
-          margin-bottom: 0.5rem;
-          font-size: 0.95rem;
-          }
-          </style>
+  .member-role {
+    color: var(--accent-green);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+  }
+</style>
