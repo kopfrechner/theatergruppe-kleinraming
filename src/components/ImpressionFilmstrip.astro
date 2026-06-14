@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import GalleryImage from "./GalleryImage.astro";
 
 interface Props {
   images: string[];
@@ -16,15 +17,11 @@ const { images, title = "Impressionen" } = Astro.props;
   <div class="filmstrip-grid">
     {
       images.map((imgUrl: string) => (
-        <div class="filmstrip-item">
-          <Image
-            src={imgUrl}
-            alt="Impression"
-            width={600}
-            height={450}
-            format="webp"
-          />
-        </div>
+        <GalleryImage
+          src={imgUrl}
+          alt="Impression"
+          width={600}
+        />
       ))
     }
   </div>
@@ -50,24 +47,5 @@ const { images, title = "Impressionen" } = Astro.props;
     .filmstrip-grid {
       grid-template-columns: repeat(4, 1fr);
     }
-  }
-
-  .filmstrip-item {
-    aspect-ratio: 4 / 3;
-    background-color: var(--bg-color-light);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .filmstrip-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .filmstrip-item:hover img {
-    transform: scale(1.05);
   }
 </style>

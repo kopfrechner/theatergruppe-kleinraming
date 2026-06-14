@@ -1,7 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import CastSection from '../../components/CastSection.astro';
-import PlayGallery from '../../components/PlayGallery.astro';
+import ImageGallery from '../../components/ImageGallery.astro';
 import ShareButtons from '../../components/ShareButtons.astro';
 import directus, { DIRECTUS_URL } from '../../lib/directus';
 import { readItems } from '@directus/sdk';
@@ -74,7 +74,7 @@ const ogImage = stueck.titelfoto
       )}
 
       {filteredGallery.length > 0 && (
-        <PlayGallery images={filteredGallery} title={stueck.titel} />
+        <ImageGallery images={filteredGallery} title={stueck.titel} />
       )}
     </div>
   </section>

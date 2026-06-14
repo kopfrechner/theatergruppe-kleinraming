@@ -5,6 +5,7 @@ import ShareButtons from '../components/ShareButtons.astro';
 import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
+import GalleryImage from '../components/GalleryImage.astro';
 import { Ticket, Phone, Calendar, Clock } from '@lucide/astro';
 
 const ticketPromo = await directus.request(
@@ -149,31 +150,21 @@ const ogImage = isPreBooking
     <div class="flyer-photo">
       {isPreBooking ? (
         ticketPromo.vorab_bild && (
-          <div class="ensemble-photo">
-            <Image 
-              src={`${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`} 
-              alt="Saison Vorschau"
-              width={1000}
-              height={700}
-              format="webp"
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
+          <GalleryImage 
+            src={`${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`} 
+            alt="Saison Vorschau"
+            width={1000}
+            aspectRatio="10 / 7"
+          />
         )
       ) : (
         ticketPromo.hauptfoto && (
-          <div class="ensemble-photo">
-            <Image 
-              src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`} 
-              alt="Ensemble"
-              width={1000}
-              height={700}
-              format="webp"
-              loading="eager"
-              fetchpriority="high"
-            />
-          </div>
+          <GalleryImage 
+            src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`} 
+            alt="Ensemble"
+            width={1000}
+            aspectRatio="10 / 7"
+          />
         )
       )}
     </div>
@@ -292,15 +283,11 @@ const ogImage = isPreBooking
       {scenePhotos.length > 0 && (
         <div class="scene-grid">
           {scenePhotos.map((foto: any) => (
-            <div class="scene-item">
-              <Image 
-                src={`${DIRECTUS_URL}/assets/${foto.id || foto}`} 
-                alt="Szenenfoto"
-                width={400}
-                height={300}
-                format="webp"
-              />
-            </div>
+            <GalleryImage 
+              src={`${DIRECTUS_URL}/assets/${foto.id || foto}`} 
+              alt="Szenenfoto"
+              width={400}
+            />
           ))}
         </div>
       )}
@@ -408,43 +395,15 @@ const ogImage = isPreBooking
     white-space: pre-wrap;
   }
 
-  /* Scene Grid */
   .scene-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
+    gap: 1.5rem;
+    margin-top: 2rem;
   }
+/* Ensemble Photo */
 
-  .scene-item {
-    aspect-ratio: 4 / 3;
-    overflow: hidden;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--card-border);
-  }
-
-  .scene-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  /* Ensemble Photo */
-  .ensemble-photo {
-    width: 100%;
-    aspect-ratio: 10 / 7;
-    background-color: var(--card-bg);
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    border: 1px solid var(--card-border);
-  }
-
-  .ensemble-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
+@media (max-width: 768px) {
   /* Cast Styles (matching stuecke/[slug].astro) */
   .cast-grid {
     display: grid;
