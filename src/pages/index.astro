@@ -6,7 +6,7 @@ import ImpressionFilmstrip from "../components/ImpressionFilmstrip.astro";
 import BentoTile from "../components/BentoTile.astro";
 import directus, { DIRECTUS_URL } from "../lib/directus";
 import { readItems, readSingleton } from "@directus/sdk";
-import { Image } from "astro:assets";
+import { Image, inferRemoteSize } from "astro:assets";
 import { mapHighlightPlay } from "../lib/mappers";
 
 // 1. Fetch Data
@@ -32,6 +32,20 @@ const emotionImage = startseite?.emotionen_bild
   : null;
 
 const emotionTitel = startseite?.emotionen_titel || "";
+
+// Infer dimensions for the emotion image to prevent cropping
+let emotionWidth = 800;
+let emotionHeight = 600;
+
+if (emotionImage) {
+  try {
+    const dims = await inferRemoteSize(emotionImage);
+    emotionWidth = dims.width;
+    emotionHeight = dims.height;
+  } catch (e) {
+    console.warn("Could not infer remote size for emotion image", e);
+  }
+}
 ---
 
 <Layout title="Startseite">
@@ -52,8 +66,8 @@ const emotionTitel = startseite?.emotionen_titel || "";
             <Image
               src={emotionImage}
               alt={emotionTitel}
-              width={800}
-              height={600}
+              width={emotionWidth}
+              height={emotionHeight}
               format="webp"
               class="tile-bg-image"
             />
@@ -108,12 +122,13 @@ const emotionTitel = startseite?.emotionen_titel || "";
 
   :global(.tile-image) {
     padding: 0 !important;
+    min-height: 0 !important;
   }
 
   @media (min-width: 768px) {
     .bento-grid {
       grid-template-columns: 1.5fr 1fr;
-      grid-template-rows: repeat(3, minmax(200px, auto));
+      grid-template-rows: auto 1fr 1fr;
     }
 
     :global(.tile-next-play) {
@@ -123,11 +138,10 @@ const emotionTitel = startseite?.emotionen_titel || "";
   }
 
   .tile-bg-image {
-    position: absolute;
-    inset: 0;
+    position: relative;
+    display: block;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
     z-index: 0;
     transition: transform 0.5s ease;
   }
