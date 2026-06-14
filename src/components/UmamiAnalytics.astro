@@ -1,0 +1,21 @@
+---
+/**
+ * UmamiAnalytics Component
+ *
+ * Renders the Umami tracking script if the PUBLIC_UMAMI_ID environment variable is set.
+ * Uses PUBLIC_UMAMI_URL or defaults to cloud.umami.is.
+ */
+const umamiId = import.meta.env.PUBLIC_UMAMI_ID;
+const umamiUrl = import.meta.env.PUBLIC_UMAMI_URL || 'https://cloud.umami.is';
+---
+
+{
+  umamiId && (
+    <script
+      async
+      defer
+      src={`${umamiUrl}/analytics.js`}
+      data-website-id={umamiId}
+    />
+  )
+}

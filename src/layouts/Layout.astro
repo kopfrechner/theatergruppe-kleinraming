@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Logo from '../components/Logo.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import UmamiAnalytics from '../components/UmamiAnalytics.astro';
 import { Menu } from '@lucide/astro';
 import directus from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
@@ -132,6 +133,8 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
     />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+    <UmamiAnalytics />
   </head>
   <body>
     <header class="main-header">
