@@ -84,6 +84,9 @@ services:
       ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@example.com}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-d1r3ctu5}
 
+      # Upload limit
+      FILES_MAX_UPLOAD_SIZE: ${FILES_MAX_UPLOAD_SIZE:-5mb}
+
 volumes:
   directus_db_data:
   umami_db_data:
