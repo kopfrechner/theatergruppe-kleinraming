@@ -1,79 +1,83 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import MemberCard from '../components/MemberCard.astro';
-import ShareButtons from '../components/ShareButtons.astro';
-import directus, { DIRECTUS_URL } from '../lib/directus';
-import { readSingleton } from '@directus/sdk';
-import { Image } from 'astro:assets';
-import GalleryImage from '../components/GalleryImage.astro';
-import ImageGallery from '../components/ImageGallery.astro';
-import { Ticket, Phone, Calendar, Clock } from '@lucide/astro';
+import Layout from "../layouts/Layout.astro";
+import MemberCard from "../components/MemberCard.astro";
+import ShareButtons from "../components/ShareButtons.astro";
+import directus, { DIRECTUS_URL } from "../lib/directus";
+import { readSingleton } from "@directus/sdk";
+import { Image } from "astro:assets";
+import GalleryImage from "../components/GalleryImage.astro";
+import ImageGallery from "../components/ImageGallery.astro";
+import { Ticket, Phone, Calendar, Clock } from "@lucide/astro";
 
-const ticketPromo = await directus.request(
-  readSingleton('ticket_promotion', {
-    fields: [
-      'id',
-      'anzeige_modus',
-      'titel',
-      'vorab_titel',
-      'kurzbeschreibung',
-      'vorab_text',
-      'vorab_bild.*',
-      'ticketlotse_link',
-      'spielort',
-      'telefon_reservierung',
-      'termin_1',
-      'termin_2',
-      'termin_3',
-      'termin_4',
-      'termin_5',
-      'termin_6',
-      'ticketlotse_link_aktiv',
-      'autor',
-      'genre',
-      'preis_erwachsene',
-      'preis_jugendliche',
-      'map_embed',
-      'crew.theatermenschen_id.*',
-      'crew.theatermenschen_id.foto.*',
-      'crew.rolle',
-      'crew.rolle_beschreibung',
-      'hauptfoto.*',
-      'teaser_fotos.directus_files_id.*',
-      'teaser_fotos.sort'
-    ]
-  })
-).catch(() => null);
+const ticketPromo = await directus
+  .request(
+    readSingleton("ticket_promotion", {
+      fields: [
+        "id",
+        "anzeige_modus",
+        "titel",
+        "vorab_titel",
+        "kurzbeschreibung",
+        "vorab_text",
+        "vorab_bild.*",
+        "ticketlotse_link",
+        "spielort",
+        "telefon_reservierung",
+        "termin_1",
+        "termin_2",
+        "termin_3",
+        "termin_4",
+        "termin_5",
+        "termin_6",
+        "ticketlotse_link_aktiv",
+        "autor",
+        "genre",
+        "preis_erwachsene",
+        "preis_jugendliche",
+        "map_embed",
+        "crew.theatermenschen_id.*",
+        "crew.theatermenschen_id.foto.*",
+        "crew.rolle",
+        "crew.rolle_beschreibung",
+        "hauptfoto.*",
+        "teaser_fotos.directus_files_id.*",
+        "teaser_fotos.sort",
+      ],
+    }),
+  )
+  .catch(() => null);
 
-const anzeigeModus = ticketPromo?.anzeige_modus || 'inaktiv';
+const anzeigeModus = ticketPromo?.anzeige_modus || "inaktiv";
 
 // If inactive or no data, redirect to home
-if (!ticketPromo || anzeigeModus === 'inaktiv') {
-  return Astro.redirect('/');
+if (!ticketPromo || anzeigeModus === "inaktiv") {
+  return Astro.redirect("/");
 }
 
-const isPreBooking = anzeigeModus === 'vorab_reservierung';
+const isPreBooking = anzeigeModus === "vorab_reservierung";
 
 // Prepare scene photos array (only if not pre-booking)
-const scenePhotos = isPreBooking ? [] : (ticketPromo.teaser_fotos || [])
-  .sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0))
-  .map((item: any) => ({
-    src: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
-    width: item.directus_files_id?.width || 1600,
-    height: item.directus_files_id?.height || 1200,
-    thumbnail: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
-    id: item.directus_files_id?.id || item.directus_files_id
-  }));
+const scenePhotos = isPreBooking
+  ? []
+  : (ticketPromo.teaser_fotos || [])
+      .sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0))
+      .map((item: any) => ({
+        src: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
+        width: item.directus_files_id?.width || 1600,
+        height: item.directus_files_id?.height || 1200,
+        thumbnail: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
+        id: item.directus_files_id?.id || item.directus_files_id,
+      }));
 
 // Format dates from termin_1..6
-const locale = 'de-AT';
-const dateFormat: Intl.DateTimeFormatOptions = { 
-  day: '2-digit', 
-  month: '2-digit', 
-  year: 'numeric',
-  hour: '2-digit',
-  minute: '2-digit',
-  timeZone: 'Europe/Vienna'
+const locale = "de-AT";
+const dateFormat: Intl.DateTimeFormatOptions = {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Europe/Vienna",
 };
 
 const termineArray = [
@@ -82,68 +86,103 @@ const termineArray = [
   ticketPromo.termin_3,
   ticketPromo.termin_4,
   ticketPromo.termin_5,
-  ticketPromo.termin_6
+  ticketPromo.termin_6,
 ]
-  .filter(t => t)
-  .map(t => {
+  .filter((t) => t)
+  .map((t) => {
     const d = new Date(t);
     return {
-      date: d.toLocaleDateString(locale, { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Vienna' }),
-      time: d.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Vienna' }),
-      weekday: d.toLocaleDateString(locale, { weekday: 'short', timeZone: 'Europe/Vienna' }).replace('.', '')
+      date: d.toLocaleDateString(locale, {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        timeZone: "Europe/Vienna",
+      }),
+      time: d.toLocaleTimeString(locale, {
+        hour: "2-digit",
+        minute: "2-digit",
+        timeZone: "Europe/Vienna",
+      }),
+      weekday: d
+        .toLocaleDateString(locale, {
+          weekday: "short",
+          timeZone: "Europe/Vienna",
+        })
+        .replace(".", ""),
     };
   });
 
 const formatPrice = (price: string | undefined) => {
   if (!price) return null;
   const trimmed = price.trim();
-  if (trimmed.includes('€')) return trimmed;
+  if (trimmed.includes("€")) return trimmed;
   return `${trimmed} €`;
 };
 
 const preiseArray = [
-  ticketPromo.preis_erwachsene ? { label: 'Erwachsene', value: formatPrice(ticketPromo.preis_erwachsene) } : null,
-  ticketPromo.preis_jugendliche ? { label: 'Kinder/Jugendliche', value: formatPrice(ticketPromo.preis_jugendliche) } : null
-].filter(p => p);
+  ticketPromo.preis_erwachsene
+    ? { label: "Erwachsene", value: formatPrice(ticketPromo.preis_erwachsene) }
+    : null,
+  ticketPromo.preis_jugendliche
+    ? {
+        label: "Kinder/Jugendliche",
+        value: formatPrice(ticketPromo.preis_jugendliche),
+      }
+    : null,
+].filter((p) => p);
 
-const autorGenre = isPreBooking ? null : [ticketPromo.autor, ticketPromo.genre].filter(x => x).join(' / ');
+const autorGenre = isPreBooking
+  ? null
+  : [ticketPromo.autor, ticketPromo.genre].filter((x) => x).join(" / ");
 
 // Filter valid cast members from 'crew' (only if not pre-booking)
-const castMembers = isPreBooking ? [] : (ticketPromo.crew
-  ?.filter((s: any) => s.theatermenschen_id)
-  .map((s: any) => ({
-    name: s.theatermenschen_id.name,
-    rolle: s.rolle,
-    rolle_beschreibung: s.rolle_beschreibung,
-    foto: s.theatermenschen_id.foto
-  })) || []);
+const castMembers = isPreBooking
+  ? []
+  : ticketPromo.crew
+      ?.filter((s: any) => s.theatermenschen_id)
+      .map((s: any) => ({
+        name: s.theatermenschen_id.name,
+        rolle: s.rolle,
+        rolle_beschreibung: s.rolle_beschreibung,
+        foto: s.theatermenschen_id.foto,
+      })) || [];
 
 // Prepare SEO metadata
-const displayTitle = isPreBooking 
-  ? (ticketPromo.vorab_titel || ticketPromo.titel) 
+const displayTitle = isPreBooking
+  ? ticketPromo.vorab_titel || ticketPromo.titel
   : ticketPromo.titel;
-const displayText = isPreBooking 
-  ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
+const displayText = isPreBooking
+  ? ticketPromo.vorab_text || ticketPromo.kurzbeschreibung
   : ticketPromo.kurzbeschreibung;
-const metaDescription = (displayText || "").length > 160 
-  ? displayText.substring(0, 157) + "..." 
-  : (displayText || "Sichern Sie sich Tickets für die aktuelle Produktion der Theatergruppe Kleinraming.");
-const ogImage = isPreBooking 
-  ? (ticketPromo.vorab_bild ? `${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}` : undefined)
-  : (ticketPromo.hauptfoto ? `${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}` : undefined);
+const metaDescription =
+  (displayText || "").length > 160
+    ? displayText.substring(0, 157) + "..."
+    : displayText ||
+      "Sichern Sie sich Tickets für die aktuelle Produktion der Theatergruppe Kleinraming.";
+const ogImage = isPreBooking
+  ? ticketPromo.vorab_bild
+    ? `${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`
+    : undefined
+  : ticketPromo.hauptfoto
+    ? `${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`
+    : undefined;
 ---
 
-<Layout 
-  title="Karten & Vorstellungen" 
+<Layout
+  title="Karten & Vorstellungen"
   description={metaDescription}
   image={ogImage}
 >
   <div class="container page-header">
     <span class="play-status">
-      {isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere'}
+      {isPreBooking ? "Saison-Vorschau" : "Nächste Premiere"}
     </span>
     <h1 class="flyer-title">
-      {isPreBooking ? (ticketPromo.vorab_titel || ticketPromo.titel) : ticketPromo.titel}
+      {
+        isPreBooking
+          ? ticketPromo.vorab_titel || ticketPromo.titel
+          : ticketPromo.titel
+      }
     </h1>
     {autorGenre && <p class="flyer-subtitle">{autorGenre}</p>}
   </div>
@@ -151,141 +190,170 @@ const ogImage = isPreBooking
   <section class="container flyer-layout">
     <!-- Photo Section -->
     <div class="flyer-photo">
-      {isPreBooking ? (
-        ticketPromo.vorab_bild && (
-          <GalleryImage 
-            src={`${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`} 
-            alt="Saison Vorschau"
-            width={1000}
-            aspectRatio="10 / 7"
-          />
-        )
-      ) : (
-        ticketPromo.hauptfoto && (
-          <GalleryImage 
-            src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`} 
-            alt="Ensemble"
-            width={1000}
-            aspectRatio="10 / 7"
-          />
-        )
-      )}
+      {
+        isPreBooking
+          ? ticketPromo.vorab_bild && (
+              <GalleryImage
+                src={`${DIRECTUS_URL}/assets/${ticketPromo.vorab_bild.id || ticketPromo.vorab_bild}`}
+                alt="Saison Vorschau"
+                width={1000}
+                aspectRatio="10 / 7"
+              />
+            )
+          : ticketPromo.hauptfoto && (
+              <GalleryImage
+                src={`${DIRECTUS_URL}/assets/${ticketPromo.hauptfoto.id || ticketPromo.hauptfoto}`}
+                alt="Ensemble"
+                width={1000}
+                aspectRatio="10 / 7"
+              />
+            )
+      }
     </div>
 
     <!-- Booking Sidebar (Mobile: Middle, Desktop: Right) -->
     <div class="flyer-sidebar">
       <div class="glass-panel sticky-box">
-        {ticketPromo.ticketlotse_link_aktiv && ticketPromo.ticketlotse_link && (
-          <a href={ticketPromo.ticketlotse_link} target="_blank" rel="noopener noreferrer" class="btn btn-large btn-full">
-            <Ticket size={24} class="btn-icon" />
-            Online reservieren
-          </a>
-        )}
-        
-        {ticketPromo.telefon_reservierung && (
-          <div class="info-group">
-            <h3>Telefonische Reservierung</h3>
-            <div class="phone-wrapper">
-              <Phone size={24} class="phone-icon" />
-              <p class="highlight-text">
-                <a href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`} class="phone-link">
-                  {ticketPromo.telefon_reservierung}
-                </a>
-              </p>
+        {
+          ticketPromo.ticketlotse_link_aktiv && ticketPromo.ticketlotse_link ? (
+            <a
+              href={ticketPromo.ticketlotse_link}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-large btn-full"
+            >
+              <Ticket size={24} class="btn-icon" />
+              Online reservieren
+            </a>
+          ) : (
+            <div class="btn btn-large btn-full btn-disabled">
+              <Ticket size={24} class="btn-icon" />
+              Online Reservierung
             </div>
-          </div>
-        )}
+          )
+        }
+
+        {
+          ticketPromo.telefon_reservierung && (
+            <div class="info-group">
+              <h3>Telefonische Reservierung</h3>
+              <div class="phone-wrapper">
+                <Phone size={24} class="phone-icon" />
+                <p class="highlight-text">
+                  <a
+                    href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, "+43").replace(/[^0-9+]/g, "")}`}
+                    class="phone-link"
+                  >
+                    {ticketPromo.telefon_reservierung}
+                  </a>
+                </p>
+              </div>
+            </div>
+          )
+        }
 
         <ShareButtons title={displayTitle} />
 
         <hr class="divider" />
 
-        {termineArray.length > 0 && (
-          <div class="info-group">
-            <h3>Spielzeiten</h3>
-            <ul class="dates-list">
-              {termineArray.map((termin) => (
-                <li>
-                  <div class="date-row">
-                    <Calendar size={18} class="date-icon" />
-                    <span class="date-weekday">{termin.weekday}</span>
-                    <span class="date-val">{termin.date}</span>
-                  </div>
-                  <div class="time-row">
-                    <Clock size={16} class="time-icon" />
-                    <span>{termin.time} Uhr</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+        {
+          termineArray.length > 0 && (
+            <div class="info-group">
+              <h3>Spielzeiten</h3>
+              <ul class="dates-list">
+                {termineArray.map((termin) => (
+                  <li>
+                    <div class="date-row">
+                      <Calendar size={18} class="date-icon" />
+                      <span class="date-weekday">{termin.weekday}</span>
+                      <span class="date-val">{termin.date}</span>
+                    </div>
+                    <div class="time-row">
+                      <Clock size={16} class="time-icon" />
+                      <span>{termin.time} Uhr</span>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
 
         <hr class="divider" />
 
         <div class="info-group">
           <h3>Eintritt</h3>
-          {preiseArray.length > 0 ? (
-            <ul class="prices-list">
-              {preiseArray.map((preis) => (
-                <li>
-                  <span class="price-label">{preis.label}</span>
-                  <span class="price-val">{preis.value}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Freiwillige Spende</p>
-          )}
+          {
+            preiseArray.length > 0 ? (
+              <ul class="prices-list">
+                {preiseArray.map((preis) => (
+                  <li>
+                    <span class="price-label">{preis.label}</span>
+                    <span class="price-val">{preis.value}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>Freiwillige Spende</p>
+            )
+          }
         </div>
 
-        {ticketPromo.spielort && (
-          <>
-            <hr class="divider" />
-            <div class="info-group location-group">
-              <h3>Spielort</h3>
-              <p>{ticketPromo.spielort}</p>
-              {ticketPromo.map_embed && (
-                <div class="map-container">
-                  <div class="map-embed" set:html={ticketPromo.map_embed} />
-                </div>
-              )}
-            </div>
-          </>
-        )}
+        {
+          ticketPromo.spielort && (
+            <>
+              <hr class="divider" />
+              <div class="info-group location-group">
+                <h3>Spielort</h3>
+                <p>{ticketPromo.spielort}</p>
+                {ticketPromo.map_embed && (
+                  <div class="map-container">
+                    <div class="map-embed" set:html={ticketPromo.map_embed} />
+                  </div>
+                )}
+              </div>
+            </>
+          )
+        }
       </div>
     </div>
 
     <!-- Main Content Section -->
     <div class="flyer-content">
       <div class="glass-panel content-box">
-        <h2>{isPreBooking ? 'Vorschau auf die Saison' : 'Aus dem Inhalt'}</h2>
+        <h2>{isPreBooking ? "Vorschau auf die Saison" : "Aus dem Inhalt"}</h2>
         <p class="synopsis-text">
-          {isPreBooking 
-            ? (ticketPromo.vorab_text || ticketPromo.kurzbeschreibung) 
-            : ticketPromo.kurzbeschreibung}
+          {
+            isPreBooking
+              ? ticketPromo.vorab_text || ticketPromo.kurzbeschreibung
+              : ticketPromo.kurzbeschreibung
+          }
         </p>
       </div>
 
-      {castMembers.length > 0 && (
-        <div class="glass-panel cast-box">
-          <h2>Die Mitwirkenden</h2>
-          <div class="cast-grid">
-            {castMembers.map((member: any) => (
-              <MemberCard 
-                name={member.name}
-                role={member.rolle}
-                roleDescription={member.rolle_beschreibung}
-                image={member.foto}
-              />
-            ))}
+      {
+        castMembers.length > 0 && (
+          <div class="glass-panel cast-box">
+            <h2>Die Mitwirkenden</h2>
+            <div class="cast-grid">
+              {castMembers.map((member: any) => (
+                <MemberCard
+                  name={member.name}
+                  role={member.rolle}
+                  roleDescription={member.rolle_beschreibung}
+                  image={member.foto}
+                />
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
-      {scenePhotos.length > 0 && (
-        <ImageGallery images={scenePhotos} title={displayTitle} />
-      )}
+      {
+        scenePhotos.length > 0 && (
+          <ImageGallery images={scenePhotos} title={displayTitle} />
+        )
+      }
     </div>
   </section>
 </Layout>
@@ -384,11 +452,14 @@ const ogImage = isPreBooking
     font-size: 1.8rem;
   }
 
-  .content-box, .cast-box, .sticky-box {
+  .content-box,
+  .cast-box,
+  .sticky-box {
     padding: 2.5rem;
   }
 
-  .content-box h2, .cast-box h2 {
+  .content-box h2,
+  .cast-box h2 {
     color: var(--accent-green);
     margin-bottom: 1.5rem;
     font-size: 1.8rem;
@@ -406,7 +477,7 @@ const ogImage = isPreBooking
     gap: 1.5rem;
     margin-top: 2rem;
   }
-/* Ensemble Photo */
+  /* Ensemble Photo */
 
   /* Cast Styles (matching stuecke/[slug].astro) */
   .cast-grid {
@@ -445,6 +516,19 @@ const ogImage = isPreBooking
     width: 100%;
     text-align: center;
     display: flex;
+  }
+
+  .btn-disabled {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-muted);
+    border: 1px solid var(--card-border);
+    cursor: not-allowed;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+
+  .btn-disabled .btn-icon {
+    opacity: 0.5;
   }
 
   .info-group {
@@ -505,7 +589,8 @@ const ogImage = isPreBooking
     color: var(--accent-green);
   }
 
-  .dates-list, .prices-list {
+  .dates-list,
+  .prices-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -519,13 +604,15 @@ const ogImage = isPreBooking
     border-bottom: 1px solid var(--card-border);
   }
 
-  .date-row, .time-row {
+  .date-row,
+  .time-row {
     display: flex;
     align-items: center;
     gap: 0.6rem;
   }
 
-  .date-icon, .time-icon {
+  .date-icon,
+  .time-icon {
     color: var(--accent-green);
     opacity: 0.8;
   }
@@ -565,7 +652,8 @@ const ogImage = isPreBooking
     color: var(--text-main);
   }
 
-  .dates-list li:last-child, .prices-list li:last-child {
+  .dates-list li:last-child,
+  .prices-list li:last-child {
     border-bottom: none;
   }
 
