@@ -9,7 +9,6 @@ interface Props {
     link: string;
     buttonText: string;
     status: string;
-    umamiEvent: string;
     isHistorical?: boolean;
     image?: string | null;
     termine?: string[];
@@ -55,7 +54,7 @@ const { play } = Astro.props;
     <a
       href={play.link}
       class="btn"
-      data-umami-event={play.umamiEvent}
+      data-umami-event="Highlight Play Click"
       data-umami-event-type="bento-highlight"
       data-umami-event-status={play.status.toLowerCase()}
     >
