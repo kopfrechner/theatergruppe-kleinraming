@@ -79,6 +79,7 @@ export function mapHighlightPlay(
       link: `/stuecke/${lastPlay.slug || lastPlay.id}`,
       buttonText: 'Zum Stück',
       status: 'Rückblick',
+      umamiEvent: 'umami--click--stuecke-archiv-bento-highlight',
       termine: [],
       image: lastPlay.titelfoto
         ? `${directusUrl}/assets/${lastPlay.titelfoto.id || lastPlay.titelfoto}`
@@ -133,6 +134,9 @@ export function mapHighlightPlay(
     link: '/tickets',
     buttonText: 'Tickets reservieren',
     status: isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere',
+    umamiEvent: isPreBooking
+      ? 'umami--click--vorschau-bento-highlight'
+      : 'umami--click--tickets-bento-highlight',
     termine: termineArray,
     image: displayImage
       ? `${directusUrl}/assets/${displayImage.id || displayImage}`

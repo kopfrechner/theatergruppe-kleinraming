@@ -211,7 +211,7 @@ const ogImage = isPreBooking
               href={ticketPromo.ticketlotse_link}
               target="_blank"
               rel="noopener noreferrer"
-              class="btn btn-large btn-full"
+              class="btn btn-large btn-full umami--click--tickets-online"
             >
               <Ticket size={24} class="btn-icon" />
               Online reservieren
@@ -233,7 +233,7 @@ const ogImage = isPreBooking
                 <p class="highlight-text">
                   <a
                     href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`}
-                    class="phone-link"
+                    class="phone-link umami--click--tickets-telefon"
                   >
                     {ticketPromo.telefon_reservierung}
                   </a>

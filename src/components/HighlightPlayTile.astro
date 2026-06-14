@@ -9,6 +9,8 @@ interface Props {
     link: string;
     buttonText: string;
     status: string;
+    umamiEvent: string;
+    isHistorical?: boolean;
     image?: string | null;
     termine?: string[];
   };
@@ -50,7 +52,7 @@ const { play } = Astro.props;
       )
     }
 
-    <a href={play.link} class="btn">
+    <a href={play.link} class={`btn ${play.umamiEvent}`}>
       {play.buttonText}
     </a>
   </div>
