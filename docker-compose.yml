@@ -7,11 +7,45 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - database_data:/var/lib/postgresql/18/docker
+      - database_data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: ${DB_USER:-directus}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
       POSTGRES_DB: ${DB_NAME:-directus}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus} -d ${DB_NAME:-directus}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  umami-db:
+    image: postgres:18
+    restart: always
+    environment:
+      POSTGRES_USER: ${UMAMI_DB_USER:-umami}
+      POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:-umami}
+      POSTGRES_DB: ${UMAMI_DB_NAME:-umami}
+    volumes:
+      - umami_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${UMAMI_DB_USER:-umami} -d ${UMAMI_DB_NAME:-umami}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-v3.1.0
+    restart: always
+    ports:
+      - '3000:3000'
+    environment:
+      DATABASE_URL: postgresql://${UMAMI_DB_USER:-umami}:${UMAMI_DB_PASSWORD:-umami}@umami-db:5432/${UMAMI_DB_NAME:-umami}
+      DATABASE_TYPE: postgresql
+      APP_SECRET: ${UMAMI_APP_SECRET:-replace-with-secure-random-string}
+      TRACKER_SCRIPT_NAME: analytics
+    depends_on:
+      umami-db:
+        condition: service_healthy
 
   directus:
     # Aktuelle Version
@@ -25,7 +59,8 @@ services:
       - directus_extensions:/directus/extensions
       - directus_templates:/directus/templates
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     environment:
       # Sicherheit (Muss in Dokploy als Environment Variable gesetzt werden!)
       KEY: ${KEY:-replace-with-secure-random-string}
@@ -55,6 +90,7 @@ services:
 
 volumes:
   database_data:
+  umami_db_data:
   directus_uploads:
   directus_extensions:
   directus_templates:
