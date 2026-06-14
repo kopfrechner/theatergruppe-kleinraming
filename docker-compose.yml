@@ -7,7 +7,7 @@ services:
     ports:
       - '5432:5432'
     volumes:
-      - database_data:/var/lib/postgresql/18/docker
+      - database_data:/var/lib/postgresql
     environment:
       POSTGRES_USER: ${DB_USER:-directus}
       POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
@@ -26,7 +26,7 @@ services:
       POSTGRES_PASSWORD: ${UMAMI_DB_PASSWORD:-umami}
       POSTGRES_DB: ${UMAMI_DB_NAME:-umami}
     volumes:
-      - umami_db_data:/var/lib/postgresql/data
+      - umami_db_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${UMAMI_DB_USER:-umami} -d ${UMAMI_DB_NAME:-umami}"]
       interval: 5s
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD:-directus}
       POSTGRES_DB: ${DB_NAME:-directus}
     volumes:
-      - directus_db_data:/var/lib/postgresql/data
+      - directus_db_data:/var/lib/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-directus} -d ${DB_NAME:-directus}"]
       interval: 10s
