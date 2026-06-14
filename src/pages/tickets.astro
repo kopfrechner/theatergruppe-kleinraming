@@ -403,7 +403,6 @@ const ogImage = isPreBooking
   }
 /* Ensemble Photo */
 
-@media (max-width: 768px) {
   /* Cast Styles (matching stuecke/[slug].astro) */
   .cast-grid {
     display: grid;
@@ -414,6 +413,12 @@ const ogImage = isPreBooking
   @media (min-width: 600px) {
     .cast-grid {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .cast-grid {
+      grid-template-columns: 1fr;
     }
   }
 
