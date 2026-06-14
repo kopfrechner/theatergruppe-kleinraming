@@ -109,7 +109,8 @@ if (emotionImage) {
     </div>
   </section>
 
-  <section class="container" style="margin-bottom: 8rem;">
+  <section class="container impression-section">
+    <h2>Impressionen</h2>
     <ImageGallery images={impressionImages} title="Impressionen" />
   </section>
 </Layout>
@@ -197,5 +198,15 @@ if (emotionImage) {
 
   :global(.tile-actors) h3 {
     color: var(--accent-green);
+  }
+
+  .impression-section {
+    margin-bottom: 8rem;
+    text-align: center;
+  }
+
+  .impression-section h2 {
+    margin-bottom: 3rem;
+    font-size: 2.5rem;
   }
 </style>
