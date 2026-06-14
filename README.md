@@ -1,46 +1,59 @@
-# Astro Starter Kit: Basics
+# Theatergruppe Kleinraming Website
 
-```sh
-npm create astro@latest -- --template basics
-```
+Die offizielle Website der Theatergruppe Kleinraming. Dieses Projekt dient der Präsentation des Vereins, der Bewerbung aktueller Theaterstücke und der Pflege eines historischen Archivs vergangener Aufführungen.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## 🎭 Kernfunktionen
 
-## 🚀 Project Structure
+- **Dynamisches Ticket-System**: Unterstützung von drei verschiedenen Betriebsmodi via Headless CMS:
+  - `inaktiv`: Fokus auf Rückblick des letzten Stücks.
+  - `vorab_reservierung`: Vorschau-Modus für kommende Saisons.
+  - `ticket_promotion`: Aktive Ticket-Reservierung mit Anbindung an externe Systeme (Ticketlotse).
+- **Theater-Archiv**: Umfassende Übersicht aller bisherigen Stücke inkl. Besetzung und Bildergalerien.
+- **Ensemble-Präsentation**: Vorstellung aller Mitglieder vor und hinter der Bühne.
+- **Sponsoren-Management**: Professionelle Darstellung der Partner und Unterstützer.
+- **Performance-Optimiert**: Statische Generierung (SSG) für blitzschnelle Ladezeiten und optimiertes Image-Handling.
 
-Inside of your Astro project, you'll see the following folders and files:
+## 🛠 Technologie-Stack
+
+- **Frontend**: [Astro v6](https://astro.build/) (TypeScript)
+- **Backend**: [Directus](https://directus.io/) (Headless CMS)
+- **Styling**: Vanilla CSS (Modern & Responsive)
+- **Testing**: Vitest (Unit) & Playwright (E2E/Performance)
+
+## 🏗 Projektstruktur
 
 ```text
 /
-├── public/
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── src/
+│   ├── components/     # Modulare UI-Komponenten (Bento-Tiles, Card-Systeme)
+│   ├── e2e/            # Playwright End-to-End Tests & Mock-API
+│   ├── layouts/        # Zentrale Layout-Definitionen
+│   ├── lib/            # Business-Logik, Directus-Client & Daten-Mapper
+│   └── pages/          # Astro-Routen (Statisch & Dynamisch)
+├── public/             # Statische Assets (Fonts, Favicons)
+└── .husky/             # Git-Hooks (Linting & Type-Checks)
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## 🧞 Befehle
 
-## 🧞 Commands
+| Befehl              | Aktion                                            |
+| :------------------ | :------------------------------------------------ |
+| `npm run dev`       | Startet den lokalen Dev-Server                    |
+| `npm run build`     | Erstellt die produktive Website (SSG)             |
+| `npm run lint`      | Prüft die Code-Qualität (ESLint)                  |
+| `npm run check`     | Führt einen vollständigen TypeScript-Check aus    |
+| `npm run test:unit` | Startet die Logik-Tests (Vitest)                  |
+| `npm run test:e2e`  | Startet Browser-Tests inkl. Mock-API (Playwright) |
+| `npm run format`    | Formattiert den gesamten Code (Prettier)          |
 
-All commands are run from the root of the project, from a terminal:
+## 🛡 Qualitätssicherung
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Dieses Projekt verfügt über eine integrierte QA-Pipeline:
 
-## 👀 Want to learn more?
+- **Pre-commit Hooks**: Jede Änderung wird vor dem Commit automatisch auf Formattierung, Linting-Fehler und Typ-Sicherheit geprüft.
+- **CI/CD**: Jedes Deployment via GitHub Actions erfordert einen erfolgreichen Durchlauf aller Unit- und E2E-Tests.
+- **Mock-API**: Die E2E-Tests sind unabhängig von der CMS-Verfügbarkeit durch einen lokalen Mock-Server.
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+---
+
+Entwickelt mit ❤️ für die Theatergruppe Kleinraming.
