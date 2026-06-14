@@ -38,10 +38,8 @@ const ticketPromo = await directus.request(
       'crew.rolle',
       'crew.rolle_beschreibung',
       'hauptfoto.*',
-      'foto_szene_1.*',
-      'foto_szene_2.*',
-      'foto_szene_3.*',
-      'foto_szene_4.*'
+      'teaser_fotos.directus_files_id.*',
+      'teaser_fotos.sort'
     ]
   })
 ).catch(() => null);
@@ -56,18 +54,15 @@ if (!ticketPromo || anzeigeModus === 'inaktiv') {
 const isPreBooking = anzeigeModus === 'vorab_reservierung';
 
 // Prepare scene photos array (only if not pre-booking)
-const scenePhotos = isPreBooking ? [] : [
-  ticketPromo.foto_szene_1,
-  ticketPromo.foto_szene_2,
-  ticketPromo.foto_szene_3,
-  ticketPromo.foto_szene_4
-].filter(f => f).map((foto: any) => ({
-  src: `${DIRECTUS_URL}/assets/${foto.id || foto}`,
-  width: foto.width || 1600,
-  height: foto.height || 1200,
-  thumbnail: `${DIRECTUS_URL}/assets/${foto.id || foto}`,
-  id: foto.id || foto
-}));
+const scenePhotos = isPreBooking ? [] : (ticketPromo.teaser_fotos || [])
+  .sort((a: any, b: any) => (a.sort || 0) - (b.sort || 0))
+  .map((item: any) => ({
+    src: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
+    width: item.directus_files_id?.width || 1600,
+    height: item.directus_files_id?.height || 1200,
+    thumbnail: `${DIRECTUS_URL}/assets/${item.directus_files_id?.id || item.directus_files_id}`,
+    id: item.directus_files_id?.id || item.directus_files_id
+  }));
 
 // Format dates from termin_1..6
 const locale = 'de-AT';
