@@ -18,7 +18,6 @@ const { images, title } = Astro.props;
 ---
 
 <div class="gallery">
-  <h3>Galerie</h3>
   <div class="grid-3 pswp-gallery" id="play-gallery">
     {
       images.map((img, index) => (
@@ -107,11 +106,6 @@ const { images, title } = Astro.props;
 <style>
   .gallery {
     margin-top: 3rem;
-  }
-
-  .gallery h3 {
-    margin-bottom: 1.5rem;
-    font-size: 1.5rem;
   }
 
   .grid-3 {

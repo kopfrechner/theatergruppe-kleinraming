@@ -6,6 +6,7 @@ import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { Image } from 'astro:assets';
 import GalleryImage from '../components/GalleryImage.astro';
+import ImageGallery from '../components/ImageGallery.astro';
 import { Ticket, Phone, Calendar, Clock } from '@lucide/astro';
 
 const ticketPromo = await directus.request(
@@ -60,7 +61,13 @@ const scenePhotos = isPreBooking ? [] : [
   ticketPromo.foto_szene_2,
   ticketPromo.foto_szene_3,
   ticketPromo.foto_szene_4
-].filter(f => f);
+].filter(f => f).map((foto: any) => ({
+  src: `${DIRECTUS_URL}/assets/${foto.id || foto}`,
+  width: foto.width || 1600,
+  height: foto.height || 1200,
+  thumbnail: `${DIRECTUS_URL}/assets/${foto.id || foto}`,
+  id: foto.id || foto
+}));
 
 // Format dates from termin_1..6
 const locale = 'de-AT';
@@ -281,14 +288,9 @@ const ogImage = isPreBooking
       )}
 
       {scenePhotos.length > 0 && (
-        <div class="scene-grid">
-          {scenePhotos.map((foto: any) => (
-            <GalleryImage 
-              src={`${DIRECTUS_URL}/assets/${foto.id || foto}`} 
-              alt="Szenenfoto"
-              width={400}
-            />
-          ))}
+        <div class="gallery-section">
+          <h2>Bilder aus dem Stück</h2>
+          <ImageGallery images={scenePhotos} title={displayTitle} />
         </div>
       )}
     </div>
@@ -373,10 +375,20 @@ const ogImage = isPreBooking
     }
   }
 
-  .flyer-photo, .flyer-content {
+  .flyer-content {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+  }
+
+  .gallery-section {
+    margin-top: 1rem;
+  }
+
+  .gallery-section h2 {
+    color: var(--accent-green);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
   }
 
   .content-box, .cast-box, .sticky-box {

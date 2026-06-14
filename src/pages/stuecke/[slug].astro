@@ -74,7 +74,10 @@ const ogImage = stueck.titelfoto
       )}
 
       {filteredGallery.length > 0 && (
-        <ImageGallery images={filteredGallery} title={stueck.titel} />
+        <div class="gallery-section">
+          <h2>Galerie</h2>
+          <ImageGallery images={filteredGallery} title={stueck.titel} />
+        </div>
       )}
     </div>
   </section>
@@ -115,5 +118,15 @@ const ogImage = stueck.titelfoto
   .abstract {
     font-size: 1.1rem;
     line-height: 1.8;
+  }
+
+  .gallery-section {
+    margin-top: 4rem;
+  }
+
+  .gallery-section h2 {
+    color: var(--accent-green);
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
   }
 </style>
