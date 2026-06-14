@@ -1,4 +1,4 @@
-name: Deploy
+name: CI & Deploy
 
 permissions:
   contents: read
@@ -7,13 +7,56 @@ on:
   push:
     branches:
       - main
-  # Das hier faengt den Directus-Hook ab:
+  pull_request:
+    branches:
+      - main
   repository_dispatch:
     types: [cms_publish_trigger]
 
 jobs:
+  qa:
+    name: Quality Assurance
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type Check
+        run: npm run check
+
+      - name: Unit Tests
+        run: npm run test:unit
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E Tests
+        run: npm run test:e2e -- --project=desktop-chrome
+
+      - name: Upload Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30
+
   deploy:
     name: Trigger deployment
+    needs: qa
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to Production
