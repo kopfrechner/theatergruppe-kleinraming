@@ -62,3 +62,7 @@ Das Projekt verfolgt einen dualen Test-Ansatz, um Logik, UI und Performance abzu
 - `npx playwright test --project=desktop-chrome` - Nur Desktop-Tests.
 - `npx playwright test src/e2e/tickets.test.ts` - Spezifische Tests für Ticket-Modi.
 
+## Weiterentwicklung & Wartung
+- Bei jedem neuen Feature oder größeren Code-Änderung ist **abzuwägen**, ob neue Unit- oder E2E-Tests erforderlich sind, um die langfristige Stabilität zu gewährleisten.
+- Performance-Checks (CLS) sollten besonders bei Änderungen am Layout oder bei der Einführung neuer Bild-Komponenten beachtet werden.
+
