@@ -1,10 +1,9 @@
 ---
 interface Props {
   class?: string;
-  showLabels?: boolean;
 }
 
-const { class: className, showLabels = false } = Astro.props;
+const { class: className } = Astro.props;
 ---
 
 <div class:list={['social-links', className]}>
@@ -21,7 +20,6 @@ const { class: className, showLabels = false } = Astro.props;
         d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
       ></path>
     </svg>
-    {showLabels && <span class="label">Facebook</span>}
   </a>
   <a
     href="https://www.instagram.com/theatergruppe.kleinraming/"
@@ -45,7 +43,6 @@ const { class: className, showLabels = false } = Astro.props;
       <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
       <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
     </svg>
-    {showLabels && <span class="label">Instagram</span>}
   </a>
 </div>
 
@@ -74,19 +71,13 @@ const { class: className, showLabels = false } = Astro.props;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
     color: var(--text-muted);
     text-decoration: none;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  .label {
-    font-weight: 500;
-    font-size: 1rem;
-  }
-
-  /* Footer style (default icons only) */
-  :not(.show-labels) .social-icon {
+  /* Default icon size (used in footer) */
+  .social-icon {
     width: 32px;
     height: 32px;
   }
@@ -95,18 +86,8 @@ const { class: className, showLabels = false } = Astro.props;
     color: #1877f2 !important;
   }
 
-  /* Instagram SVG uses stroke with gradient, but we can also set the label color if needed */
-  .social-icon.instagram {
-    /* Label color for Instagram if shown */
-  }
-
   .social-icon:hover {
     transform: translateY(-2px);
     filter: brightness(1.2);
-  }
-
-  /* Special handling for labels if requested */
-  .social-links :global(.social-btn) {
-    /* Potential future styles for button-like appearance */
   }
 </style>
