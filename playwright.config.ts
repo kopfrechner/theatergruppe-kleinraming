@@ -4,7 +4,7 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: './src/e2e',
+  testDir: './tests/e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -15,8 +15,8 @@ export default defineConfig({
   workers: 1,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [['html', { open: 'never' }]],
-  globalSetup: './src/e2e/global-setup.ts',
-  globalTeardown: './src/e2e/global-teardown.ts',
+  globalSetup: './tests/e2e/global-setup.ts',
+  globalTeardown: './tests/e2e/global-teardown.ts',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -43,13 +43,13 @@ export default defineConfig({
   ],
 
   /* Custom snapshot path */
-  snapshotDir: './src/e2e/snapshots',
+  snapshotDir: './tests/e2e/snapshots',
   snapshotPathTemplate: '{snapshotDir}/{projectName}/{arg}{ext}',
 
   /* Run your local dev server before starting the tests */
   webServer: [
     {
-      command: 'tsx src/e2e/mock-api.ts',
+      command: 'tsx tests/e2e/mock-api.ts',
       port: 3333,
       reuseExistingServer: !process.env.CI,
     },

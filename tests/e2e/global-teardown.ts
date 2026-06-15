@@ -11,7 +11,7 @@ async function globalTeardown() {
   if (fs.existsSync(backupPath)) {
     fs.renameSync(backupPath, envPath);
   }
-  
+
   console.log('Cleaned up .env.local');
 }
 

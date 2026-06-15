@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { mapHighlightPlay, prepareGalleryImages } from './mappers';
+import { mapHighlightPlay, prepareGalleryImages } from '../../src/lib/mappers';
 
 // Mock astro:assets
 vi.mock('astro:assets', () => ({
@@ -89,7 +89,7 @@ describe('mappers', () => {
       expect(result?.status).toBe('Nächste Premiere');
       expect(result?.titel).toBe('Sommernachtstraum');
       expect(result?.termine.length).toBe(2);
-      // Depending on timezone of the test runner, the string might vary, 
+      // Depending on timezone of the test runner, the string might vary,
       // but it should contain the date part.
       expect(result?.termine[0]).toContain('01.07.2026');
     });
@@ -122,7 +122,9 @@ describe('mappers', () => {
 
     it('should handle errors during image optimization', async () => {
       const { inferRemoteSize } = await import('astro:assets');
-      (inferRemoteSize as any).mockRejectedValueOnce(new Error('Optimization failed'));
+      (inferRemoteSize as any).mockRejectedValueOnce(
+        new Error('Optimization failed'),
+      );
 
       const gallerie = [{ id: 'broken-img', sort: 1 }];
       const result = await prepareGalleryImages(gallerie, directusUrl);
