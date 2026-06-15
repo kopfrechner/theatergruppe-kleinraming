@@ -93,8 +93,10 @@ let emotionHeight = 600;
 if (emotionImage) {
   try {
     const dims = await inferRemoteSize(emotionImage);
-    emotionWidth = dims.width;
-    emotionHeight = dims.height;
+    const originalAspectRatio = dims.width / dims.height;
+    // Cap at a reasonable width for the bento tile (retina safe)
+    emotionWidth = Math.min(dims.width, 800);
+    emotionHeight = Math.round(emotionWidth / originalAspectRatio);
   } catch (e) {
     console.warn('Could not infer remote size for emotion image', e);
   }
