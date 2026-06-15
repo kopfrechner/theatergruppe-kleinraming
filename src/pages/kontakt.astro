@@ -81,7 +81,7 @@ const mapEmbed = config.map_embed || '';
 
       <div class="glass-panel contact-card">
         <h2>Social Media</h2>
-        <p>Folge uns für aktuelle Infos und Einblicke hinter die Kulissen:</p>
+        <p>Folge uns für aktuelle Infos und Einblicke hinter die Kulissen</p>
         <SocialLinks class="contact-socials" />
       </div>
     </div>
@@ -106,7 +106,7 @@ const mapEmbed = config.map_embed || '';
       <h2>Unser Vorstand</h2>
       <p class="section-intro">
         Für spezifische Anliegen kannst du dich auch direkt an unsere
-        Vorstandsmitglieder wenden:
+        Vorstandsmitglieder wenden
       </p>
       <div class="board-grid">
         {
@@ -204,8 +204,34 @@ const mapEmbed = config.map_embed || '';
     color: var(--accent-green);
   }
 
-  .contact-socials {
-    margin-top: 1.5rem;
+  .contact-card p {
+    line-height: 1.6;
+  }
+
+  /* Social Links Polishing (Global overrides for Component) */
+  :global(.contact-socials) {
+    margin-top: 4rem !important;
+    gap: 1.5rem !important;
+  }
+
+  :global(.contact-socials .social-icon) {
+    width: 48px !important;
+    height: 48px !important;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  :global(.contact-socials .social-icon svg) {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  :global(.contact-socials .social-icon:hover) {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateY(-4px);
+    border-color: var(--accent-green) !important;
   }
 
   .faq-list {
