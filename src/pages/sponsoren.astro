@@ -68,11 +68,22 @@ const sponsors = (await directus.request(
   }
 
   .sponsoren-grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    justify-content: center;
+    grid-template-columns: 1fr;
     gap: 2rem;
     max-width: 1100px;
     margin: 0 auto;
+  }
+
+  @media (min-width: 640px) {
+    .sponsoren-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 992px) {
+    .sponsoren-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
   .sponsor-card {

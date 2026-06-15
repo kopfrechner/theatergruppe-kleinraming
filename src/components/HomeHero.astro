@@ -85,7 +85,8 @@ const optimizedBg = await getImage({
 
 <style>
   .hero {
-    min-height: 82vh; /* More stable than svh during load */
+    min-height: 500px; /* Stronger base height */
+    min-height: clamp(500px, 80vh, 900px); /* Stable range */
     width: 100%;
     display: flex;
     align-items: center;
@@ -96,7 +97,7 @@ const optimizedBg = await getImage({
 
   @media (min-width: 768px) {
     .hero {
-      min-height: 600px; /* Fixed fallback for desktop stability */
+      min-height: 600px; /* Fixed height for desktop stability */
     }
   }
 

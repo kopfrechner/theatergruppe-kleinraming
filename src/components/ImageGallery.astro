@@ -112,9 +112,21 @@ const { images, title } = Astro.props;
 
   .grid-3 {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: 1fr; /* 1 col on mobile */
     gap: 1.5rem;
     align-items: center;
+  }
+
+  @media (min-width: 640px) {
+    .grid-3 {
+      grid-template-columns: repeat(2, 1fr); /* 2 col on tablet */
+    }
+  }
+
+  @media (min-width: 992px) {
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr); /* 3 col on desktop */
+    }
   }
 
   :global(.pswp) {
