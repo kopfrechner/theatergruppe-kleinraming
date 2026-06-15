@@ -119,6 +119,12 @@
   padding: 0;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-body);
   background-color: var(--bg-color);
@@ -133,10 +139,14 @@ body {
       rgba(212, 175, 55, 0.06),
       transparent 40%
     );
-  background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 h1,
