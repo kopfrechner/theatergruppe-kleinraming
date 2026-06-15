@@ -143,14 +143,14 @@ if (emotionImage) {
       </BentoTile>
 
       <!-- Tile C: Tradition -->
-      <BentoTile class="tile-stat">
-        <span class="stat-number">1906</span>
-        <span class="stat-label">Gründungsjahr</span>
-        <p
-          style="margin-top: 1rem; color: var(--text-muted); font-size: 0.9rem;"
-        >
-          Über 100 Jahre Tradition in Kleinraming.
-        </p>
+      <BentoTile class="tile-logo">
+        <div class="logo-tile-content">
+          <img
+            src="/Logo_Original.png"
+            alt="Theatergruppe Kleinraming Logo"
+            class="bento-logo"
+          />
+        </div>
       </BentoTile>
 
       <!-- Tile D: Actors Link -->
@@ -235,28 +235,19 @@ if (emotionImage) {
     color: #fff;
   }
 
-  :global(.tile-stat) {
-    text-align: center;
+  .logo-tile-content {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 1rem;
   }
 
-  .stat-number {
-    font-family: var(--font-heading);
-    font-size: 4rem;
-    font-weight: 800;
-    color: var(--accent-gold);
-    line-height: 1.1; /* Slightly more stable than 1 */
-    margin-bottom: 0.5rem;
-    min-height: 4.5rem; /* Reserve space for the large number */
-  }
-
-  .stat-label {
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.9rem;
+  .bento-logo {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
   }
 
   :global(.tile-actors) h3 {

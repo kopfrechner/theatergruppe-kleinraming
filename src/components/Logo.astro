@@ -1,61 +1,28 @@
 ---
-// Logo.astro — Theater comedy/tragedy masks icon + wordmark
+// Logo.astro — Original logo image
 ---
 
 <div class="logo-wrapper">
-  <div class="logo-text">
-    <span class="logo-name">Theatergruppe <strong>Kleinraming</strong></span>
-    <span class="logo-since">seit 1906</span>
-  </div>
+  <img src="/Logo_Original.png" alt="Theatergruppe Kleinraming Logo" class="header-logo" />
 </div>
 
 <style>
   .logo-wrapper {
     display: flex;
     align-items: center;
-    min-height: 40px;
-    min-width: 160px;
+    padding: 0.25rem 0;
   }
 
-  .logo-text {
-    display: flex;
-    flex-direction: column;
-    line-height: 1.15;
-  }
-
-  .logo-name {
-    font-family: var(--font-heading, 'Outfit', sans-serif);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-main, #f3f4f6);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    min-width: 140px; /* Prevent shrinking before font loads */
-  }
-
-  .logo-name strong {
-    font-weight: 800;
-    color: var(--accent-green, #8fc238);
-  }
-
-  .logo-since {
-    font-family: var(--font-body, 'Inter', sans-serif);
-    font-size: 0.55rem;
-    color: var(--text-muted, #9ca3af);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-top: 0.1rem;
+  .header-logo {
+    height: 40px;
+    width: auto;
+    display: block;
+    object-fit: contain;
   }
 
   @media (min-width: 768px) {
-    .logo-icon {
-      width: 4rem;
-    }
-    .logo-name {
-      font-size: 1rem;
-    }
-    .logo-since {
-      font-size: 0.6rem;
+    .header-logo {
+      height: 54px;
     }
   }
 </style>
