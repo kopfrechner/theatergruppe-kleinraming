@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Updates für npm (package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    # Mindestalter der Releases: 3 Tage
+    cooldown:
+      default-days: 3
+
+  # Updates für Docker (docker-compose.yml)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 10
+    # Mindestalter der Releases: 3 Tage
+    cooldown:
+      default-days: 3
