@@ -1,9 +1,7 @@
 ---
-interface Props {
-  class?: string;
-  style?: string;
-  [key: string]: any;
-}
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'div'>;
 
 const { class: className, ...rest } = Astro.props;
 ---
