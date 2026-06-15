@@ -1,6 +1,6 @@
 services:
   umami-db:
-    image: postgres:18
+    image: postgres:18.4-trixie
     restart: always
     environment:
       POSTGRES_USER: ${UMAMI_DB_USER:-umami}
@@ -15,7 +15,7 @@ services:
       retries: 5
 
   directus_db:
-    image: postgres:18
+    image: postgres:18.4-trixie
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER:-directus}
