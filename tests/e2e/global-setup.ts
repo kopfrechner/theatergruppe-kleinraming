@@ -3,7 +3,7 @@ import fs from 'fs';
 async function globalSetup() {
   const envPath = '.env.local';
   const mockUrl = 'http://localhost:3333';
-  
+
   // Backup existing .env.local if it exists
   if (fs.existsSync(envPath)) {
     fs.renameSync(envPath, '.env.local.bak');

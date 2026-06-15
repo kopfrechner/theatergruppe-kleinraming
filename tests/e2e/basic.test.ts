@@ -27,14 +27,18 @@ test.describe('Theatergruppe Kleinraming - Basic Navigation', () => {
     await page.goto('/');
     await page.click('text=Theatermenschen');
     await expect(page).toHaveURL(/\/theatermenschen/);
-    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText('Mitglieder');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Mitglieder',
+    );
   });
 
   test('should navigate to stuecke archive', async ({ page }) => {
     await page.goto('/');
     await page.click('text=Stücke');
     await expect(page).toHaveURL(/\/stuecke/);
-    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText('Bisherige Stücke');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Bisherige Stücke',
+    );
   });
 });
 
@@ -49,13 +53,16 @@ test.describe('Performance & Layout Stability (CLS)', () => {
   ];
 
   for (const pageInfo of pages) {
-    test(`should have a low CLS score on ${pageInfo.name}`, async ({ page, request }) => {
+    test(`should have a low CLS score on ${pageInfo.name}`, async ({
+      page,
+      request,
+    }) => {
       // Ensure we are in a mode where the page exists (for tickets)
       const MOCK_API = 'http://localhost:3333';
       await request.get(`${MOCK_API}/__set_mode?mode=ticket_promotion`);
-      
+
       await page.goto(pageInfo.path, { waitUntil: 'networkidle' });
-      
+
       // Evaluate CLS
       const cls: number = await page.evaluate(() => {
         return new Promise((resolve) => {
@@ -68,7 +75,7 @@ test.describe('Performance & Layout Stability (CLS)', () => {
             }
           });
           observer.observe({ type: 'layout-shift', buffered: true });
-          
+
           // Wait a bit to capture shifts
           setTimeout(() => {
             observer.disconnect();
