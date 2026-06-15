@@ -113,7 +113,12 @@ if (emotionImage) {
       {highlightPlay && <HighlightPlayTile play={highlightPlay} />}
 
       <!-- Tile B: Backstage Impression -->
-      <BentoTile class="tile-image">
+      <BentoTile
+        class="tile-image"
+        style={emotionImage
+          ? `aspect-ratio: ${emotionWidth} / ${emotionHeight};`
+          : ''}
+      >
         {
           emotionImage ? (
             <Image
@@ -124,7 +129,6 @@ if (emotionImage) {
               format="webp"
               loading="eager"
               class="tile-bg-image"
-              style={`aspect-ratio: ${emotionWidth} / ${emotionHeight};`}
             />
           ) : (
             <div
@@ -185,8 +189,6 @@ if (emotionImage) {
 
   :global(.tile-image) {
     padding: 0 !important;
-    /* Aspect ratio on the tile itself helps reserve space even if img is slow */
-    aspect-ratio: 4 / 3;
     min-height: 200px;
   }
 
@@ -207,8 +209,8 @@ if (emotionImage) {
     position: relative;
     display: block;
     width: 100%;
-    height: 100%; /* Fill the tile */
-    object-fit: cover; /* Cover the tile */
+    height: 100%;
+    object-fit: contain;
     z-index: 0;
     transition: transform 0.5s ease;
   }

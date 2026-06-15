@@ -1,12 +1,14 @@
 ---
 interface Props {
   class?: string;
+  style?: string;
+  [key: string]: any;
 }
 
-const { class: className } = Astro.props;
+const { class: className, ...rest } = Astro.props;
 ---
 
-<div class:list={['glass-panel bento-tile', className]}>
+<div class:list={['glass-panel bento-tile', className]} {...rest}>
   <slot />
 </div>
 
