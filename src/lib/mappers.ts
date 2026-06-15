@@ -79,7 +79,8 @@ export function mapHighlightPlay(
       link: `/stuecke/${lastPlay.slug || lastPlay.id}`,
       buttonText: 'Zum Stück',
       status: 'Rückblick',
-      umamiEvent: 'Startseite Rueckblick Highlight Klick',
+      umamiEvent: 'Rückblick Klick',
+      umamiSource: 'Startseite Highlight',
       termine: [],
       image: lastPlay.titelfoto
         ? `${directusUrl}/assets/${lastPlay.titelfoto.id || lastPlay.titelfoto}`
@@ -135,8 +136,9 @@ export function mapHighlightPlay(
     buttonText: 'Tickets reservieren',
     status: isPreBooking ? 'Saison-Vorschau' : 'Nächste Premiere',
     umamiEvent: isPreBooking
-      ? 'Startseite Saison Vorschau Highlight Klick'
-      : 'Startseite Tickets Highlight Klick',
+      ? 'Tickets Vorab Reservieren Klick'
+      : 'Tickets Regulär Reservieren Klick',
+    umamiSource: 'Startseite Highlight',
     termine: termineArray,
     image: displayImage
       ? `${directusUrl}/assets/${displayImage.id || displayImage}`

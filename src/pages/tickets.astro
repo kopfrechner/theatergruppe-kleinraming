@@ -212,7 +212,8 @@ const ogImage = isPreBooking
               target="_blank"
               rel="noopener noreferrer"
               class="btn btn-large btn-full"
-              data-umami-event="Tickets Online Reservieren Klick"
+              data-umami-event="Ticket Online Reservieren Klick"
+              data-umami-event-source="Tickets"
             >
               <Ticket size={24} class="btn-icon" />
               Online reservieren
@@ -236,6 +237,7 @@ const ogImage = isPreBooking
                     href={`tel:${ticketPromo.telefon_reservierung.replace(/^0/, '+43').replace(/[^0-9+]/g, '')}`}
                     class="phone-link"
                     data-umami-event="Tickets Telefonisch Reservieren Klick"
+                    data-umami-event-source="Tickets"
                   >
                     {ticketPromo.telefon_reservierung}
                   </a>

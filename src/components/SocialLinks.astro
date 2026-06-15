@@ -1,9 +1,10 @@
 ---
 interface Props {
   class?: string;
+  umamiSource?: string;
 }
 
-const { class: className } = Astro.props;
+const { class: className, umamiSource = '' } = Astro.props;
 ---
 
 <div class:list={['social-links', className]}>
@@ -14,6 +15,7 @@ const { class: className } = Astro.props;
     class="social-icon facebook"
     aria-label="Facebook"
     data-umami-event="Facebook Klick"
+    data-umami-event-source={umamiSource}
   >
     <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
       <path
@@ -28,6 +30,7 @@ const { class: className } = Astro.props;
     class="social-icon instagram"
     aria-label="Instagram"
     data-umami-event="Instagram Klick"
+    data-umami-event-source={umamiSource}
   >
     <svg
       viewBox="0 0 24 24"

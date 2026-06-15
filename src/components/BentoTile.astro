@@ -30,7 +30,7 @@ const { class: className } = Astro.props;
   @media (min-width: 768px) {
     .bento-tile {
       padding: 2.5rem;
-      min-height: 0;
+      min-height: 200px; /* Instead of 0 to maintain grid stability */
     }
   }
 </style>

@@ -42,14 +42,16 @@ const optimizedBg = await getImage({
             <a
               href="/tickets"
               class="btn"
-              data-umami-event="Startseite Tickets Reservieren Hero Klick"
+              data-umami-event="Tickets Reservieren Klick"
+              data-umami-event-source="Startseite Hero"
             >
               Tickets reservieren
             </a>
             <a
               href="/stuecke"
               class="btn btn-outline"
-              data-umami-event="Startseite Stuecke Archiv Hero Klick"
+              data-umami-event="Stuecke Archiv Klick"
+              data-umami-event-source="Startseite Hero"
             >
               Alle Stücke ansehen
             </a>
@@ -60,7 +62,8 @@ const optimizedBg = await getImage({
               <a
                 href={`/stuecke/${lastPlay.slug || lastPlay.id}`}
                 class="btn"
-                data-umami-event="Startseite Rueckblick Hero Klick"
+                data-umami-event="Rückblick Klick"
+                data-umami-event-source="Startseite Hero"
               >
                 Zum letzten Stück
               </a>
@@ -68,7 +71,8 @@ const optimizedBg = await getImage({
             <a
               href="/stuecke"
               class="btn btn-outline"
-              data-umami-event="Startseite Stuecke Archiv Hero Klick"
+              data-umami-event="Stuecke Archiv Klick"
+              data-umami-event-source="Startseite Hero"
             >
               Alle Stücke ansehen
             </a>
@@ -81,13 +85,19 @@ const optimizedBg = await getImage({
 
 <style>
   .hero {
-    min-height: 82svh;
+    min-height: 82vh; /* More stable than svh during load */
     width: 100%;
     display: flex;
     align-items: center;
     margin-bottom: 4rem;
     position: relative;
     overflow: hidden;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      min-height: 600px; /* Fixed fallback for desktop stability */
+    }
   }
 
   .hero-bg {
