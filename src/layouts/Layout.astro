@@ -259,7 +259,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
     display: none; /* Mobile first: hidden by default */
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .main-nav {
       display: flex !important; /* Force visible on desktop immediately */
       position: static;
@@ -362,7 +362,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
     position: relative;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .main-nav a.active::after {
       content: '';
       position: absolute;
@@ -379,7 +379,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
     min-height: calc(100svh - 80px - 100px); /* Adjust for header/footer */
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .mobile-menu-toggle {
       display: none;
     }
@@ -413,7 +413,7 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
     gap: 1.5rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .footer-content {
       flex-direction: row;
       justify-content: space-between;
