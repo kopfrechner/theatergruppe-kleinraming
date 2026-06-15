@@ -220,6 +220,12 @@ a:hover {
   border-color: var(--accent-green);
 }
 
+.btn-large {
+  font-size: 1.2rem;
+  padding: 1.2rem 2.5rem;
+  min-height: 4rem;
+}
+
 /* Utility layout classes */
 .container {
   width: 100%;
