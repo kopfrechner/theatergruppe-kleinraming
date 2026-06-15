@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import MemberCard from '../components/MemberCard.astro';
+import SocialLinks from '../components/SocialLinks.astro';
 import { Mail, Phone } from '@lucide/astro';
 import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
@@ -70,7 +71,8 @@ const mapEmbed = config.map_embed || '';
               <strong>Telefon</strong>
               <p>
                 <a href={`tel:${contactPhone.replace(/\s/g, '')}`}
-                  >{contactPhone}</a>
+                  >{contactPhone}</a
+                >
               </p>
             </div>
           </div>
@@ -80,24 +82,7 @@ const mapEmbed = config.map_embed || '';
       <div class="glass-panel contact-card">
         <h2>Social Media</h2>
         <p>Folge uns für aktuelle Infos und Einblicke hinter die Kulissen:</p>
-        <div class="social-links-large">
-          <a
-            href="https://www.facebook.com/Theatergruppe.Kleinraming/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-btn facebook"
-          >
-            Facebook
-          </a>
-          <a
-            href="https://www.instagram.com/theatergruppe.kleinraming/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="social-btn instagram"
-          >
-            Instagram
-          </a>
-        </div>
+        <SocialLinks class="contact-socials" />
       </div>
     </div>
 
@@ -219,40 +204,8 @@ const mapEmbed = config.map_embed || '';
     color: var(--accent-green);
   }
 
-  .social-links-large {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-
-  .social-btn {
-    flex: 1;
-    text-align: center;
-    padding: 0.8rem;
-    border-radius: 8px;
-    text-decoration: none;
-    color: white;
-    font-weight: 600;
-    transition: transform 0.2s;
-  }
-
-  .social-btn:hover {
-    transform: translateY(-2px);
-  }
-
-  .facebook {
-    background-color: #1877f2;
-  }
-
-  .instagram {
-    background: linear-gradient(
-      45deg,
-      #f09433 0%,
-      #e6683c 25%,
-      #dc2743 50%,
-      #cc2366 75%,
-      #bc1888 100%
-    );
+  .contact-socials {
+    margin-top: 1.5rem;
   }
 
   .faq-list {
@@ -295,11 +248,5 @@ const mapEmbed = config.map_embed || '';
     height: 350px !important;
     border: 0;
     display: block;
-  }
-
-  @media (max-width: 600px) {
-    .social-links-large {
-      flex-direction: column;
-    }
   }
 </style>
