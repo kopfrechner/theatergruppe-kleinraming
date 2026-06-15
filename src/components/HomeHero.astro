@@ -97,7 +97,11 @@ const optimizedBg = await getImage({
 
   @media (min-width: 768px) {
     .hero {
-      min-height: 600px; /* Fixed height for desktop stability */
+      min-height: clamp(
+        650px,
+        82vh,
+        900px
+      ); /* Allow more height on desktop to show the stage floor */
     }
   }
 
@@ -108,7 +112,7 @@ const optimizedBg = await getImage({
     width: 100%;
     height: 100%;
     background-size: cover;
-    background-position: center 42%;
+    background-position: center center; /* Re-center to show more of the bottom stage area */
     background-repeat: no-repeat;
     z-index: 0;
   }
@@ -138,7 +142,7 @@ const optimizedBg = await getImage({
   }
 
   .hero h1 {
-    font-size: 2.2rem;
+    font-size: clamp(1.7rem, 9vw, 2.2rem);
     margin-bottom: 1rem;
     line-height: 1.1;
     color: #faf7f2; /* Always light on dark stage image */

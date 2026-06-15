@@ -1,12 +1,12 @@
 ---
-interface Props {
-  class?: string;
-}
+import type { HTMLAttributes } from 'astro/types';
 
-const { class: className } = Astro.props;
+type Props = HTMLAttributes<'div'>;
+
+const { class: className, ...rest } = Astro.props;
 ---
 
-<div class:list={['glass-panel bento-tile', className]}>
+<div class:list={['glass-panel bento-tile', className]} {...rest}>
   <slot />
 </div>
 

@@ -29,8 +29,13 @@
     font-weight: 600;
     color: var(--text-main, #f3f4f6);
     letter-spacing: 0.02em;
-    white-space: nowrap;
     min-width: 140px; /* Prevent shrinking before font loads */
+  }
+
+  @media (min-width: 380px) {
+    .logo-name {
+      white-space: nowrap;
+    }
   }
 
   .logo-name strong {
@@ -47,7 +52,7 @@
     margin-top: 0.1rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .logo-icon {
       width: 4rem;
     }
