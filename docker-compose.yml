@@ -87,6 +87,14 @@ services:
       # Upload limit
       FILES_MAX_UPLOAD_SIZE: ${FILES_MAX_UPLOAD_SIZE:-5mb}
 
+  # Bildoptimierung
+  mazanoke:
+    container_name: mazanoke
+    image: ghcr.io/civilblur/mazanoke:v1.1.6
+    ports:
+      - '3474:80'
+    restart: unless-stopped
+
 volumes:
   directus_db_data:
   umami_db_data:
