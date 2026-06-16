@@ -38,8 +38,8 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
                 <Image
                   src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`}
                   alt={member.name}
-                  width={240}
-                  height={320}
+                  width={300}
+                  height={400}
                   format="webp"
                   class="member-photo photo-main"
                 />
@@ -51,8 +51,8 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
                 <Image
                   src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`}
                   alt={`${member.name} - Funny`}
-                  width={240}
-                  height={320}
+                  width={300}
+                  height={400}
                   format="webp"
                   class="member-photo photo-funny"
                 />
@@ -83,8 +83,8 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
                 <Image
                   src={`${DIRECTUS_URL}/assets/${member.foto.id || member.foto}`}
                   alt={member.name}
-                  width={240}
-                  height={320}
+                  width={300}
+                  height={400}
                   format="webp"
                   class="member-photo photo-main"
                 />
@@ -96,8 +96,8 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
                 <Image
                   src={`${DIRECTUS_URL}/assets/${member.foto_funny.id || member.foto_funny}`}
                   alt={`${member.name} - Funny`}
-                  width={240}
-                  height={320}
+                  width={300}
+                  height={400}
                   format="webp"
                   class="member-photo photo-funny"
                 />
@@ -184,30 +184,13 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
   }
 
   .members-grid {
-    grid-template-columns: 1fr; /* 1 col mobile */
+    grid-template-columns: repeat(auto-fit, 260px);
     justify-content: center;
-    gap: 2rem;
-  }
-
-  @media (min-width: 550px) {
-    .members-grid {
-      grid-template-columns: repeat(2, 1fr); /* 2 col tablet-ish */
-    }
-  }
-
-  @media (min-width: 850px) {
-    .members-grid {
-      grid-template-columns: repeat(3, 1fr); /* 3 col small desktop */
-    }
-  }
-
-  @media (min-width: 1100px) {
-    .members-grid {
-      grid-template-columns: repeat(4, 1fr); /* 4 col full desktop */
-    }
+    gap: 1.5rem;
   }
 
   .member-card {
+    width: 260px;
     text-align: center;
     overflow: hidden;
     transition:
@@ -240,7 +223,6 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
   }
 
   .member-photo-container {
-    height: 320px;
     aspect-ratio: 3 / 4;
     background-color: var(--bg-color-light);
     border-bottom: 2px solid var(--accent-green);
