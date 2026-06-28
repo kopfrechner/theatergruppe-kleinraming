@@ -111,6 +111,26 @@ const server = http.createServer((req, res) => {
             auffuehrung_im_jahr: 2024,
             slug: 'altes-stueck',
             veroffentlicht: true,
+            spieler: [
+              {
+                rolle_name: 'Hauptrolle',
+                rolle_beschreibung: 'Ein wichtiger Charakter',
+                spieler_foto: { id: 'special-role-photo' },
+                theatermenschen_id: {
+                  name: 'Max Mustermann',
+                  foto: { id: 'max-photo' },
+                },
+              },
+              {
+                rolle_name: 'Nebenrolle',
+                rolle_beschreibung: 'Ein netter Nachbar',
+                spieler_foto: null,
+                theatermenschen_id: {
+                  name: 'Erika Musterfrau',
+                  foto: { id: 'erika-photo' },
+                },
+              },
+            ],
           },
         ],
       }),

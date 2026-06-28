@@ -40,12 +40,45 @@ test.describe('Theatergruppe Kleinraming - Basic Navigation', () => {
       'Bisherige Stücke',
     );
   });
+
+  test('should navigate to and load piece detail page with cast and fallback photo', async ({
+    page,
+  }) => {
+    await page.goto('/stuecke/altes-stueck');
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Ein tolles altes Stück',
+    );
+    await expect(page.getByRole('heading', { level: 3 }).first()).toContainText(
+      'Besetzung',
+    );
+
+    // Check for Max Mustermann (uses spieler_foto)
+    await expect(page.locator('text=Max Mustermann')).toBeVisible();
+    await expect(page.locator('text=Hauptrolle')).toBeVisible();
+    await expect(page.locator('text=Ein wichtiger Charakter')).toBeVisible();
+
+    // Check Erika Musterfrau (uses fallback photo)
+    await expect(page.locator('text=Erika Musterfrau')).toBeVisible();
+    await expect(page.locator('text=Nebenrolle')).toBeVisible();
+    await expect(page.locator('text=Ein netter Nachbar')).toBeVisible();
+
+    // Verify both cast member photos are rendered (images using the mock IDs)
+    const photos = page.locator('img.cast-photo');
+    await expect(photos).toHaveCount(2);
+
+    const src1 = await photos.nth(0).getAttribute('src');
+    expect(src1).toContain('special-role-photo'); // verifies that spieler_foto is used when present
+
+    const src2 = await photos.nth(1).getAttribute('src');
+    expect(src2).toContain('erika-photo'); // verifies that fallback photo is used when spieler_foto is null
+  });
 });
 
 test.describe('Performance & Layout Stability (CLS)', () => {
   const pages = [
     { name: 'Startseite', path: '/' },
     { name: 'Stücke', path: '/stuecke' },
+    { name: 'Stück Details', path: '/stuecke/altes-stueck' },
     { name: 'Theatermenschen', path: '/theatermenschen' },
     { name: 'Tickets', path: '/tickets' },
     { name: 'Mitwirken', path: '/mitmachen' },
