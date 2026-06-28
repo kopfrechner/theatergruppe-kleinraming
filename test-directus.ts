@@ -1,22 +1,22 @@
-import {
-  createDirectus,
-  rest,
-  readSingleton,
-  readItem,
-} from '@directus/sdk';
+import { createDirectus, rest, readSingleton, readItem } from '@directus/sdk';
 
-const client = createDirectus('https://cms.kopfarbeit.dev').with(rest());
+const client = createDirectus('https://admin.theater-kleinraming.at').with(
+  rest(),
+);
 
 async function run() {
   try {
     const data = await client.request(
-      readItem('startseite' as any, {
-        fields: [
-          'emotionen_titel',
-          'emotionen_bild',
-          'impressionen_gallerie.*',
-        ],
-      } as any),
+      readItem(
+        'startseite' as any,
+        {
+          fields: [
+            'emotionen_titel',
+            'emotionen_bild',
+            'impressionen_gallerie.*',
+          ],
+        } as any,
+      ),
     );
     console.log('readItem result:', data);
   } catch (e: any) {

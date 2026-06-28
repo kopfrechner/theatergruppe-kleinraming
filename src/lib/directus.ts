@@ -113,7 +113,7 @@ interface Schema {
 }
 
 export const DIRECTUS_URL =
-  import.meta.env.PUBLIC_DIRECTUS_URL || 'https://cms.kopfarbeit.dev';
+  import.meta.env.PUBLIC_DIRECTUS_URL || 'https://admin.theater-kleinraming.at';
 
 const client = createDirectus<Schema>(DIRECTUS_URL).with(rest());
 

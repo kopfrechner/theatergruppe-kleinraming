@@ -14,7 +14,7 @@ export default defineConfig({
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cms.kopfarbeit.dev',
+        hostname: 'admin.theater-kleinraming.at',
       },
       {
         protocol: 'http',

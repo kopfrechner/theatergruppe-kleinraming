@@ -14,9 +14,9 @@ Der Client ist für den öffentlichen Zugriff konfiguriert (Public Role in Direc
 ```typescript
 import { createDirectus, rest } from '@directus/sdk';
 
-const client = createDirectus<Schema>('https://cms.kopfarbeit.dev').with(
-  rest(),
-);
+const client = createDirectus<Schema>(
+  'https://admin.theater-kleinraming.at',
+).with(rest());
 ```
 
 ## 2. Datenmodell (Collections)
@@ -78,4 +78,4 @@ Damit die Daten im Frontend erscheinen, müssen in Directus unter **Settings -> 
 ## 4. Bilder & Assets
 
 Bilder werden über den Asset-Endpunkt von Directus geladen. Zur Performance-Optimierung werden Transformationen genutzt:
-`https://cms.kopfarbeit.dev/assets/<id>?width=600&height=338&fit=cover`
+`https://admin.theater-kleinraming.at/assets/<id>?width=600&height=338&fit=cover`

@@ -74,7 +74,7 @@ services:
       WEBSOCKETS_ENABLED: 'true'
 
       # Für Einladungslinks etc...
-      PUBLIC_URL: ${PUBLIC_URL:-https://cms.kopfarbeit.dev}
+      PUBLIC_URL: ${PUBLIC_URL:-https://admin.theater-kleinraming.at}
 
       # MCP Auth
       MCP_OAUTH_ENABLED: ${MCP_OAUTH_ENABLED:-true}
