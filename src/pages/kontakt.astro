@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import MemberCard from '../components/MemberCard.astro';
 import SocialLinks from '../components/SocialLinks.astro';
-import { Mail, Phone } from '@lucide/astro';
+import { Mail } from '@lucide/astro';
 import directus from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
 
@@ -10,12 +10,11 @@ import { readItems, readSingleton } from '@directus/sdk';
 const config = await directus
   .request(
     readSingleton('kontakt_seite', {
-      fields: ['email', 'telefon', 'faq', 'location_name', 'map_embed'],
+      fields: ['email', 'faq', 'location_name', 'map_embed'],
     }),
   )
   .catch(() => ({
     email: 'info@theatergruppe-kleinraming.at',
-    telefon: '0680 / 3110037',
     faq: [],
     location_name: 'Gasthof Froschauer',
     map_embed: '',
@@ -35,7 +34,6 @@ const vorstand = await directus
   .catch(() => []);
 
 const contactEmail = config.email || 'info@theatergruppe-kleinraming.at';
-const contactPhone = config.telefon || '0680 / 3110037';
 const faqs = config.faq || [];
 const locationName = config.location_name || 'Gasthof Froschauer';
 const mapEmbed = config.map_embed || '';
@@ -63,17 +61,6 @@ const mapEmbed = config.map_embed || '';
             <div>
               <strong>E-Mail</strong>
               <p><a href={`mailto:${contactEmail}`}>{contactEmail}</a></p>
-            </div>
-          </div>
-          <div class="method">
-            <span class="icon"><Phone size={20} /></span>
-            <div>
-              <strong>Telefon</strong>
-              <p>
-                <a href={`tel:${contactPhone.replace(/\s/g, '')}`}
-                  >{contactPhone}</a
-                >
-              </p>
             </div>
           </div>
         </div>

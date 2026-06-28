@@ -86,7 +86,6 @@ export interface FAQItem {
 export interface KontaktSeite {
   id: string;
   email: string;
-  telefon: string;
   faq: FAQItem[];
   location_name: string;
   map_embed: string;

@@ -168,7 +168,6 @@ const server = http.createServer((req, res) => {
       JSON.stringify({
         data: {
           email: 'test@test.com',
-          telefon: '123',
           faq: [],
           location_name: 'Test Ort',
           map_embed: '',
