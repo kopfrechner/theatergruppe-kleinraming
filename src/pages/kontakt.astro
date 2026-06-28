@@ -1,10 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import MemberCard from '../components/MemberCard.astro';
 import SocialLinks from '../components/SocialLinks.astro';
 import { Mail } from '@lucide/astro';
 import directus from '../lib/directus';
-import { readItems, readSingleton } from '@directus/sdk';
+import { readSingleton } from '@directus/sdk';
 
 // Fetch contact page configuration
 const config = await directus
@@ -19,19 +18,6 @@ const config = await directus
     location_name: 'Gasthof Froschauer',
     map_embed: '',
   }));
-
-// Fetch board members
-const vorstand = await directus
-  .request(
-    readItems('theatermenschen', {
-      filter: {
-        vorstandsmitglied: { _eq: true },
-      },
-      fields: ['name', 'funktionen', 'foto'],
-      sort: ['sort', 'name'],
-    }),
-  )
-  .catch(() => []);
 
 const contactEmail = config.email || 'info@theatergruppe-kleinraming.at';
 const faqs = config.faq || [];
@@ -89,29 +75,6 @@ const mapEmbed = config.map_embed || '';
       )
     }
 
-    <div class="glass-panel board-section">
-      <h2>Unser Vorstand</h2>
-      <p class="section-intro">
-        Für spezifische Anliegen kannst du dich auch direkt an unsere
-        Vorstandsmitglieder wenden
-      </p>
-      <div class="board-grid">
-        {
-          vorstand.map((mensch) => (
-            <MemberCard
-              name={mensch.name}
-              role={mensch.funktionen.split('\n')[0]}
-              roleDescription={mensch.funktionen
-                .split('\n')
-                .slice(1)
-                .join(', ')}
-              image={mensch.foto}
-            />
-          ))
-        }
-      </div>
-    </div>
-
     <div class="glass-panel location-section">
       <h2>Hier findest du uns</h2>
       <p>
@@ -146,7 +109,6 @@ const mapEmbed = config.map_embed || '';
 
   .contact-card,
   .faq-section,
-  .board-section,
   .location-section {
     padding: 2.5rem;
   }
@@ -236,17 +198,6 @@ const mapEmbed = config.map_embed || '';
   .faq-item p {
     color: var(--text-muted);
     line-height: 1.6;
-  }
-
-  .section-intro {
-    margin-bottom: 2rem;
-    color: var(--text-muted);
-  }
-
-  .board-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
   }
 
   .map-container {
