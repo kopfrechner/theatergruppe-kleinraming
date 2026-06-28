@@ -27,7 +27,7 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
 
   <section class="container members-section">
     <h2 class="category-title">Unser Vorstand</h2>
-    <div class="grid members-grid">
+    <div class="grid members-grid board-grid">
       {
         boardMembers.map((member) => (
           <article
@@ -187,6 +187,11 @@ const activeMembers = ensemble.filter((m) => !m.vorstandsmitglied);
     grid-template-columns: repeat(auto-fit, 260px);
     justify-content: center;
     gap: 1.5rem;
+  }
+
+  .board-grid {
+    max-width: calc(3 * 260px + 2 * 1.5rem);
+    margin: 0 auto;
   }
 
   .member-card {
