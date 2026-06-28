@@ -94,7 +94,7 @@ test.describe('Ticket Promotion States', () => {
     ).toBeVisible();
   });
 
-  test('should show disabled reservation button when ticketlotse_link_aktiv is false', async ({
+  test('should show disabled reservation button when tickets_online_reservieren_status is deaktiviert', async ({
     page,
     request,
   }) => {
@@ -104,10 +104,8 @@ test.describe('Ticket Promotion States', () => {
 
     await page.goto('/tickets', { waitUntil: 'networkidle' });
 
-    // Based on src/pages/tickets.astro, line 222 shows "Online reservieren (inaktiv)"
-    await expect(
-      page.locator('text=Online reservieren (inaktiv)'),
-    ).toBeVisible();
+    // Based on src/pages/tickets.astro, line 222 shows "Online reservieren (bald)"
+    await expect(page.locator('text=Online reservieren (bald)')).toBeVisible();
     // It should not be a functional link to ticketlotse
     await expect(
       page.locator('a[href="https://ticketlotse.test"]'),
@@ -125,12 +123,32 @@ test.describe('Ticket Promotion States', () => {
     await page.goto('/tickets', { waitUntil: 'networkidle' });
 
     // Based on src/pages/tickets.astro line 209-224, if ticketlotse_link is null,
-    // it falls back to the (inaktiv) block.
+    // it falls back to the disabled block.
     await expect(
-      page
-        .locator('.flyer-sidebar')
-        .locator('text=Online reservieren (inaktiv)'),
+      page.locator('.flyer-sidebar').locator('text=Online reservieren (bald)'),
     ).toBeVisible();
+    await expect(
+      page.locator('.flyer-sidebar').locator('a.btn'),
+    ).not.toBeVisible();
+  });
+
+  test('should completely hide reservation button when tickets_online_reservieren_status is ausgeblendet', async ({
+    page,
+    request,
+  }) => {
+    await request.get(
+      `${MOCK_API}/__set_mode?mode=ticket_promotion_hidden_link`,
+    );
+
+    await page.goto('/tickets', { waitUntil: 'networkidle' });
+
+    // The reservation button should not exist at all in the DOM
+    await expect(
+      page.locator('.flyer-sidebar').locator('text=Online reservieren (bald)'),
+    ).not.toBeVisible();
+    await expect(
+      page.locator('.flyer-sidebar').locator('text=Online reservieren'),
+    ).not.toBeVisible();
     await expect(
       page.locator('.flyer-sidebar').locator('a.btn'),
     ).not.toBeVisible();

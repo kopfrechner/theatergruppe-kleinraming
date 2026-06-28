@@ -28,7 +28,6 @@ const server = http.createServer((req, res) => {
             vorab_text: 'Tickets bald verfügbar.',
             vorab_bild: null,
             ticketlotse_link: 'https://ticketlotse.test',
-            ticketlotse_link_aktiv: false,
           },
         }),
       );
@@ -40,7 +39,7 @@ const server = http.createServer((req, res) => {
             titel: 'Hamlet',
             kurzbeschreibung: 'Sein oder nicht sein.',
             ticketlotse_link: 'https://ticketlotse.test',
-            ticketlotse_link_aktiv: true,
+            tickets_online_reservieren_status: 'aktiv',
             termin_1: '2026-11-01T20:00:00Z',
             teaser_fotos: [],
           },
@@ -54,7 +53,21 @@ const server = http.createServer((req, res) => {
             titel: 'Hamlet (Reservierung inaktiv)',
             kurzbeschreibung: 'Sein oder nicht sein.',
             ticketlotse_link: 'https://ticketlotse.test',
-            ticketlotse_link_aktiv: false,
+            tickets_online_reservieren_status: 'deaktiviert',
+            termin_1: '2026-11-01T20:00:00Z',
+            teaser_fotos: [],
+          },
+        }),
+      );
+    } else if (currentMode === 'ticket_promotion_hidden_link') {
+      res.end(
+        JSON.stringify({
+          data: {
+            anzeige_modus: 'ticket_promotion',
+            titel: 'Hamlet (Reservierung ausgeblendet)',
+            kurzbeschreibung: 'Sein oder nicht sein.',
+            ticketlotse_link: 'https://ticketlotse.test',
+            tickets_online_reservieren_status: 'ausgeblendet',
             termin_1: '2026-11-01T20:00:00Z',
             teaser_fotos: [],
           },
@@ -66,9 +79,9 @@ const server = http.createServer((req, res) => {
           data: {
             anzeige_modus: 'ticket_promotion',
             titel: 'Hamlet (Kein Link)',
-            kurzbeschreibung: 'Sein oder nicht sein.',
+            kurzbeschreibung: 'Sein oder sein.',
             ticketlotse_link: null,
-            ticketlotse_link_aktiv: true,
+            tickets_online_reservieren_status: 'aktiv',
             termin_1: '2026-11-01T20:00:00Z',
             teaser_fotos: [],
           },

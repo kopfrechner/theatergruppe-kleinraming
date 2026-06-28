@@ -55,7 +55,7 @@ export interface TicketPromotion {
   vorab_text?: string;
   vorab_bild?: any;
   ticketlotse_link: string;
-  ticketlotse_link_aktiv: boolean;
+  tickets_online_reservieren_status?: 'aktiv' | 'deaktiviert' | 'ausgeblendet';
   spielort?: string;
   telefon_reservierung?: string;
   termin_1?: string;

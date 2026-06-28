@@ -28,7 +28,7 @@ const ticketPromo = (await directus
         'termin_4',
         'termin_5',
         'termin_6',
-        'ticketlotse_link_aktiv',
+        'tickets_online_reservieren_status',
         'autor',
         'genre',
         'preis_erwachsene',
@@ -54,6 +54,9 @@ if (!ticketPromo || anzeigeModus === 'inaktiv') {
 }
 
 const isPreBooking = anzeigeModus === 'vorab_reservierung';
+
+const reservationStatus =
+  ticketPromo.tickets_online_reservieren_status || 'deaktiviert';
 
 // Prepare scene photos array (only if not pre-booking)
 const scenePhotos = isPreBooking
@@ -206,7 +209,7 @@ const ogImage = isPreBooking
     <div class="flyer-sidebar">
       <div class="glass-panel sticky-box">
         {
-          ticketPromo.ticketlotse_link_aktiv && ticketPromo.ticketlotse_link ? (
+          reservationStatus === 'aktiv' && ticketPromo.ticketlotse_link ? (
             <a
               href={ticketPromo.ticketlotse_link}
               target="_blank"
@@ -218,10 +221,10 @@ const ogImage = isPreBooking
               <Ticket size={24} class="btn-icon" />
               Online reservieren
             </a>
-          ) : (
+          ) : reservationStatus === 'ausgeblendet' ? null : (
             <div class="btn btn-large btn-full btn-disabled">
               <Ticket size={24} class="btn-icon" />
-              Online reservieren (inaktiv)
+              Online reservieren (bald)
             </div>
           )
         }
