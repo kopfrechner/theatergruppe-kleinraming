@@ -224,7 +224,7 @@ const ogImage = isPreBooking
           ) : reservationStatus === 'ausgeblendet' ? null : (
             <div class="btn btn-large btn-full btn-disabled">
               <Ticket size={24} class="btn-icon" />
-              Online reservieren (bald)
+              Online reservieren (bald verfügbar)
             </div>
           )
         }
@@ -456,6 +456,22 @@ const ogImage = isPreBooking
     padding: 2.5rem;
   }
 
+  @media (max-width: 768px) {
+    .content-box,
+    .cast-box,
+    .sticky-box {
+      padding: 1.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .content-box,
+    .cast-box,
+    .sticky-box {
+      padding: 1.25rem;
+    }
+  }
+
   .content-box h2,
   .cast-box h2 {
     color: var(--accent-green);
@@ -509,6 +525,14 @@ const ogImage = isPreBooking
     text-align: center;
     display: flex;
     margin-bottom: 2rem;
+    white-space: normal;
+  }
+
+  @media (max-width: 480px) {
+    .btn-full {
+      padding-left: 1.25rem;
+      padding-right: 1.25rem;
+    }
   }
 
   .btn-disabled {
@@ -542,6 +566,7 @@ const ogImage = isPreBooking
 
   .btn-icon {
     margin-right: 0.8rem;
+    flex-shrink: 0;
   }
 
   .phone-wrapper {
