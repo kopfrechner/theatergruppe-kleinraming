@@ -104,8 +104,10 @@ test.describe('Ticket Promotion States', () => {
 
     await page.goto('/tickets', { waitUntil: 'networkidle' });
 
-    // Based on src/pages/tickets.astro, line 222 shows "Online reservieren (bald)"
-    await expect(page.locator('text=Online reservieren (bald)')).toBeVisible();
+    // Based on src/pages/tickets.astro, shows "Online reservieren (bald verfügbar)"
+    await expect(
+      page.locator('text=Online reservieren (bald verfügbar)'),
+    ).toBeVisible();
     // It should not be a functional link to ticketlotse
     await expect(
       page.locator('a[href="https://ticketlotse.test"]'),
@@ -122,10 +124,12 @@ test.describe('Ticket Promotion States', () => {
 
     await page.goto('/tickets', { waitUntil: 'networkidle' });
 
-    // Based on src/pages/tickets.astro line 209-224, if ticketlotse_link is null,
+    // Based on src/pages/tickets.astro, if ticketlotse_link is null,
     // it falls back to the disabled block.
     await expect(
-      page.locator('.flyer-sidebar').locator('text=Online reservieren (bald)'),
+      page
+        .locator('.flyer-sidebar')
+        .locator('text=Online reservieren (bald verfügbar)'),
     ).toBeVisible();
     await expect(
       page.locator('.flyer-sidebar').locator('a.btn'),
