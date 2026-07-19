@@ -138,14 +138,14 @@ const { images, title, aspectRatio, width, height } = Astro.props;
 
       // Lightbox setup
       const lightbox = new PhotoSwipeLightbox({
-        gallery: container,
+        gallery: container as HTMLElement,
         children: 'a.carousel-slide-link',
         pswpModule: () => import('photoswipe'),
         showHideAnimationType: 'zoom',
         bgOpacity: 0.95,
       });
 
-      lightbox.on('open', () => {
+      lightbox.on('beforeOpen', () => {
         stopAutoplay();
       });
 
