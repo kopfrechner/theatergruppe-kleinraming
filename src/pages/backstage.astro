@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ImageGallery from '../components/ImageGallery.astro';
+import directus, { DIRECTUS_URL } from '../lib/directus';
+import { readSingleton } from '@directus/sdk';
+import { prepareGalleryImages } from '../lib/mappers';
+
+const backstage = (await directus
+  .request(
+    readSingleton('backstage', {
+      fields: [
+        'id',
+        'titel',
+        'beschreibung',
+        'backstage_gallerie.*',
+        'backstage_gallerie.directus_files_id.*',
+      ],
+    } as any),
+  )
+  .catch(() => null)) as any;
+
+if (!backstage) {
+  return Astro.redirect('/404');
+}
+
+const filteredGallery = await prepareGalleryImages(
+  backstage.backstage_gallerie || [],
+  DIRECTUS_URL,
+);
+
+// Prepare SEO metadata
+const cleanDescription = backstage.beschreibung
+  ? backstage.beschreibung
+      .replace(/<[^>]*>?/gm, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+  : '';
+const metaDescription =
+  cleanDescription.length > 160
+    ? cleanDescription.substring(0, 157) + '...'
+    : cleanDescription ||
+      `Exklusive Einblicke hinter die Kulissen der Theatergruppe Kleinraming.`;
+---
+
+<Layout title={backstage.titel} description={metaDescription}>
+  <div class="container page-header">
+    <h1>{backstage.titel}</h1>
+  </div>
+
+  <section class="container backstage-detail">
+    <div class="glass-panel content-box">
+      <div class="abstract">
+        {
+          backstage.beschreibung ? (
+            <div set:html={backstage.beschreibung} />
+          ) : (
+            <p>Keine Beschreibung verfügbar.</p>
+          )
+        }
+      </div>
+
+      {
+        filteredGallery.length > 0 && (
+          <div class="gallery-section">
+            <h2>Galerie</h2>
+            <ImageGallery images={filteredGallery} title={backstage.titel} />
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .backstage-detail {
+    max-width: 1000px;
+    margin-bottom: 5rem;
+  }
+
+  .content-box {
+    padding: 3rem;
+  }
+
+  .abstract {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  .abstract :global(ul) {
+    list-style-type: disc;
+    padding-left: 2rem;
+    margin: 1rem 0;
+  }
+
+  .abstract :global(ol) {
+    list-style-type: decimal;
+    padding-left: 2rem;
+    margin: 1rem 0;
+  }
+
+  .abstract :global(li) {
+    margin-bottom: 0.25rem;
+  }
+
+  .gallery-section {
+    margin-top: 4rem;
+  }
+
+  .gallery-section h2 {
+    margin-bottom: 2rem;
+    font-size: 1.8rem;
+  }
+</style>
