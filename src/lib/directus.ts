@@ -42,7 +42,7 @@ export interface Sponsor {
 export interface Startseite {
   id: string;
   emotionen_titel: string;
-  emotionen_bild: string | any;
+  emotionen_gallerie: any[];
   impressionen_gallerie: any[];
 }
 
