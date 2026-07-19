@@ -41,6 +41,15 @@ test.describe('Theatergruppe Kleinraming - Basic Navigation', () => {
     );
   });
 
+  test('should navigate to backstage', async ({ page }) => {
+    await page.goto('/');
+    await page.click('text=Backstage');
+    await expect(page).toHaveURL(/\/backstage/);
+    await expect(page.getByRole('heading', { level: 1 }).first()).toContainText(
+      'Hinter den Kulissen',
+    );
+  });
+
   test('should navigate to and load piece detail page with cast and fallback photo', async ({
     page,
   }) => {
@@ -83,6 +92,7 @@ test.describe('Performance & Layout Stability (CLS)', () => {
     { name: 'Tickets', path: '/tickets' },
     { name: 'Mitwirken', path: '/mitmachen' },
     { name: 'Sponsoren', path: '/sponsoren' },
+    { name: 'Backstage', path: '/backstage' },
   ];
 
   for (const pageInfo of pages) {

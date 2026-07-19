@@ -214,6 +214,28 @@ const server = http.createServer((req, res) => {
     return;
   }
 
+  if (parsedUrl.pathname?.includes('/items/backstage')) {
+    res.end(
+      JSON.stringify({
+        data: {
+          id: 'backstage-singleton',
+          titel: 'Hinter den Kulissen',
+          beschreibung:
+            '<p>Hier bekommt ihr einen exklusiven Einblick backstage bei der Theatergruppe Kleinraming.</p>',
+          backstage_gallerie: [
+            {
+              directus_files_id: { id: 'backstage-1', width: 800, height: 600 },
+            },
+            {
+              directus_files_id: { id: 'backstage-2', width: 800, height: 600 },
+            },
+          ],
+        },
+      }),
+    );
+    return;
+  }
+
   res.statusCode = 404;
   res.end(JSON.stringify({ error: 'Not found' }));
 });

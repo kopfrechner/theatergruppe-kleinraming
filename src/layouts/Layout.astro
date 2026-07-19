@@ -146,7 +146,6 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
 
         <div class="header-actions">
           <nav class="main-nav" id="main-nav" aria-label="Hauptmenü">
-            <a href="/" class={normalizedPath === '/' ? 'active' : ''}>Start</a>
             {
               isTicketsActive && (
                 <a
@@ -166,6 +165,11 @@ const isTicketsActive = ticketPromo?.anzeige_modus !== 'inaktiv';
               href="/stuecke"
               class={normalizedPath.startsWith('/stuecke') ? 'active' : ''}
               >Stücke</a
+            >
+            <a
+              href="/backstage"
+              class={normalizedPath === '/backstage' ? 'active' : ''}
+              >Backstage</a
             >
             <a
               href="/mitmachen"

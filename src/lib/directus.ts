@@ -101,6 +101,13 @@ export interface Datenschutz {
   content: string;
 }
 
+export interface Backstage {
+  id: string;
+  titel: string;
+  beschreibung?: string;
+  backstage_gallerie?: any[];
+}
+
 interface Schema {
   stuecke: Stueck[];
   theatermenschen: Theatermensch[];
@@ -110,6 +117,7 @@ interface Schema {
   kontakt_seite: KontaktSeite;
   impressum: Impressum;
   datenschutz: Datenschutz;
+  backstage: Backstage;
 }
 
 export const DIRECTUS_URL =
