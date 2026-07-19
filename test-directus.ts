@@ -12,7 +12,7 @@ async function run() {
         {
           fields: [
             'emotionen_titel',
-            'emotionen_bild',
+            'emotionen_gallerie.*',
             'impressionen_gallerie.*',
           ],
         } as any,
@@ -28,7 +28,7 @@ async function run() {
       readSingleton('startseite', {
         fields: [
           'emotionen_titel',
-          'emotionen_bild',
+          'emotionen_gallerie.*',
           'impressionen_gallerie.*',
         ],
       }),

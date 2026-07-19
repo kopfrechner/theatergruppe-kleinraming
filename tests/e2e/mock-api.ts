@@ -143,7 +143,10 @@ const server = http.createServer((req, res) => {
       JSON.stringify({
         data: {
           emotionen_titel: 'Willkommen',
-          emotionen_bild: null,
+          emotionen_gallerie: [
+            { directus_files_id: { id: 'emotion-1', width: 800, height: 600 } },
+            { directus_files_id: { id: 'emotion-2', width: 800, height: 600 } },
+          ],
           impressionen_gallerie: [],
         },
       }),

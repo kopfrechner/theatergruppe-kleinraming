@@ -4,9 +4,10 @@ import HomeHero from '../components/HomeHero.astro';
 import HighlightPlayTile from '../components/HighlightPlayTile.astro';
 import ImageGallery from '../components/ImageGallery.astro';
 import BentoTile from '../components/BentoTile.astro';
+import EmotionCarousel from '../components/EmotionCarousel.astro';
 import directus, { DIRECTUS_URL, type Stueck } from '../lib/directus';
 import { readItems, readSingleton } from '@directus/sdk';
-import { Image, inferRemoteSize } from 'astro:assets';
+import { inferRemoteSize } from 'astro:assets';
 import { mapHighlightPlay } from '../lib/mappers';
 
 // 1. Fetch Data
@@ -16,7 +17,7 @@ const [startseite, ticketPromo, latestPlays] = (await Promise.all([
       readSingleton('startseite', {
         fields: [
           'emotionen_titel',
-          'emotionen_bild',
+          'emotionen_gallerie.directus_files_id.*',
           'impressionen_gallerie.directus_files_id.*',
         ],
       } as any),
@@ -80,27 +81,41 @@ const impressionImages =
       }))
     : [];
 
-const emotionImage = startseite?.emotionen_bild
-  ? `${DIRECTUS_URL}/assets/${startseite.emotionen_bild}`
-  : null;
+const emotionImages = startseite?.emotionen_gallerie && Array.isArray(startseite.emotionen_gallerie)
+  ? startseite.emotionen_gallerie
+      .map((img: any) => {
+        const file = img.directus_files_id;
+        const fileId = file?.id || file || img;
+        if (!fileId) return null;
+        return {
+          src: `${DIRECTUS_URL}/assets/${fileId}`,
+          width: file?.width || 800,
+          height: file?.height || 600,
+          id: fileId,
+        };
+      })
+      .filter((img: any) => img !== null)
+  : [];
 
 const emotionTitel = startseite?.emotionen_titel || '';
 
-// Infer dimensions for the emotion image to prevent cropping
+// Infer dimensions for the first emotion image to prevent cropping and set stable aspect ratio
 let emotionWidth = 800;
 let emotionHeight = 600;
 
-if (emotionImage) {
+if (emotionImages.length > 0) {
   try {
-    const dims = await inferRemoteSize(emotionImage);
+    const dims = await inferRemoteSize(emotionImages[0].src);
     const originalAspectRatio = dims.width / dims.height;
     // Cap at a reasonable width for the bento tile (retina safe)
     emotionWidth = Math.min(dims.width, 800);
     emotionHeight = Math.round(emotionWidth / originalAspectRatio);
   } catch (e) {
-    console.warn('Could not infer remote size for emotion image', e);
+    console.warn('Could not infer remote size for first emotion image', e);
   }
 }
+
+const emotionAspectRatio = `${emotionWidth} / ${emotionHeight}`;
 ---
 
 <Layout title="Startseite">
@@ -117,20 +132,18 @@ if (emotionImage) {
       <!-- Tile B: Backstage Impression -->
       <BentoTile
         class="tile-image"
-        style={emotionImage
-          ? `aspect-ratio: ${emotionWidth} / ${emotionHeight};`
+        style={emotionImages.length > 0
+          ? `aspect-ratio: ${emotionAspectRatio};`
           : ''}
       >
         {
-          emotionImage ? (
-            <Image
-              src={emotionImage}
-              alt={emotionTitel}
+          emotionImages.length > 0 ? (
+            <EmotionCarousel
+              images={emotionImages}
+              title={emotionTitel}
+              aspectRatio={emotionAspectRatio}
               width={emotionWidth}
               height={emotionHeight}
-              format="webp"
-              loading="eager"
-              class="tile-bg-image"
             />
           ) : (
             <div
@@ -139,9 +152,6 @@ if (emotionImage) {
             />
           )
         }
-        <div class="tile-overlay">
-          {emotionTitel && <h3>{emotionTitel}</h3>}
-        </div>
       </BentoTile>
 
       <!-- Tile C: Tradition -->
@@ -217,25 +227,7 @@ if (emotionImage) {
     transition: transform 0.5s ease;
   }
 
-  :global(.tile-image:hover) .tile-bg-image {
-    transform: scale(1.05);
-  }
 
-  .tile-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, transparent 60%);
-    display: flex;
-    align-items: flex-end;
-    padding: 1.5rem;
-    z-index: 1;
-  }
-
-  .tile-overlay h3 {
-    margin: 0;
-    font-size: 1.5rem;
-    color: #fff;
-  }
 
   :global(.tile-stat) {
     text-align: center;
