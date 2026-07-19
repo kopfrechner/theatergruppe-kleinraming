@@ -5,7 +5,7 @@ import directus, { DIRECTUS_URL } from '../lib/directus';
 import { readSingleton } from '@directus/sdk';
 import { prepareGalleryImages } from '../lib/mappers';
 
-const backstage = await directus
+const backstage = (await directus
   .request(
     readSingleton('backstage', {
       fields: [
@@ -17,7 +17,7 @@ const backstage = await directus
       ],
     } as any),
   )
-  .catch(() => null);
+  .catch(() => null)) as any;
 
 if (!backstage) {
   return Astro.redirect('/404');
