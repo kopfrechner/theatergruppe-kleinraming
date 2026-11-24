@@ -4,13 +4,16 @@ import heroBgSrc from '../assets/hero-stage.webp';
 
 interface Props {
   isTicketsActive: boolean;
+  playTitle?: string | null;
   lastPlay?: {
     id: string | number;
     slug?: string;
   } | null;
 }
 
-const { isTicketsActive, lastPlay } = Astro.props;
+const { isTicketsActive, playTitle, lastPlay } = Astro.props;
+
+const showPromotion = isTicketsActive && !!playTitle;
 
 const optimizedBg = await getImage({
   src: heroBgSrc,
@@ -27,14 +30,29 @@ const optimizedBg = await getImage({
   >
   </div>
   <div class="container hero-content">
-    <h1>
-      Willkommen bei der<br /><span class="text-green"
-        >Theatergruppe Kleinraming</span
-      >
-    </h1>
-    <p class="hero-subtitle">
-      Leidenschaft für die Bühne, Begeisterung für das Publikum.
-    </p>
+    {
+      showPromotion ? (
+        <>
+          <h1>
+            Unser neues Stück
+            <br />
+            <span class="text-green">{playTitle}</span>
+          </h1>
+          <p class="hero-subtitle">Sichere dir jetzt deine Tickets</p>
+        </>
+      ) : (
+        <>
+          <h1>
+            Willkommen bei der
+            <br />
+            <span class="text-green">Theatergruppe Kleinraming</span>
+          </h1>
+          <p class="hero-subtitle">
+            Leidenschaft für die Bühne, Begeisterung für das Publikum.
+          </p>
+        </>
+      )
+    }
     <div class="hero-actions">
       {
         isTicketsActive ? (

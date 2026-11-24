@@ -28,6 +28,14 @@ test.describe('Ticket Promotion States', () => {
 
     await page.goto('/', { waitUntil: 'networkidle' });
 
+    // Hero shows the default welcome text
+    const hero = page.locator('.hero');
+    await expect(hero.locator('h1')).toContainText('Willkommen bei der');
+    await expect(hero.locator('h1')).toContainText('Theatergruppe Kleinraming');
+    await expect(hero.locator('.hero-subtitle')).toContainText(
+      'Leidenschaft für die Bühne',
+    );
+
     // Check if the highlight tile shows the historical play from mock-api.ts
     const highlightTile = page.locator('.tile-next-play');
     await expect(highlightTile).toBeVisible();
@@ -50,6 +58,16 @@ test.describe('Ticket Promotion States', () => {
     await request.get(`${MOCK_API}/__set_mode?mode=vorab_reservierung`);
 
     await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Hero promotes the upcoming play
+    const hero = page.locator('.hero');
+    await expect(hero.locator('h1')).toContainText('Unser neues Stück');
+    await expect(hero.locator('h1')).toContainText(
+      'VORSCHAU: Sommernachtstraum',
+    );
+    await expect(hero.locator('.hero-subtitle')).toHaveText(
+      'Sichere dir jetzt deine Tickets',
+    );
 
     const highlightTile = page.locator('.tile-next-play');
     await expect(highlightTile).toBeVisible();
@@ -76,6 +94,15 @@ test.describe('Ticket Promotion States', () => {
     await request.get(`${MOCK_API}/__set_mode?mode=ticket_promotion`);
 
     await page.goto('/', { waitUntil: 'networkidle' });
+
+    // Hero promotes the current play
+    const hero = page.locator('.hero');
+    await expect(hero.locator('h1')).toContainText('Unser neues Stück');
+    await expect(hero.locator('h1')).toContainText('Hamlet');
+    await expect(hero.locator('h1')).not.toContainText('Willkommen');
+    await expect(hero.locator('.hero-subtitle')).toHaveText(
+      'Sichere dir jetzt deine Tickets',
+    );
 
     const highlightTile = page.locator('.tile-next-play');
     await expect(highlightTile).toBeVisible();
