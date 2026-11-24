@@ -121,6 +121,9 @@ const emotionAspectRatio = `${emotionWidth} / ${emotionHeight}`;
 <Layout title="Startseite">
   <HomeHero
     isTicketsActive={ticketPromo?.anzeige_modus !== 'inaktiv'}
+    playTitle={highlightPlay && !highlightPlay.isHistorical
+      ? highlightPlay.titel
+      : null}
     lastPlay={lastPlay}
   />
 
